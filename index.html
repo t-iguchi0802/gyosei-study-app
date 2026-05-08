@@ -427,6 +427,13 @@
       line-height: 1.75;
       white-space: pre-wrap;
     }
+    .statute-label {
+      display: inline-block;
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 900;
+    }
     .lecture-status {
       display: inline-block;
       margin: 8px 0 0;
@@ -608,7 +615,7 @@
       <div class="lecture-mode guide-kind" id="guideKindButtons">
         <button class="active" type="button" data-guide-kind="lecture">短文講義</button>
         <button type="button" data-guide-kind="textbook">体系テキスト</button>
-        <button type="button" data-guide-kind="statutes">重要条文</button>
+        <button type="button" data-guide-kind="statutes">重要条文要約</button>
       </div>
       <div class="lecture-mode" id="lectureModeButtons">
         <button class="active" type="button" data-lecture-mode="basic">基本編</button>
@@ -1083,6 +1090,7 @@
 
     const BASIC_LECTURE_COUNT = 68;
     const studyOrder = ["行政手続法", "行政不服審査法", "行政事件訴訟法", "国家賠償法", "地方自治法", "行政法総論", "民法", "基礎知識", "憲法", "商法・会社法", "基礎法学", "記述式"];
+    const statuteLawOrder = ["行政手続法", "行政不服審査法", "行政事件訴訟法", "国家賠償法", "地方自治法", "行政代執行法"];
     const storeKey = "gyosei-admin-mobile-v3";
     const state = JSON.parse(localStorage.getItem(storeKey) || '{"streak":0,"answered":0,"correct":0,"questions":{},"minutes":{},"audioOn":false,"speechRate":1,"cardsSeen":{},"lecturesSeen":{},"lectureMode":"basic","guideKind":"lecture","lastQuestionId":"","lastCategory":"全分野","lastMode":"first"}');
     if (!state.minutes) state.minutes = {};
@@ -1281,27 +1289,50 @@
       }).join("");
     }
     function renderImportantStatutes() {
-      const doneCount = importantStatutes.filter((item) => isGuideItemDone(`statute:${item.law}:${item.article}`)).length;
+      const visibleStatutes = importantStatuteListForStudy();
+      const doneCount = visibleStatutes.filter(({ item }) => isGuideItemDone(`statute:${item.law}:${item.article}`)).length;
       const summary = `<article class="lecture-summary">
-        <strong>重要条文：${importantStatutes.length}本</strong>
-        <div>完了：${doneCount} / ${importantStatutes.length}</div>
-        <div>行政法の得点に直結する条文・重要部分です。条文の言い回しをそのまま読むための欄です。</div>
+        <strong>重要条文要約：${visibleStatutes.length}本</strong>
+        <div>完了：${doneCount} / ${visibleStatutes.length}</div>
+        <div>行政法で正解を出すために覚える条文番号と判断ポイントです。法律ごとに条文番号の若い順で並べています。</div>
       </article>`;
-      el("lectureList").innerHTML = summary + importantStatutes.map((item, index) => {
+      el("lectureList").innerHTML = summary + visibleStatutes.map(({ item, index }) => {
         const key = `statute:${item.law}:${item.article}`;
         const done = isGuideItemDone(key);
         return `<article class="tip panel textbook ${done ? "done" : ""}" data-statute-index="${index}" data-category="${item.category}">
           <h3>${item.law} ${item.article}</h3>
           <span class="lecture-status">${done ? "完了済み" : "未完了"}</span>
-          <p class="small"><span class="key-red">覚える理由：</span>${item.point}</p>
-          <div class="law-quote">${highlightLawText(item.quote)}</div>
+          <div class="statute-label">条文番号：${item.law} ${item.article}</div>
+          <p class="small"><span class="key-red">正解を出すポイント：</span>${item.point}</p>
+          <p class="small"><span class="key-blue">覚え方：</span>${statuteMemoryTip(item)}</p>
+          <div class="law-quote"><span class="key-red">試験用の条文内容：</span><br>${highlightLawText(item.quote)}</div>
           <div class="lecture-actions">
-            <button type="button" data-action="read" data-statute-index="${index}">この条文を聞く</button>
+            <button type="button" data-action="read" data-statute-index="${index}">この条文要約を聞く</button>
             <button type="button" data-action="complete" data-statute-index="${index}">${done ? "完了済み" : "完了にする"}</button>
             <button type="button" data-action="questions" data-category="${item.category}">関連問題へ</button>
           </div>
         </article>`;
       }).join("");
+    }
+    function importantStatuteListForStudy() {
+      return importantStatutes.map((item, index) => ({ item, index })).sort((a, b) => statuteSortKey(a.item) - statuteSortKey(b.item));
+    }
+    function statuteSortKey(item) {
+      const lawBase = statuteLawOrder.indexOf(item.law);
+      return (lawBase < 0 ? 999 : lawBase) * 1000 + articleSortValue(item.article);
+    }
+    function articleSortValue(article) {
+      const match = String(article).match(/(\d+)条(?:の(\d+))?/);
+      if (!match) return 999;
+      return Number(match[1]) + (match[2] ? Number(match[2]) / 100 : 0);
+    }
+    function statuteMemoryTip(item) {
+      if (item.article.includes("・")) return "条文番号をセットで覚えます。片方だけでなく、同じ論点として選択肢を切ります。";
+      if (/1条$/.test(item.article)) return "1条は目的・基本構造です。制度の趣旨を問う肢に反応します。";
+      if (/2条$/.test(item.article)) return "2条は定義や基本要件になりやすい条文です。用語の意味を押さえます。";
+      if (/14条|18条|25条/.test(item.article)) return "期間・執行停止・理由提示など、数字や要件をそのまま判断します。";
+      if (/242/.test(item.article)) return "住民監査請求と住民訴訟は前後関係で覚えます。住民訴訟は監査請求前置です。";
+      return "条文番号とキーワードを結び、選択肢の言い換えを判定します。";
     }
     function guideItemFromTip(tip, target) {
       const textIndex = target.dataset.textIndex ?? tip.dataset.textIndex;
@@ -1319,7 +1350,7 @@
         if (!item) return null;
         return {
           key: `statute:${item.law}:${item.article}`,
-          text: `${item.category}。${item.law}${item.article}。覚える理由。${item.point}。条文。${item.quote}`
+          text: `${item.category}。${item.law}${item.article}。正解を出すポイント。${item.point}。覚え方。${statuteMemoryTip(item)}。試験用の条文内容。${item.quote}`
         };
       }
       const lectureIndex = target.dataset.lectureIndex ?? tip.dataset.lectureIndex;
@@ -1549,7 +1580,7 @@
       if (state.guideKind === "textbook") {
         text = adminTextbooks.slice(0, 1).map((item) => `${item.category}。${item.title}。${plainText(item.html)}`).join("。");
       } else if (state.guideKind === "statutes") {
-        text = importantStatutes.slice(0, 3).map((item) => `${item.category}。${item.law}${item.article}。${item.point}。${item.quote}`).join("。");
+        text = importantStatuteListForStudy().slice(0, 3).map(({ item }) => `${item.category}。${item.law}${item.article}。正解を出すポイント。${item.point}。覚え方。${statuteMemoryTip(item)}。試験用の条文内容。${item.quote}`).join("。");
       } else {
         text = lectureListForMode().slice(0, 3).map(({ item }) => `${item.category}。${item.title}。${item.body}`).join("。");
       }
