@@ -377,6 +377,56 @@
       display: block;
       margin-bottom: 6px;
     }
+    .guide-kind {
+      margin-bottom: 9px;
+    }
+    .textbook {
+      padding: 15px;
+    }
+    .textbook h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+      line-height: 1.35;
+    }
+    .textbook-body {
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.8;
+    }
+    .textbook-body p {
+      margin: 0 0 12px;
+    }
+    .textbook-body ul {
+      margin: 8px 0 12px;
+      padding-left: 1.2em;
+    }
+    .textbook-body li {
+      margin: 5px 0;
+    }
+    .hl {
+      background: #fff0b8;
+      color: #11160f;
+      padding: 0 2px;
+      border-radius: 3px;
+      font-weight: 800;
+    }
+    .key-red {
+      color: #9b271b;
+      font-weight: 900;
+    }
+    .key-blue {
+      color: #175fa3;
+      font-weight: 900;
+    }
+    .law-quote {
+      margin: 10px 0 0;
+      padding: 12px;
+      background: #fafbf8;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
     .lecture-status {
       display: inline-block;
       margin: 8px 0 0;
@@ -555,6 +605,11 @@
       <div class="audio-tools">
         <button id="readGuideButton" type="button">表示中の講義を聞く</button>
       </div>
+      <div class="lecture-mode guide-kind" id="guideKindButtons">
+        <button class="active" type="button" data-guide-kind="lecture">短文講義</button>
+        <button type="button" data-guide-kind="textbook">体系テキスト</button>
+        <button type="button" data-guide-kind="statutes">重要条文</button>
+      </div>
       <div class="lecture-mode" id="lectureModeButtons">
         <button class="active" type="button" data-lecture-mode="basic">基本編</button>
         <button type="button" data-lecture-mode="advanced">応用編</button>
@@ -639,6 +694,12 @@
     ];
     function lecture(category, title, body) {
       return { category, title, body };
+    }
+    function guideText(category, title, html) {
+      return { category, title, html };
+    }
+    function importantStatute(category, law, article, quote, point) {
+      return { category, law, article, quote, point };
     }
     const lectures = [
       lecture("行政手続法", "処分前のルール", "行政手続法は、行政庁が処分をする前の手続を整える法律です。申請に対する処分では、審査基準、標準処理期間、理由提示。不利益処分では、処分基準、聴聞、弁明、理由提示が中心です。まず、審査基準は申請、処分基準は不利益処分、という対応を固定してください。"),
@@ -783,6 +844,93 @@
       lecture("記述式", "民法の典型テーマ", "民法記述では、詐欺取消し、錯誤取消し、代理、時効、債務不履行解除、契約不適合責任、賃貸借解除、不法行為、相続が典型です。問題文から法律構成を選び、効果を端的に書きます。"),
       lecture("記述式", "40字の作り方", "40字記述は、主語、相手、法律効果、要件の順で作ると安定します。例として、AはBに対し、詐欺を理由に意思表示を取り消すことができる、という形です。完璧な文章より、採点キーワードを入れることを優先します。")
     );
+    const adminTextbooks = [
+      guideText("行政法総論", "行政法全体の流れ", `
+        <p>行政法は、国や地方公共団体が、国民に対してどのように権限を使い、その権限行使をどう争い、損害が出たときにどう救済するかを見る科目です。最初に押さえる軸は、<span class="hl">行政作用</span>、<span class="hl">行政手続</span>、<span class="hl">行政救済</span>の三つです。</p>
+        <p>行政作用では、行政庁が一方的に法律関係を動かす<span class="key-red"><u>行政行為</u></span>が中心です。許可、認可、免許、取消し、課税処分などが典型です。ここでは、公定力、不可争力、不可変更力、自力執行力という効力を、難しい言葉としてではなく、<u>処分が取り消されるまでは有効に扱われる</u>という実務上の流れで理解します。</p>
+        <p>次に行政手続法です。これは、行政庁が処分をする前に、相手方にどのようなルールで向き合うべきかを定めます。つまり、あとで争う法律ではなく、<span class="key-blue">処分前の公正さを確保する法律</span>です。</p>
+        <p>行政救済は二段階で見ます。行政内部で争うのが行政不服審査法、裁判所で争うのが行政事件訴訟法です。さらに、違法な行政活動で損害が出たときは国家賠償法、公の施設の瑕疵なら国家賠償法2条を使います。地方自治法は、住民が自治体の財務行為を監査請求・住民訴訟で争う場面が得点源です。</p>
+        <p>行政法総論では、<span class="hl">処分性</span>、<span class="hl">裁量</span>、<span class="hl">行政強制</span>、<span class="hl">行政契約・行政指導</span>を、各法律に接続するための土台として使います。とくに行政代執行法は、義務を履行しない者に対して行政庁が代わって実現する制度で、戒告、代執行令書、代執行、費用徴収という流れで覚えます。</p>
+      `),
+      guideText("行政手続法", "行政手続法とは何か", `
+        <p>行政手続法は、<span class="key-red"><u>処分・行政指導・届出・命令等</u></span>について、行政庁が守るべき共通ルールを定める法律です。目的は、行政運営の公正の確保と透明性の向上です。試験では、この目的から各制度の位置づけを考えると崩れません。</p>
+        <p>第一の柱は、<span class="hl">申請に対する処分</span>です。申請とは、許認可などを求める行為です。行政庁は、審査基準を定めて原則公にし、標準処理期間を定めたときは公にするよう努めます。申請を拒否するなら、原則として理由を示します。ここでは、<u>審査基準は申請側、処分基準は不利益処分側</u>という対応を絶対に固定します。</p>
+        <p>第二の柱は、<span class="hl">不利益処分</span>です。不利益処分は、許可取消し、資格剥奪、営業停止のように、相手方に不利益を与える処分です。行政庁は処分基準を定め、公にするよう努めます。そして重大な不利益処分では聴聞、それ以外では弁明の機会付与が問題になります。<span class="key-blue">聴聞は重い手続、弁明は軽い手続</span>です。</p>
+        <p>第三の柱は、行政指導です。行政指導は、相手方の任意の協力を求めるものです。だから、従わないことを理由に不利益取扱いをしてはいけません。行政指導を求められた側は、趣旨・内容・責任者を明らかにするよう求めることができます。</p>
+        <p>第四の柱は、届出と命令等です。届出は、形式上の要件を満たして行政庁に到達した時点で義務履行となります。命令等を定めるときは意見公募手続が問題になります。ここは、個別処分ではなく、一般的なルール作りの場面だと理解します。</p>
+      `),
+      guideText("行政不服審査法", "行政不服審査法とは何か", `
+        <p>行政不服審査法は、行政庁の処分や不作為について、<span class="key-red"><u>裁判所に行く前または裁判所とは別に、行政内部で争う制度</u></span>です。裁判より簡易迅速で、違法だけでなく不当も問題にできる点が特徴です。</p>
+        <p>入口は二つです。一つは、処分に不服がある場合の審査請求。もう一つは、法令に基づく申請をしたのに行政庁が相当期間内に何もしない場合の、不作為についての審査請求です。期間は、処分を知った日の翌日から3か月以内、処分の日の翌日から1年以内をまず覚えます。</p>
+        <p>審査請求をしても、処分の効力や執行は原則として止まりません。これを<span class="hl">執行不停止の原則</span>と考えます。止めたいときに執行停止が問題になります。行政事件訴訟法の執行停止と混同しやすいので、どちらも「処分は原則止まらない、必要なら止める手続を申し立てる」と整理します。</p>
+        <p>審理では、審理員、弁明書、反論書、口頭意見陳述、証拠書類の閲覧などが出ます。最後の裁決は、<span class="key-blue">却下・棄却・認容</span>です。不適法なら却下、理由がなければ棄却、理由があれば認容。この三語は反射で出せるようにします。</p>
+        <p>裁決には拘束力があります。つまり、関係行政庁は裁決の趣旨に従わなければなりません。行政不服審査法は、単なる相談制度ではなく、行政内部で処分を見直させる正式な救済制度です。</p>
+      `),
+      guideText("行政事件訴訟法", "行政事件訴訟法とは何か", `
+        <p>行政事件訴訟法は、行政を<span class="key-red"><u>裁判所で争うための法律</u></span>です。まず、行政事件訴訟には、抗告訴訟、当事者訴訟、民衆訴訟、機関訴訟があります。行政書士試験で中心になるのは、行政庁の公権力の行使を争う抗告訴訟です。</p>
+        <p>抗告訴訟の中心は取消訴訟です。取消訴訟では、最初に<span class="hl">処分性</span>が問題になります。処分性とは、行政庁の公権力の行使として、国民の権利義務に直接具体的な法的効果を及ぼすことです。行政指導、内部行為、事実行為では処分性が争点になりやすいです。</p>
+        <p>次に、誰が訴えられるかという<span class="hl">原告適格</span>、今も争う意味があるかという<span class="hl">訴えの利益</span>、誰を被告にするかという<span class="hl">被告適格</span>、そして<span class="hl">出訴期間</span>を確認します。出訴期間は、処分または裁決があったことを知った日から6か月以内、処分または裁決の日から1年以内です。</p>
+        <p>取消訴訟以外では、無効等確認、不作為の違法確認、義務付け、差止めを使い分けます。申請に応答しないなら不作為の違法確認、行政庁に処分させたいなら義務付け、処分させたくないなら差止めです。</p>
+        <p>判決の効力では、<span class="key-blue">形成力・拘束力・第三者効</span>を押さえます。特に取消判決の拘束力は重要です。行政庁は同じ理由で同じ処分を繰り返せません。事件訴訟法は、要件を順番にチェックする科目です。</p>
+      `),
+      guideText("国家賠償法", "国家賠償法とは何か", `
+        <p>国家賠償法は、行政活動によって損害を受けた人が、国または公共団体に損害賠償を求める制度です。行政処分を取り消す法律ではなく、<span class="key-red"><u>損害を金銭で回復する法律</u></span>です。</p>
+        <p>1条は、公務員の違法な公権力行使による損害です。要件は、公務員、公権力の行使、職務を行うについて、故意または過失、違法、損害、因果関係です。責任を負うのは原則として国または公共団体で、公務員個人に直接請求する問題ではありません。</p>
+        <p>2条は、公の営造物の設置または管理の瑕疵です。道路、河川、学校施設、公園などが典型です。ここでは公務員の過失ではなく、<span class="hl">営造物が通常有すべき安全性を欠いていたか</span>が中心です。</p>
+        <p>1条は「人の違法な職務行為」、2条は「物・施設の瑕疵」と分けます。行政事件訴訟と違い、処分性や出訴期間の問題ではなく、民法上の損害賠償に近い構造で考えます。</p>
+      `),
+      guideText("地方自治法", "地方自治法とは何か", `
+        <p>地方自治法は、地方公共団体の組織、権限、住民参加、財務、国との関係を定める法律です。範囲は広いですが、行政書士試験では、<span class="key-red"><u>直接請求・住民監査請求・住民訴訟</u></span>を優先します。</p>
+        <p>直接請求は、住民が条例制定改廃、監査、議会解散、議員・長の解職などを求める制度です。数字が出やすいので、50分の1と3分の1を分けます。条例制定改廃請求と監査請求は原則50分の1、議会解散や長・議員の解職は原則3分の1です。</p>
+        <p>住民監査請求は、違法または不当な財務会計行為について、監査委員に監査を求める制度です。公金の支出、財産の取得・管理・処分、契約、債務その他の義務負担などが対象になります。</p>
+        <p>住民訴訟は、住民監査請求を経た後に提起します。つまり、<span class="hl">住民監査請求前置</span>が基本です。行政事件訴訟法上は民衆訴訟にあたり、法律に定めがある場合だけ認められる客観訴訟です。</p>
+        <p>地方自治法は、細かい組織論に深追いしすぎず、住民が自治体の財務をどうチェックするかという流れで読むと得点につながります。</p>
+      `)
+    ];
+
+    const importantStatutes = [
+      importantStatute("行政手続法", "行政手続法", "1条", "この法律は、処分、行政指導及び届出に関する手続並びに命令等を定める手続に関し、共通する事項を定めることによって、行政運営における公正の確保と透明性の向上を図り、もって国民の権利利益の保護に資することを目的とする。", "目的条文。公正の確保、透明性、権利利益の保護をそのまま覚える。"),
+      importantStatute("行政手続法", "行政手続法", "5条", "行政庁は、審査基準を定めるものとする。行政庁は、行政上特別の支障があるときを除き、法令により当該申請の提出先とされている機関の事務所における備付けその他の適当な方法により審査基準を公にしておかなければならない。", "審査基準は申請に対する処分。原則として公にする。"),
+      importantStatute("行政手続法", "行政手続法", "6条", "行政庁は、申請がその事務所に到達してから当該申請に対する処分をするまでに通常要すべき標準的な期間を定めるよう努めるとともに、これを定めたときは、これらの当該申請の提出先とされている機関の事務所における備付けその他の適当な方法により公にしておかなければならない。", "標準処理期間は努力義務。ただし定めたときは公にする。"),
+      importantStatute("行政手続法", "行政手続法", "8条", "行政庁は、申請により求められた許認可等を拒否する処分をする場合は、申請者に対し、同時に、当該処分の理由を示さなければならない。", "申請拒否処分は原則理由提示。"),
+      importantStatute("行政手続法", "行政手続法", "12条", "行政庁は、処分基準を定め、かつ、これを公にしておくよう努めなければならない。", "処分基準は不利益処分。公表は努力義務。"),
+      importantStatute("行政手続法", "行政手続法", "13条", "行政庁は、不利益処分をしようとする場合には、次の各号の区分に従い、この章の定めるところにより、当該不利益処分の名あて人となるべき者について、当該各号に定める意見陳述のための手続を執らなければならない。", "聴聞か弁明かを分ける入口条文。"),
+      importantStatute("行政手続法", "行政手続法", "14条", "行政庁は、不利益処分をする場合には、その名あて人に対し、同時に、当該不利益処分の理由を示さなければならない。", "不利益処分も原則理由提示。"),
+      importantStatute("行政手続法", "行政手続法", "32条", "行政指導にあっては、行政指導に携わる者は、いやしくも当該行政機関の任務又は所掌事務の範囲を逸脱してはならないこと及び行政指導の内容があくまでも相手方の任意の協力によってのみ実現されるものであることに留意しなければならない。", "行政指導は任意。権限逸脱と強制化を嫌う。"),
+      importantStatute("行政手続法", "行政手続法", "37条", "届出が届出書の記載事項に不備がないこと、届出書に必要な書類が添付されていることその他の法令に定められた届出の形式上の要件に適合している場合は、当該届出が法令により当該届出の提出先とされている機関の事務所に到達したときに、当該届出をすべき手続上の義務が履行されたものとする。", "届出は到達時に手続上の義務履行。"),
+      importantStatute("行政手続法", "行政手続法", "38条・39条", "命令等を定める機関は、命令等を定めるに当たっては、当該命令等がこれを定める根拠となる法令の趣旨に適合するものとなるようにしなければならない。命令等制定機関は、命令等を定めようとする場合には、当該命令等の案及びこれに関連する資料をあらかじめ公示し、意見の提出先及び意見の提出のための期間を定めて広く一般の意見を求めなければならない。", "命令等、案の公示、意見提出、結果公示を流れで押さえる。"),
+
+      importantStatute("行政不服審査法", "行政不服審査法", "1条", "この法律は、行政庁の違法又は不当な処分その他公権力の行使に当たる行為に関し、国民が簡易迅速かつ公正な手続の下で広く行政庁に対する不服申立てをすることができるための制度を定めることにより、国民の権利利益の救済を図るとともに、行政の適正な運営を確保することを目的とする。", "違法だけでなく不当も対象。簡易迅速、公正、救済。"),
+      importantStatute("行政不服審査法", "行政不服審査法", "2条", "行政庁の処分に不服がある者は、第4条及び第5条第2項の定めるところにより、審査請求をすることができる。", "処分についての審査請求。"),
+      importantStatute("行政不服審査法", "行政不服審査法", "3条", "法令に基づき行政庁に対して処分についての申請をした者は、当該申請から相当の期間が経過したにもかかわらず、行政庁の不作為がある場合には、当該不作為についての審査請求をすることができる。", "不作為についての審査請求。法令に基づく申請が前提。"),
+      importantStatute("行政不服審査法", "行政不服審査法", "18条", "処分についての審査請求は、処分があったことを知った日の翌日から起算して3月を経過したときは、することができない。処分についての審査請求は、処分があった日の翌日から起算して1年を経過したときは、することができない。", "知った日の翌日から3か月、処分日の翌日から1年。"),
+      importantStatute("行政不服審査法", "行政不服審査法", "25条", "審査請求は、処分の効力、処分の執行又は手続の続行を妨げない。審査庁は、必要があると認める場合には、申立てにより又は職権で、処分の効力、処分の執行又は手続の続行の全部又は一部の停止その他の措置をとることができる。", "執行不停止が原則。必要なら執行停止。"),
+      importantStatute("行政不服審査法", "行政不服審査法", "45条・46条", "処分についての審査請求が法定の期間経過後にされたものである場合その他不適法である場合には、審査庁は、裁決で、当該審査請求を却下する。処分についての審査請求が理由がない場合には、審査庁は、裁決で、当該審査請求を棄却する。処分についての審査請求が理由がある場合には、審査庁は、裁決で、当該処分の全部若しくは一部を取り消し、又はこれを変更する。", "却下・棄却・認容の区別。"),
+      importantStatute("行政不服審査法", "行政不服審査法", "49条・52条", "不作為についての審査請求が理由がある場合には、審査庁は、裁決で、当該不作為が違法又は不当である旨を宣言する。裁決は、関係行政庁を拘束する。", "不作為は違法または不当の宣言。裁決には拘束力。"),
+
+      importantStatute("行政事件訴訟法", "行政事件訴訟法", "2条・3条", "この法律において「行政事件訴訟」とは、抗告訴訟、当事者訴訟、民衆訴訟及び機関訴訟をいう。この法律において「抗告訴訟」とは、行政庁の公権力の行使に関する不服の訴訟をいう。", "4類型と抗告訴訟の定義。"),
+      importantStatute("行政事件訴訟法", "行政事件訴訟法", "3条", "この法律において「処分の取消しの訴え」とは、行政庁の処分その他公権力の行使に当たる行為の取消しを求める訴訟をいう。この法律において「不作為の違法確認の訴え」とは、行政庁が法令に基づく申請に対し、相当の期間内に何らかの処分又は裁決をすべきであるにかかわらず、これをしないことについての違法の確認を求める訴訟をいう。", "取消訴訟と不作為の違法確認の定義。"),
+      importantStatute("行政事件訴訟法", "行政事件訴訟法", "8条", "処分の取消しの訴えは、当該処分につき法令の規定により審査請求をすることができる場合においても、直ちに提起することを妨げない。", "審査請求前置は原則不要。個別法に注意。"),
+      importantStatute("行政事件訴訟法", "行政事件訴訟法", "9条", "処分の取消しの訴え及び裁決の取消しの訴えは、当該処分又は裁決の取消しを求めるにつき法律上の利益を有する者に限り、提起することができる。", "原告適格。法律上の利益。"),
+      importantStatute("行政事件訴訟法", "行政事件訴訟法", "11条", "処分又は裁決をした行政庁が国又は公共団体に所属する場合には、処分の取消しの訴えは、当該処分又は裁決をした行政庁の所属する国又は公共団体を被告として提起しなければならない。", "被告は原則、行政庁ではなく所属する国または公共団体。"),
+      importantStatute("行政事件訴訟法", "行政事件訴訟法", "14条", "取消訴訟は、処分又は裁決があったことを知った日から6月を経過したときは、提起することができない。取消訴訟は、処分又は裁決の日から1年を経過したときは、提起することができない。", "知った日から6か月、処分日から1年。"),
+      importantStatute("行政事件訴訟法", "行政事件訴訟法", "25条", "処分の取消しの訴えの提起は、処分の効力、処分の執行又は手続の続行を妨げない。裁判所は、重大な損害を避けるため緊急の必要があるときは、申立てにより、決定をもって、処分の効力、処分の執行又は手続の続行の全部又は一部の停止をすることができる。", "執行不停止が原則。重大な損害、緊急の必要。"),
+      importantStatute("行政事件訴訟法", "行政事件訴訟法", "30条・33条", "行政庁の裁量処分については、裁量権の範囲をこえ又はその濫用があった場合に限り、裁判所は、その処分を取り消すことができる。処分又は裁決を取り消す判決は、その事件について、処分又は裁決をした行政庁その他の関係行政庁を拘束する。", "裁量審査と取消判決の拘束力。"),
+      importantStatute("行政事件訴訟法", "行政事件訴訟法", "36条", "無効等確認の訴えは、当該処分又は裁決に続く処分により損害を受けるおそれのある者その他当該処分又は裁決の無効等の確認を求めるにつき法律上の利益を有する者で、当該処分若しくは裁決の存否又はその効力の有無を前提とする現在の法律関係に関する訴えによって目的を達することができないものに限り、提起することができる。", "無効等確認は補充性が出やすい。"),
+      importantStatute("行政事件訴訟法", "行政事件訴訟法", "37条の2・37条の4", "一定の処分がされないことにより重大な損害を生ずるおそれがあり、かつ、その損害を避けるため他に適当な方法がないときは、義務付けの訴えを提起することができる。一定の処分又は裁決がされることにより重大な損害を生ずるおそれがあり、かつ、その損害を避けるため他に適当な方法がないときは、差止めの訴えを提起することができる。", "義務付けと差止めは、重大な損害と補充性が共通。"),
+
+      importantStatute("国家賠償法", "国家賠償法", "1条", "国又は公共団体の公権力の行使に当る公務員が、その職務を行うについて、故意又は過失によつて違法に他人に損害を加えたときは、国又は公共団体が、これを賠償する責に任ずる。", "1条は公務員の違法な公権力行使。"),
+      importantStatute("国家賠償法", "国家賠償法", "2条", "道路、河川その他の公の営造物の設置又は管理に瑕疵があつたために他人に損害を生じたときは、国又は公共団体は、これを賠償する責に任ずる。", "2条は公の営造物の設置管理の瑕疵。"),
+
+      importantStatute("地方自治法", "地方自治法", "74条・75条", "普通地方公共団体の議会の議員及び長の選挙権を有する者は、政令で定めるところにより、その総数の50分の1以上の者の連署をもって、その代表者から、普通地方公共団体の長に対し、条例の制定又は改廃の請求をすることができる。選挙権を有する者は、その総数の50分の1以上の者の連署をもって、その代表者から、監査委員に対し、普通地方公共団体の事務の執行に関し、監査の請求をすることができる。", "条例制定改廃請求と事務監査請求は50分の1。"),
+      importantStatute("地方自治法", "地方自治法", "76条・81条", "選挙権を有する者は、政令で定めるところにより、その総数の3分の1以上の者の連署をもって、その代表者から、選挙管理委員会に対し、議会の解散の請求をすることができる。選挙権を有する者は、政令で定めるところにより、その総数の3分の1以上の者の連署をもって、その代表者から、普通地方公共団体の長の解職の請求をすることができる。", "議会解散請求と長の解職請求は原則3分の1。"),
+      importantStatute("地方自治法", "地方自治法", "242条", "普通地方公共団体の住民は、当該普通地方公共団体の長若しくは委員会若しくは委員又は当該普通地方公共団体の職員について、違法若しくは不当な公金の支出、財産の取得、管理若しくは処分、契約の締結若しくは履行若しくは債務その他の義務の負担があると認めるときは、監査委員に対し、監査を求め、当該行為を防止し、若しくは是正し、又は当該怠る事実を改めるために必要な措置を講ずべきことを請求することができる。", "住民監査請求。財務会計行為が対象。"),
+      importantStatute("地方自治法", "地方自治法", "242条の2", "普通地方公共団体の住民は、前条第1項の規定による請求をした場合において、監査委員の監査の結果若しくは勧告又は普通地方公共団体の議会、長その他の執行機関若しくは職員の措置に不服があるときは、裁判所に対し、訴えをもって、必要な請求をすることができる。", "住民訴訟は住民監査請求前置。"),
+
+      importantStatute("行政法総論", "行政代執行法", "2条", "法律により直接に命ぜられ、又は法律に基き行政庁により命ぜられた行為について義務者がこれを履行しない場合、他の手段によってその履行を確保することが困難であり、かつ、その不履行を放置することが著しく公益に反すると認められるときは、当該行政庁は、自ら義務者のなすべき行為をなし、又は第三者をしてこれをなさしめ、その費用を義務者から徴収することができる。", "代執行の要件。代替的作為義務、補充性、公益性。"),
+      importantStatute("行政法総論", "行政代執行法", "3条", "前条の規定による処分をなすには、相当の履行期限を定め、その期限までに履行がなされないときは、代執行をなすべき旨を、予め文書で戒告しなければならない。義務者が、前項の戒告を受けて、指定の期限までにその義務を履行しないときは、当該行政庁は、代執行令書をもって、代執行をなすべき時期、代執行のために派遣する執行責任者の氏名及び代執行に要する費用の概算による見積額を義務者に通知する。", "戒告、代執行令書、代執行の流れ。")
+    ];
+
     const cards = [
       c("行政手続法", "審査基準は何に使う？", "申請に対する処分。"),
       c("行政手続法", "処分基準は何に使う？", "不利益処分。"),
@@ -936,11 +1084,12 @@
     const BASIC_LECTURE_COUNT = 68;
     const studyOrder = ["行政手続法", "行政不服審査法", "行政事件訴訟法", "国家賠償法", "地方自治法", "行政法総論", "民法", "基礎知識", "憲法", "商法・会社法", "基礎法学", "記述式"];
     const storeKey = "gyosei-admin-mobile-v3";
-    const state = JSON.parse(localStorage.getItem(storeKey) || '{"streak":0,"answered":0,"correct":0,"questions":{},"minutes":{},"audioOn":false,"speechRate":1,"cardsSeen":{},"lecturesSeen":{},"lectureMode":"basic","lastQuestionId":"","lastCategory":"全分野","lastMode":"first"}');
+    const state = JSON.parse(localStorage.getItem(storeKey) || '{"streak":0,"answered":0,"correct":0,"questions":{},"minutes":{},"audioOn":false,"speechRate":1,"cardsSeen":{},"lecturesSeen":{},"lectureMode":"basic","guideKind":"lecture","lastQuestionId":"","lastCategory":"全分野","lastMode":"first"}');
     if (!state.minutes) state.minutes = {};
     if (!state.cardsSeen) state.cardsSeen = {};
     if (!state.lecturesSeen) state.lecturesSeen = {};
     if (!state.lectureMode) state.lectureMode = "basic";
+    if (!state.guideKind) state.guideKind = "lecture";
     if (typeof state.audioOn !== "boolean") state.audioOn = false;
     if (!state.speechRate) state.speechRate = 1;
     let currentQuestion = questions[0];
@@ -1001,6 +1150,13 @@
         save();
         renderLectures();
       });
+      el("guideKindButtons").addEventListener("click", (event) => {
+        const kind = event.target.dataset.guideKind;
+        if (!kind) return;
+        state.guideKind = kind;
+        save();
+        renderLectures();
+      });
       els.subjectMap.addEventListener("click", (event) => {
         const category = event.target.dataset.category;
         if (!category) return;
@@ -1019,6 +1175,20 @@
         const tip = event.target.closest(".tip");
         if (!tip) return;
         const action = event.target.dataset.action;
+        const guideItem = guideItemFromTip(tip, event.target);
+        if (guideItem && action === "complete") {
+          markGuideItemDone(guideItem.key);
+          renderLectures();
+          renderStats();
+          return;
+        }
+        if (guideItem && action === "read") {
+          markGuideItemDone(guideItem.key);
+          renderLectures();
+          renderStats();
+          speak(guideItem.text, true);
+          return;
+        }
         if (action === "questions") {
           const category = event.target.dataset.category;
           els.category.value = category;
@@ -1027,30 +1197,10 @@
           pick();
           return;
         }
-        if (action === "complete") {
-          const item = lectures[Number(event.target.dataset.lectureIndex)];
-          if (item) {
-            markLectureDone(item);
-            renderLectures();
-            renderStats();
-          }
-          return;
-        }
-        if (action === "read") {
-          const item = lectures[Number(event.target.dataset.lectureIndex)];
-          if (item) {
-            markLectureDone(item);
-            save();
-            renderStats();
-            speak(`${item.category}。${item.title}。${item.body}`, true);
-          }
-          return;
-        }
-        const item = lectures[Number(tip.dataset.lectureIndex)];
-        if (item) markLectureDone(item);
+        if (guideItem) markGuideItemDone(guideItem.key);
         save();
         renderStats();
-        speak(tip.innerText, true);
+        speak(guideItem ? guideItem.text : tip.innerText, true);
       });
       els.readGuide.addEventListener("click", () => speakVisibleGuide());
       els.stopAudio.addEventListener("click", () => window.speechSynthesis && window.speechSynthesis.cancel());
@@ -1068,6 +1218,18 @@
       renderStats();
     }
     function renderLectures() {
+      document.querySelectorAll("#guideKindButtons button").forEach((button) => {
+        button.classList.toggle("active", button.dataset.guideKind === state.guideKind);
+      });
+      el("lectureModeButtons").classList.toggle("hidden", state.guideKind !== "lecture");
+      if (state.guideKind === "textbook") {
+        renderAdminTextbooks();
+        return;
+      }
+      if (state.guideKind === "statutes") {
+        renderImportantStatutes();
+        return;
+      }
       document.querySelectorAll("#lectureModeButtons button").forEach((button) => {
         button.classList.toggle("active", button.dataset.lectureMode === state.lectureMode);
       });
@@ -1095,6 +1257,97 @@
           </div>
         </article>
       `).join("");
+    }
+    function renderAdminTextbooks() {
+      const doneCount = adminTextbooks.filter((item) => isGuideItemDone(`textbook:${item.category}:${item.title}`)).length;
+      const summary = `<article class="lecture-summary">
+        <strong>体系テキスト：${adminTextbooks.length}本</strong>
+        <div>完了：${doneCount} / ${adminTextbooks.length}</div>
+        <div>行政法だけを、制度の流れに沿って読む長文テキストです。短文講義とは別枠です。</div>
+      </article>`;
+      el("lectureList").innerHTML = summary + adminTextbooks.map((item, index) => {
+        const key = `textbook:${item.category}:${item.title}`;
+        const done = isGuideItemDone(key);
+        return `<article class="tip panel textbook ${done ? "done" : ""}" data-text-index="${index}" data-category="${item.category}">
+          <h3>${item.category}：${item.title}</h3>
+          <span class="lecture-status">${done ? "完了済み" : "未完了"}</span>
+          <div class="textbook-body">${item.html}</div>
+          <div class="lecture-actions">
+            <button type="button" data-action="read" data-text-index="${index}">このテキストを聞く</button>
+            <button type="button" data-action="complete" data-text-index="${index}">${done ? "完了済み" : "完了にする"}</button>
+            <button type="button" data-action="questions" data-category="${item.category}">関連問題へ</button>
+          </div>
+        </article>`;
+      }).join("");
+    }
+    function renderImportantStatutes() {
+      const doneCount = importantStatutes.filter((item) => isGuideItemDone(`statute:${item.law}:${item.article}`)).length;
+      const summary = `<article class="lecture-summary">
+        <strong>重要条文：${importantStatutes.length}本</strong>
+        <div>完了：${doneCount} / ${importantStatutes.length}</div>
+        <div>行政法の得点に直結する条文・重要部分です。条文の言い回しをそのまま読むための欄です。</div>
+      </article>`;
+      el("lectureList").innerHTML = summary + importantStatutes.map((item, index) => {
+        const key = `statute:${item.law}:${item.article}`;
+        const done = isGuideItemDone(key);
+        return `<article class="tip panel textbook ${done ? "done" : ""}" data-statute-index="${index}" data-category="${item.category}">
+          <h3>${item.law} ${item.article}</h3>
+          <span class="lecture-status">${done ? "完了済み" : "未完了"}</span>
+          <p class="small"><span class="key-red">覚える理由：</span>${item.point}</p>
+          <div class="law-quote">${highlightLawText(item.quote)}</div>
+          <div class="lecture-actions">
+            <button type="button" data-action="read" data-statute-index="${index}">この条文を聞く</button>
+            <button type="button" data-action="complete" data-statute-index="${index}">${done ? "完了済み" : "完了にする"}</button>
+            <button type="button" data-action="questions" data-category="${item.category}">関連問題へ</button>
+          </div>
+        </article>`;
+      }).join("");
+    }
+    function guideItemFromTip(tip, target) {
+      const textIndex = target.dataset.textIndex ?? tip.dataset.textIndex;
+      if (textIndex !== undefined) {
+        const item = adminTextbooks[Number(textIndex)];
+        if (!item) return null;
+        return {
+          key: `textbook:${item.category}:${item.title}`,
+          text: `${item.category}。${item.title}。${plainText(item.html)}`
+        };
+      }
+      const statuteIndex = target.dataset.statuteIndex ?? tip.dataset.statuteIndex;
+      if (statuteIndex !== undefined) {
+        const item = importantStatutes[Number(statuteIndex)];
+        if (!item) return null;
+        return {
+          key: `statute:${item.law}:${item.article}`,
+          text: `${item.category}。${item.law}${item.article}。覚える理由。${item.point}。条文。${item.quote}`
+        };
+      }
+      const lectureIndex = target.dataset.lectureIndex ?? tip.dataset.lectureIndex;
+      if (lectureIndex !== undefined) {
+        const item = lectures[Number(lectureIndex)];
+        if (!item) return null;
+        return {
+          key: lectureKey(item),
+          text: `${item.category}。${item.title}。${item.body}`
+        };
+      }
+      return null;
+    }
+    function isGuideItemDone(key) {
+      return !!state.lecturesSeen[key];
+    }
+    function markGuideItemDone(key) {
+      state.lecturesSeen[key] = true;
+      save();
+    }
+    function plainText(html) {
+      const node = document.createElement("div");
+      node.innerHTML = html;
+      return node.textContent || node.innerText || "";
+    }
+    function highlightLawText(text) {
+      return text
+        .replace(/(公正の確保|透明性|権利利益|審査基準|処分基準|理由|聴聞|弁明|任意の協力|届出|審査請求|不作為|3月|1年|6月|重大な損害|緊急の必要|法律上の利益|拘束する|故意又は過失|瑕疵|50分の1|3分の1|住民|監査|代執行|戒告)/g, '<span class="hl">$1</span>');
     }
     function lectureKey(item) {
       return `${item.category}：${item.title}`;
@@ -1292,7 +1545,14 @@
       speak(`${message} 正解は、${currentQuestion.answer + 1}番、${correctChoice}。解説。${currentQuestion.explain}`, false);
     }
     function speakVisibleGuide() {
-      const text = lectureListForMode().slice(0, 3).map(({ item }) => `${item.category}。${item.title}。${item.body}`).join("。");
+      let text = "";
+      if (state.guideKind === "textbook") {
+        text = adminTextbooks.slice(0, 1).map((item) => `${item.category}。${item.title}。${plainText(item.html)}`).join("。");
+      } else if (state.guideKind === "statutes") {
+        text = importantStatutes.slice(0, 3).map((item) => `${item.category}。${item.law}${item.article}。${item.point}。${item.quote}`).join("。");
+      } else {
+        text = lectureListForMode().slice(0, 3).map(({ item }) => `${item.category}。${item.title}。${item.body}`).join("。");
+      }
       speak(text || "講義が見つかりません。", true);
     }
     function renderStats() {
