@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#176b5b">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <title>行政法スマホ学習</title>
   <style>
     :root {
@@ -146,7 +149,7 @@
       margin-bottom: 10px;
     }
     .study-log {
-      display: grid;
+      display: none;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       margin-bottom: 10px;
@@ -156,6 +159,29 @@
       border-color: #ead687;
       color: #5f4518;
       font-weight: 800;
+    }
+    .resume-tools {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .resume-tools button,
+    .answer-actions button {
+      background: #edf5f2;
+      border-color: #c9ddd6;
+      color: var(--accent);
+      font-weight: 800;
+    }
+    .answer-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .tip.focused {
+      outline: 3px solid var(--accent);
+      background: #f3fbf7;
     }
     .audio-tools {
       display: grid;
@@ -401,6 +427,7 @@
       .tab { font-size: 12px; }
       .filters { grid-template-columns: 1fr; }
       .study-log { grid-template-columns: 1fr; }
+      .resume-tools { grid-template-columns: 1fr; }
       .audio-tools { grid-template-columns: 1fr; }
       .global-audio { grid-template-columns: 1fr; }
     }
@@ -455,6 +482,9 @@
           <option value="all">全範囲</option>
         </select></label>
       </div>
+      <div class="resume-tools">
+        <button id="resumeButton" type="button">前回の続きから始める</button>
+      </div>
       <div class="study-log">
         <button id="log10Button" type="button">10分勉強した</button>
         <button id="log30Button" type="button">30分勉強した</button>
@@ -472,6 +502,9 @@
         <div class="answer hidden" id="answerPanel">
           <p id="answerResult"></p>
           <p id="answerExplain"></p>
+          <div class="answer-actions">
+            <button id="relatedLectureButton" type="button">関連講義を読む</button>
+          </div>
           <button class="primary" id="nextButton" type="button">次の問題</button>
         </div>
       </article>
@@ -883,7 +916,7 @@
     const BASIC_LECTURE_COUNT = 68;
     const studyOrder = ["行政手続法", "行政不服審査法", "行政事件訴訟法", "国家賠償法", "地方自治法", "行政法総論", "民法", "基礎知識", "憲法", "商法・会社法", "基礎法学", "記述式"];
     const storeKey = "gyosei-admin-mobile-v3";
-    const state = JSON.parse(localStorage.getItem(storeKey) || '{"streak":0,"answered":0,"correct":0,"questions":{},"minutes":{},"audioOn":false,"speechRate":1,"cardsSeen":{},"lecturesSeen":{},"lectureMode":"basic"}');
+    const state = JSON.parse(localStorage.getItem(storeKey) || '{"streak":0,"answered":0,"correct":0,"questions":{},"minutes":{},"audioOn":false,"speechRate":1,"cardsSeen":{},"lecturesSeen":{},"lectureMode":"basic","lastQuestionId":"","lastCategory":"全分野","lastMode":"first"}');
     if (!state.minutes) state.minutes = {};
     if (!state.cardsSeen) state.cardsSeen = {};
     if (!state.lecturesSeen) state.lecturesSeen = {};
@@ -898,7 +931,7 @@
       mastery: el("masteryText"), due: el("dueText"), streak: el("streakText"), logged: el("loggedText"), coach: el("coachText"),
       category: el("categoryFilter"), mode: el("modeFilter"), qCat: el("questionCategory"), qStats: el("questionStats"),
       qText: el("questionText"), choices: el("choices"), answer: el("answerPanel"), result: el("answerResult"),
-      explain: el("answerExplain"), next: el("nextButton"), cardCategory: el("cardCategoryFilter"),
+      explain: el("answerExplain"), next: el("nextButton"), relatedLecture: el("relatedLectureButton"), resume: el("resumeButton"), cardCategory: el("cardCategoryFilter"),
       flashCat: el("flashCategory"), flashFront: el("flashFront"), flashBack: el("flashBack"),
       progress: el("progressList"), subjectMap: el("subjectMap"), audioToggle: el("audioToggleButton"), readQuestion: el("readQuestionButton"),
       speedRange: el("speedRange"), speedText: el("speedText"), readGuide: el("readGuideButton"), stopAudio: el("stopAudioButton")
@@ -929,6 +962,8 @@
       els.category.addEventListener("change", pick);
       els.mode.addEventListener("change", pick);
       els.next.addEventListener("click", pick);
+      els.resume.addEventListener("click", resumeLastQuestion);
+      els.relatedLecture.addEventListener("click", () => goRelatedLecture(currentQuestion.category));
       el("log10Button").addEventListener("click", () => logStudy(10));
       el("log30Button").addEventListener("click", () => logStudy(30));
       els.audioToggle.addEventListener("click", toggleAudio);
@@ -1053,14 +1088,35 @@
       if (name === "progress") renderProgress();
     }
     function due(qn) { return qs(qn.id).dueAt <= Date.now(); }
-    function pool() {
-      const category = els.category.value;
-      const mode = els.mode.value;
+    function categoryPool(category, mode) {
       let list = questions.filter((x) => category === "全分野" || x.category === category);
       if (mode === "due") list = list.filter(due);
       if (mode === "first") list = list.filter((x) => qs(x.id).attempts === 0);
       if (mode === "weak") list = list.filter((x) => qs(x.id).wrong > 0 || qs(x.id).level < 2);
       if (mode === "new") list = list.filter((x) => qs(x.id).attempts === 0);
+      return list;
+    }
+    function nextCategoryWithQuestions(currentCategory, mode) {
+      const start = Math.max(0, studyOrder.indexOf(currentCategory));
+      for (let offset = 1; offset <= studyOrder.length; offset += 1) {
+        const category = studyOrder[(start + offset) % studyOrder.length];
+        if (categoryPool(category, mode).length) return category;
+      }
+      return "";
+    }
+    function advanceCategoryIfComplete() {
+      const category = els.category.value;
+      const mode = els.mode.value;
+      if (category === "全分野" || !["first", "new"].includes(mode)) return;
+      if (categoryPool(category, mode).length) return;
+      const nextCategory = nextCategoryWithQuestions(category, mode);
+      if (nextCategory) els.category.value = nextCategory;
+    }
+    function pool() {
+      advanceCategoryIfComplete();
+      const category = els.category.value;
+      const mode = els.mode.value;
+      let list = categoryPool(category, mode);
       if (!list.length) list = questions.filter((x) => category === "全分野" || x.category === category);
       return list.sort((a, b) => qs(a.id).dueAt - qs(b.id).dueAt || qs(a.id).level - qs(b.id).level || qs(a.id).correct - qs(b.id).correct);
     }
@@ -1110,8 +1166,41 @@
       els.explain.textContent = currentQuestion.explain + " " + nextAction(currentQuestion.category, ok);
       els.answer.classList.remove("hidden");
       speakAnswer(ok);
+      state.lastQuestionId = currentQuestion.id;
+      state.lastCategory = currentQuestion.category;
+      state.lastMode = els.mode.value || "first";
       save();
       renderStats();
+    }
+    function resumeLastQuestion() {
+      const category = state.lastCategory || "全分野";
+      els.category.value = categories.includes(category) ? category : "全分野";
+      els.mode.value = "first";
+      const scoped = questions.filter((question) => els.category.value === "全分野" || question.category === els.category.value);
+      const lastIndex = scoped.findIndex((question) => question.id === state.lastQuestionId);
+      const nextUnanswered = scoped.slice(Math.max(0, lastIndex + 1)).find((question) => qs(question.id).attempts === 0)
+        || scoped.find((question) => qs(question.id).attempts === 0)
+        || scoped[Math.max(0, lastIndex)] || questions[0];
+      currentQuestion = nextUnanswered;
+      switchView("learn");
+      renderQuestion();
+    }
+    function goRelatedLecture(category) {
+      switchView("guide");
+      renderLectures();
+      let target = [...el("lectureList").querySelectorAll(".tip")].find((tip) => tip.dataset.category === category);
+      if (!target && state.lectureMode !== "all") {
+        state.lectureMode = "all";
+        save();
+        renderLectures();
+        target = [...el("lectureList").querySelectorAll(".tip")].find((tip) => tip.dataset.category === category);
+      }
+      document.querySelectorAll(".tip.focused").forEach((tip) => tip.classList.remove("focused"));
+      if (target) {
+        target.classList.add("focused");
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        speak(target.innerText, true);
+      }
     }
     function speechSupported() {
       return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
