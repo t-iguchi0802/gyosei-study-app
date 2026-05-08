@@ -1739,13 +1739,8 @@
     function advanceCategoryIfComplete() {
       const category = els.category.value;
       const mode = els.mode.value;
-      if (category === "全分野" || !["first", "new", "score180"].includes(mode)) return;
-      if (mode === "score180") {
-        if (unansweredInCategory(category).length) return;
-        const nextNewCategory = nextCategoryWithUnanswered(category);
-        if (nextNewCategory) els.category.value = nextNewCategory;
-        return;
-      }
+      if (category !== "全分野") return;
+      if (!["first", "new"].includes(mode)) return;
       if (categoryPool(category, mode).length) return;
       const nextCategory = nextCategoryWithQuestions(category, mode);
       if (nextCategory) els.category.value = nextCategory;
@@ -1757,18 +1752,19 @@
       if (mode === "score180" && category === "全分野") category = next180Category();
       let list = categoryPool(category, mode);
       if (!list.length && ["first", "new"].includes(mode)) {
-        const dueList = questions.filter(due);
+        const dueList = questions.filter((x) => (category === "全分野" || x.category === category) && due(x));
         if (dueList.length) {
           els.mode.value = "due";
           list = dueList;
         } else {
           els.mode.value = "weak";
-          list = categoryPool("全分野", "weak");
+          list = categoryPool(category, "weak");
         }
       }
       if (!list.length && mode === "score180") {
-        const dueList = questions.filter(due);
-        list = dueList.length ? dueList : questions.filter((x) => qs(x.id).wrong > 0 || qs(x.id).level < 3);
+        list = questions.filter((x) => (category === "全分野" || x.category === category) && due(x));
+        if (!list.length) list = questions.filter((x) => (category === "全分野" || x.category === category) && (qs(x.id).wrong > 0 || qs(x.id).level < 5));
+        if (!list.length) list = questions.filter((x) => category === "全分野" || x.category === category);
       }
       if (!list.length) list = questions.filter((x) => category === "全分野" || x.category === category);
       return list.sort((a, b) => qs(a.id).dueAt - qs(b.id).dueAt || qs(a.id).level - qs(b.id).level || qs(a.id).correct - qs(b.id).correct);
