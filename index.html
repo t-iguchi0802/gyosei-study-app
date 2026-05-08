@@ -1493,10 +1493,14 @@
       els.readGuide.addEventListener("click", () => speakVisibleGuide());
       els.stopAudio.addEventListener("click", () => window.speechSynthesis && window.speechSynthesis.cancel());
       el("resetButton").addEventListener("click", () => {
-        if (confirm("学習記録を初期化しますか？")) {
-          localStorage.removeItem(storeKey);
-          location.reload();
+        if (!confirm("学習記録をすべて削除します。元に戻せません。本当にリセットしますか？")) return;
+        const typed = prompt("確認のため「リセット」と入力してください。");
+        if (typed !== "リセット") {
+          alert("入力が一致しなかったため、リセットしませんでした。");
+          return;
         }
+        localStorage.removeItem(storeKey);
+        location.reload();
       });
       el("learnView").addEventListener("touchstart", (event) => {
         if (!event.touches || event.touches.length !== 1) return;
@@ -1829,8 +1833,27 @@
       els.answer.classList.add("hidden");
       updatePreviousQuestionButton();
     }
+    function nextUnansweredFromCurrentCategory() {
+      const category = els.category.value;
+      const scoped = questions.filter((question) => category === "全分野" || question.category === category);
+      if (!scoped.length) return null;
+      const startIndex = Math.max(0, scoped.findIndex((question) => question.id === currentQuestion.id));
+      return scoped.slice(startIndex + 1).find((question) => qs(question.id).attempts === 0)
+        || scoped.slice(0, startIndex + 1).find((question) => qs(question.id).attempts === 0)
+        || null;
+    }
     function nextQuestion() {
-      pick();
+      const nextNew = nextUnansweredFromCurrentCategory();
+      if (nextNew) {
+        if (currentQuestion && currentQuestion.id !== nextNew.id) {
+          questionHistory.push(currentQuestion.id);
+          if (questionHistory.length > 80) questionHistory.shift();
+        }
+        currentQuestion = nextNew;
+        renderQuestion();
+      } else {
+        renderCategoryComplete();
+      }
       setTimeout(() => {
         el("learnView").scrollIntoView({ behavior: "smooth", block: "start" });
       }, 30);
