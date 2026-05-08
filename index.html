@@ -352,6 +352,38 @@
       line-height: 1.55;
     }
     .answer p { margin: 0 0 8px; }
+    .writing-steps {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .writing-step {
+      padding: 10px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .writing-step strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--accent);
+      font-size: 15px;
+    }
+    .writing-step span {
+      display: block;
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+    .model-answer {
+      background: #fffaf0;
+      border-color: #ead687;
+    }
+    .model-answer span {
+      color: #4a350d;
+      font-weight: 900;
+    }
     .primary {
       width: 100%;
       min-height: 56px;
@@ -1606,6 +1638,58 @@
       });
       speakQuestion(false);
     }
+    function escapeHtml(value) {
+      return String(value || "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+    function explainPart(text, label) {
+      const labels = ["予測理由", "出題意図", "制度", "当事者", "採点語", "40字答案", "部分点"];
+      const marker = `${label}：`;
+      const start = text.indexOf(marker);
+      if (start < 0) return "";
+      const from = start + marker.length;
+      let end = text.length;
+      labels.forEach((other) => {
+        if (other === label) return;
+        const index = text.indexOf(`${other}：`, from);
+        if (index >= 0 && index < end) end = index;
+      });
+      return text.slice(from, end).replace(/[。,\s]+$/g, "").trim();
+    }
+    function writingStepsHtml(question, ok) {
+      const text = question.explain || "";
+      const prediction = explainPart(text, "予測理由");
+      const intent = explainPart(text, "出題意図");
+      const system = explainPart(text, "制度");
+      const parties = explainPart(text, "当事者");
+      const keywords = explainPart(text, "採点語");
+      const model = explainPart(text, "40字答案");
+      const partial = explainPart(text, "部分点");
+      const step1 = parties || "問題文から、誰が、誰に対して、何を争うかを拾う。";
+      const step2 = system ? `${system}を選ぶ。${intent || ""}` : (intent || "取消訴訟、義務付け訴訟、国賠、民法上の請求のどれかを選ぶ。");
+      const step3 = keywords || "採点される法律用語を2個以上入れる。";
+      const step4 = model || "主語、相手方、要件、効果の順で40字前後に圧縮する。";
+      const forecast = prediction ? `<div class="writing-step"><strong>今年度予測</strong><span>${escapeHtml(prediction)}</span></div>` : "";
+      return `
+        ${forecast}
+        <div class="writing-steps">
+          <div class="writing-step"><strong>1. 当事者と場面</strong><span>${escapeHtml(step1)}</span></div>
+          <div class="writing-step"><strong>2. 制度を選ぶ</strong><span>${escapeHtml(step2)}</span></div>
+          <div class="writing-step"><strong>3. 採点語を拾う</strong><span>${escapeHtml(step3)}</span></div>
+          <div class="writing-step model-answer"><strong>4. 40字答案</strong><span>${escapeHtml(step4)}</span></div>
+          <div class="writing-step"><strong>部分点の取り方</strong><span>${escapeHtml(partial || "結論を外しても、制度名と採点語を書けば部分点を拾える。")}</span></div>
+          <div class="writing-step"><strong>次の行動</strong><span>${escapeHtml(nextAction(question.category, ok))}</span></div>
+        </div>`;
+    }
+    function explainHtml(question, ok) {
+      if (question.category === "記述式" || question.prompt.includes("記述")) return writingStepsHtml(question, ok);
+      return `<span>${escapeHtml(`${question.explain} ${nextAction(question.category, ok)}`)}</span>`;
+    }
     function answer(i) {
       const buttons = [...els.choices.querySelectorAll(".choice")];
       buttons.forEach((b) => b.disabled = true);
@@ -1627,8 +1711,8 @@
         s.dueAt = Date.now() + 5 * 60 * 1000;
         state.streak = 0;
       }
-      els.result.textContent = ok ? "正解。本試験でも取りたい基本論点です。" : "不正解。5分後以降に優先して再出題します。";
-      els.explain.textContent = currentQuestion.explain + " " + nextAction(currentQuestion.category, ok);
+      els.result.textContent = ok ? "正解。" : "不正解。復習対象に入れました。";
+      els.explain.innerHTML = explainHtml(currentQuestion, ok);
       els.answer.classList.remove("hidden");
       setTimeout(() => {
         els.next.scrollIntoView({ behavior: "smooth", block: "center" });
