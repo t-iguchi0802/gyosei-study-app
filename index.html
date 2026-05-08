@@ -10,8 +10,8 @@
   <style>
     :root {
       --bg: #f4f6f1;
-      --ink: #152019;
-      --muted: #617067;
+      --ink: #0b120e;
+      --muted: #263229;
       --line: #dde4dc;
       --panel: #ffffff;
       --accent: #176b5b;
@@ -27,6 +27,7 @@
       color: var(--ink);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       -webkit-text-size-adjust: 100%;
+      font-size: 18px;
     }
     .app {
       width: 100%;
@@ -54,12 +55,12 @@
     .label {
       margin: 0 0 2px;
       color: var(--accent);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 800;
     }
     h1 {
       margin: 0;
-      font-size: 22px;
+      font-size: 23px;
       line-height: 1.2;
       letter-spacing: 0;
     }
@@ -78,7 +79,7 @@
       min-width: 66px;
       padding: 8px;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 14px;
     }
     .metrics {
       display: grid;
@@ -96,7 +97,7 @@
     .metric span {
       display: block;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 12px;
     }
     .metric strong {
       display: block;
@@ -110,7 +111,7 @@
       background: var(--note);
       border: 1px solid #ead687;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 16px;
       line-height: 1.55;
     }
     .tabs {
@@ -132,7 +133,7 @@
       min-height: 48px;
       padding: 6px 3px;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 700;
     }
     .tab.active {
@@ -212,7 +213,7 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 800;
     }
     .speed-control input {
@@ -222,7 +223,7 @@
       display: grid;
       gap: 4px;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
     }
     select {
@@ -246,12 +247,12 @@
       gap: 8px;
       margin-bottom: 10px;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
     }
     h2 {
       margin: 0 0 14px;
-      font-size: 19px;
+      font-size: 22px;
       line-height: 1.48;
       letter-spacing: 0;
     }
@@ -292,14 +293,14 @@
     .card .cat {
       margin: 0 0 10px;
       color: var(--accent);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 800;
     }
     .back {
       margin-top: 14px;
       padding-top: 14px;
       border-top: 1px solid var(--line);
-      font-size: 17px;
+      font-size: 18px;
       line-height: 1.65;
     }
     .row {
@@ -336,7 +337,7 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 5px;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
     }
     .subject-stats span {
@@ -355,7 +356,7 @@
     }
     .lecture-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 8px;
       margin-top: 10px;
     }
@@ -375,6 +376,24 @@
     .lecture-summary strong {
       display: block;
       margin-bottom: 6px;
+    }
+    .lecture-status {
+      display: inline-block;
+      margin: 8px 0 0;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f0f3ef;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .tip.done {
+      border-color: #b7d5ca;
+      background: #f3fbf7;
+    }
+    .tip.done .lecture-status {
+      background: #dcefe8;
+      color: var(--accent);
     }
     .lecture-mode {
       display: grid;
@@ -417,14 +436,15 @@
     .small {
       margin: 8px 0 0;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 16px;
+      line-height: 1.65;
     }
     .hidden { display: none; }
     @media (max-width: 350px) {
       h1 { font-size: 20px; }
-      h2 { font-size: 17px; }
+      h2 { font-size: 20px; }
       .metric strong { font-size: 19px; }
-      .tab { font-size: 12px; }
+      .tab { font-size: 14px; }
       .filters { grid-template-columns: 1fr; }
       .study-log { grid-template-columns: 1fr; }
       .resume-tools { grid-template-columns: 1fr; }
@@ -1007,18 +1027,27 @@
           pick();
           return;
         }
+        if (action === "complete") {
+          const item = lectures[Number(event.target.dataset.lectureIndex)];
+          if (item) {
+            markLectureDone(item);
+            renderLectures();
+            renderStats();
+          }
+          return;
+        }
         if (action === "read") {
           const item = lectures[Number(event.target.dataset.lectureIndex)];
           if (item) {
-            state.lecturesSeen[`${item.category}：${item.title}`] = true;
+            markLectureDone(item);
             save();
             renderStats();
             speak(`${item.category}。${item.title}。${item.body}`, true);
           }
           return;
         }
-        const title = tip.querySelector("strong")?.textContent || tip.innerText.slice(0, 20);
-        state.lecturesSeen[title] = true;
+        const item = lectures[Number(tip.dataset.lectureIndex)];
+        if (item) markLectureDone(item);
         save();
         renderStats();
         speak(tip.innerText, true);
@@ -1047,21 +1076,35 @@
         map[item.category] = (map[item.category] || 0) + 1;
         return map;
       }, {});
+      const doneCount = visibleLectures.filter(({ item }) => isLectureDone(item)).length;
       const summary = `<article class="lecture-summary">
         <strong>${lectureModeLabel()}：${visibleLectures.length}講義</strong>
+        <div>完了：${doneCount} / ${visibleLectures.length}</div>
         <div>${categories.map((category) => `${category}:${counts[category] || 0}`).join(" / ")}</div>
         <div>基本編68講義を一周してから、応用編${Math.max(0, lectures.length - BASIC_LECTURE_COUNT)}講義に進みます。</div>
       </article>`;
       el("lectureList").innerHTML = summary + visibleLectures.map(({ item, index }) => `
-        <article class="tip panel" data-lecture-index="${index}" data-category="${item.category}">
+        <article class="tip panel ${isLectureDone(item) ? "done" : ""}" data-lecture-index="${index}" data-category="${item.category}">
           <strong>${item.category}：${item.title}</strong>
+          <span class="lecture-status">${isLectureDone(item) ? "完了済み" : "未完了"}</span>
           <p class="small">${item.body}</p>
           <div class="lecture-actions">
             <button type="button" data-action="read" data-lecture-index="${index}">この講義を聞く</button>
+            <button type="button" data-action="complete" data-lecture-index="${index}">${isLectureDone(item) ? "完了済み" : "完了にする"}</button>
             <button type="button" data-action="questions" data-category="${item.category}">関連問題へ</button>
           </div>
         </article>
       `).join("");
+    }
+    function lectureKey(item) {
+      return `${item.category}：${item.title}`;
+    }
+    function isLectureDone(item) {
+      return !!state.lecturesSeen[lectureKey(item)];
+    }
+    function markLectureDone(item) {
+      state.lecturesSeen[lectureKey(item)] = true;
+      save();
     }
     function lectureListForMode() {
       return lectures.map((item, index) => ({ item, index })).filter(({ index }) => {
@@ -1280,7 +1323,7 @@
     function firstPassStats() {
       const questionDone = questions.filter((x) => qs(x.id).attempts > 0).length;
       const cardDone = Object.keys(state.cardsSeen || {}).length;
-      const lectureDone = Object.keys(state.lecturesSeen || {}).length;
+      const lectureDone = lectures.slice(0, BASIC_LECTURE_COUNT).filter(isLectureDone).length;
       const lectureTotal = BASIC_LECTURE_COUNT;
       const total = questions.length + cards.length + lectureTotal;
       const done = questionDone + Math.min(cardDone, cards.length) + Math.min(lectureDone, lectureTotal);
@@ -1357,7 +1400,7 @@
         const lList = lectures.filter((x) => x.category === category);
         const qDone = qList.filter((x) => qs(x.id).attempts > 0).length;
         const cDone = cList.filter((x) => state.cardsSeen[`${x.category}:${x.front}`]).length;
-        const lDone = lList.filter((x) => state.lecturesSeen[`${x.category}：${x.title}`] || state.lecturesSeen[`${x.category}:${x.title}`]).length;
+        const lDone = lList.filter(isLectureDone).length;
         const level = qList.reduce((sum, x) => sum + qs(x.id).level, 0);
         const mastery = qList.length ? Math.round(level / (qList.length * 5) * 100) : 0;
         return `<article class="subject-row">
