@@ -188,6 +188,88 @@
       color: #fff;
       font-weight: 900;
     }
+    .today-block {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      background: #f4fbf7;
+      border: 1px solid #bdd9cf;
+      border-radius: 8px;
+    }
+    .today-block h3,
+    .risk-block h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+    .today-route {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 9px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .today-route .order {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 900;
+    }
+    .today-route strong {
+      display: block;
+      font-size: 16px;
+      line-height: 1.35;
+    }
+    .today-route span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .today-route button {
+      min-height: 48px;
+      padding: 9px 12px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 900;
+    }
+    .risk-block {
+      display: grid;
+      gap: 8px;
+    }
+    .risk-row {
+      display: grid;
+      grid-template-columns: 92px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 8px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .risk-meter {
+      height: 9px;
+      overflow: hidden;
+      background: #e7ece7;
+      border-radius: 999px;
+    }
+    .risk-meter i {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      border-radius: inherit;
+    }
+    .risk-bad { color: var(--bad); }
+    .risk-warn { color: #8a5a00; }
+    .risk-good { color: var(--accent); }
     .tabs {
       position: sticky;
       top: 74px;
@@ -383,6 +465,29 @@
     .model-answer span {
       color: #4a350d;
       font-weight: 900;
+    }
+    .keyword-check {
+      display: grid;
+      gap: 7px;
+      margin-top: 8px;
+    }
+    .keyword-chip {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 9px;
+      background: #f6faf7;
+      border: 1px solid #c9ddd6;
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .keyword-chip input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
     }
     .primary {
       width: 100%;
@@ -689,7 +794,7 @@
         <div class="choices" id="choices"></div>
         <div class="answer hidden" id="answerPanel">
           <p id="answerResult"></p>
-          <p id="answerExplain"></p>
+          <div id="answerExplain"></div>
           <div class="answer-actions">
             <button id="relatedLectureButton" type="button">関連講義を読む</button>
           </div>
@@ -839,7 +944,19 @@
       q("w22", "記述式", "【2026予測・民法】買った物が契約内容に適合しない。買主がまず検討する請求として最も実戦的なものはどれか。", ["追完請求、代金減額請求、損害賠償、解除", "取消訴訟と執行停止", "住民監査請求", "審査請求だけ"], 0, "予測理由：契約不適合責任は改正民法後の定番で記述化しやすい。出題意図：旧瑕疵担保ではなく請求メニューを出す。採点語：契約不適合、追完、代金減額、損害賠償、解除。40字答案：買主は追完、代金減額、損害賠償又は解除を請求し得る。"),
       q("w23", "記述式", "【2026予測・民法】無権代理人が契約し、相手方が本人に返答を求めた。本人が放置した場合に問われやすい制度はどれか。", ["催告に対する確答がなければ追認拒絶とみなす", "当然に追認となる", "常に契約取消しとなる", "処分性が発生する"], 0, "予測理由：代理は短文で採点語を作りやすい。出題意図：追認、追認拒絶、催告を結びつける。採点語：無権代理、催告、確答、追認拒絶。40字答案：本人が相当期間内に確答しなければ追認拒絶とみなされる。"),
       q("w24", "記述式", "【2026予測・民法】賃料不払いで解除と明渡しを狙う。答案に最低限入れるべき語の組合せはどれか。", ["催告、相当期間、不履行、解除、明渡し", "検閲、事前抑制、明確性", "審査基準、標準処理期間、届出", "処分性、原告適格、事情判決だけ"], 0, "予測理由：賃貸借は記述で当事者と請求が作りやすい。出題意図：自力救済ではなく解除と明渡し。採点語：催告、相当期間、不履行、解除、明渡し。40字答案：催告後相当期間内に支払わなければ解除し建物明渡しを請求できる。"),
-      q("w25", "記述式", "【2026予測・基礎知識連動】改正行政書士法を記述ではなく基礎知識で問われるなら、最優先で押さえる軸はどれか。", ["使命、職責、デジタル対応、特定行政書士", "裁決固有の瑕疵だけ", "契約不適合だけ", "検閲禁止だけ"], 0, "予測理由：2026年1月1日施行の改正行政書士法は今年度基礎知識で狙われやすい。出題意図：記述式ではなく足切り回避用に拾う。採点語：使命、職責、デジタル社会、特定行政書士、業務範囲。40字答案訓練ではなく、基礎知識の正誤判断で使う。")
+      q("w25", "記述式", "【2026予測・基礎知識連動】改正行政書士法を記述ではなく基礎知識で問われるなら、最優先で押さえる軸はどれか。", ["使命、職責、デジタル対応、特定行政書士", "裁決固有の瑕疵だけ", "契約不適合だけ", "検閲禁止だけ"], 0, "予測理由：2026年1月1日施行の改正行政書士法は今年度基礎知識で狙われやすい。出題意図：記述式ではなく足切り回避用に拾う。採点語：使命、職責、デジタル社会、特定行政書士、業務範囲。40字答案訓練ではなく、基礎知識の正誤判断で使う。"),
+      q("b26", "基礎知識", "【足切り回避・行政書士法】令和8年度向けに、行政書士法で最も優先して押さえるべき組合せはどれか。", ["使命、職責、業務、業務制限、特定行政書士", "取消訴訟、事情判決、執行停止だけ", "共有、相隣関係、占有訴権だけ", "取締役会、株主総会、監査役だけ", "法の下の平等、検閲、政教分離だけ"], 0, "基礎知識の足切り回避用。行政書士法等業務関連諸法令は令和6年度以降の明示範囲。行政書士法は使命、職責、業務、業務制限、特定行政書士を正誤判断できるようにする。"),
+      q("b27", "基礎知識", "【足切り回避・行政書士法】無資格者による業務制限で狙われやすい視点はどれか。", ["名目を問わず報酬を得て、官公署提出書類等を業として作成することの制限", "行政書士でない者も有料なら自由に官公署提出書類を作成できる", "行政書士法は受験資格だけを定める法律である", "行政書士でない者も行政不服申立て代理を常にできる", "業務制限は刑罰とは関係しない"], 0, "有料相談、代行、コンサル料など名目を変えた無資格業務が問われやすい。ポイントは、報酬、官公署提出書類等、業として、行政書士でない者の制限。"),
+      q("b28", "基礎知識", "【足切り回避・戸籍法】戸籍法を基礎知識で問うなら、最も安全に押さえるべき軸はどれか。", ["身分関係を公証する制度で、出生・婚姻・離婚・死亡などが中心", "住民の居住関係だけを記録する制度", "会社の設立登記だけを扱う制度", "行政処分の取消訴訟を定める制度", "個人情報保護委員会の命令だけを定める制度"], 0, "戸籍法は細かい条文暗記より、身分関係の公証、届出、出生・婚姻・離婚・死亡という骨格を押さえる。住民基本台帳法との区別が足切り回避に効く。"),
+      q("b29", "基礎知識", "【足切り回避・住民基本台帳法】住民基本台帳制度の中心として最も近いものはどれか。", ["住民の居住関係を公証し、行政事務の基礎にする制度", "親族関係や相続関係だけを公証する制度", "行政不服申立ての審査手続を定める制度", "会社の機関設計を公示する制度", "刑事裁判の証拠手続を定める制度"], 0, "住民基本台帳法は、住民の居住関係、住民票、行政事務の基礎という理解が中心。戸籍法は身分関係、住基法は居住関係で分ける。"),
+      q("b30", "基礎知識", "【足切り回避・個人情報保護】個人情報に当たるものとして最も典型的なのはどれか。", ["氏名と住所が結びつき特定の個人を識別できる情報", "完全に匿名化され誰にも戻せない統計情報", "法人の売上高だけの情報", "天気予報の気温データ", "法律名だけの一覧"], 0, "個人情報保護は足切り回避の柱。個人を識別できる情報かどうかを見る。匿名加工・統計・法人情報との区別が本試験で狙われやすい。"),
+      q("b31", "基礎知識", "【足切り回避・個人情報保護】要配慮個人情報として狙われやすいものはどれか。", ["病歴、犯罪歴、障害など不当な差別や偏見につながり得る情報", "会社の資本金", "都道府県名だけ", "商品の価格", "道路の幅員"], 0, "病歴、犯罪歴、障害などは要配慮個人情報の代表。基礎知識では、普通の個人情報より慎重な取扱いが必要な情報として押さえる。"),
+      q("b32", "基礎知識", "【足切り回避・情報通信】フィッシングの説明として最も適切なものはどれか。", ["偽サイトや偽メールでID・パスワード等を入力させる手口", "通信速度を速くする技術", "本人確認を必ず安全にする制度", "行政庁の理由提示手続", "住民票を作成する制度"], 0, "情報通信は毎年の足切り回避に効く。フィッシングは、偽サイト、偽メール、ID・パスワード、クレジット情報を奪う手口として押さえる。"),
+      q("b33", "基礎知識", "【2026予測・生成AI】ディープフェイクに関する説明として妥当でないものはどれか。", ["本人確認を常に強化する安全技術であり、詐欺には利用されない", "画像だけでなく音声にも用いられる", "著名人だけでなく一般人も被害対象になり得る", "なりすまし広告や投資詐欺に悪用され得る", "公式情報の確認が被害防止に役立つ"], 0, "生成AI、ディープフェイク、なりすまし広告、投資詐欺は基礎知識の現代的テーマ。安全技術と決めつける選択肢は危険。"),
+      q("b34", "基礎知識", "【足切り回避・情報セキュリティ】二要素認証の説明として最も適切なものはどれか。", ["知識、所持、生体など異なる要素を組み合わせ本人確認を強める方法", "パスワードを短くする方法", "同じパスワードを複数サイトで使う方法", "本人確認を省略する方法", "行政処分を取り消す訴訟類型"], 0, "二要素認証は、知識、所持、生体の異なる要素を組み合わせる。パスワード使い回し、短いパスワードは危険な選択肢。"),
+      q("b35", "基礎知識", "【足切り回避・文章理解】長文問題で最初に見るべきものはどれか。", ["接続語、指示語、筆者の結論を示す文", "知らない単語だけ", "選択肢の細かい数字だけ", "本文の漢字の難しさ", "段落数だけ"], 0, "文章理解は知識ではなく得点源。接続語、指示語、結論文を先に拾う。全部読んで迷うより、筆者の主張と段落関係を取る。"),
+      q("b36", "基礎知識", "【足切り回避・文章理解】空欄補充で最も重視すべき判断材料はどれか。", ["空欄前後の接続関係と、同じ内容を言い換えた表現", "自分が好きな語感", "一番難しい単語", "本文に一度も出ない専門語", "選択肢の文字数だけ"], 0, "文章理解の空欄補充は、前後の論理関係を見る。逆接、順接、言い換え、具体例と抽象の関係を先に判断する。"),
+      q("b37", "基礎知識", "【足切り回避・個人情報保護】行政機関が個人情報を扱う場面で、最も危険な理解はどれか。", ["行政目的なら本人や法律上の制限を無視して自由に利用できる", "利用目的の範囲が問題になる", "安全管理措置が問題になる", "本人開示や訂正の制度が問題になる", "漏えい時の対応が問題になる"], 0, "個人情報保護は、行政機関でも自由利用ではない。利用目的、安全管理、本人関与、漏えい対応を正誤判断できるようにする。")
     ];
     function lecture(category, title, body) {
       return { category, title, body };
@@ -1661,6 +1778,23 @@
       });
       return text.slice(from, end).replace(/[。,\s]+$/g, "").trim();
     }
+    function keywordChecklistHtml(keywords) {
+      const words = String(keywords || "")
+        .split(/[、,，・／\/]/)
+        .map((word) => word.trim())
+        .filter(Boolean)
+        .slice(0, 8);
+      if (!words.length) return "";
+      return `
+        <div class="keyword-check" aria-label="採点語チェック">
+          ${words.map((word) => `
+            <label class="keyword-chip">
+              <input type="checkbox">
+              <span>${escapeHtml(word)}</span>
+            </label>
+          `).join("")}
+        </div>`;
+    }
     function writingStepsHtml(question, ok) {
       const text = question.explain || "";
       const prediction = explainPart(text, "予測理由");
@@ -1680,7 +1814,7 @@
         <div class="writing-steps">
           <div class="writing-step"><strong>1. 当事者と場面</strong><span>${escapeHtml(step1)}</span></div>
           <div class="writing-step"><strong>2. 制度を選ぶ</strong><span>${escapeHtml(step2)}</span></div>
-          <div class="writing-step"><strong>3. 採点語を拾う</strong><span>${escapeHtml(step3)}</span></div>
+          <div class="writing-step"><strong>3. 採点語を拾う</strong><span>${escapeHtml(step3)}</span>${keywordChecklistHtml(keywords)}</div>
           <div class="writing-step model-answer"><strong>4. 40字答案</strong><span>${escapeHtml(step4)}</span></div>
           <div class="writing-step"><strong>部分点の取り方</strong><span>${escapeHtml(partial || "結論を外しても、制度名と採点語を書けば部分点を拾える。")}</span></div>
           <div class="writing-step"><strong>次の行動</strong><span>${escapeHtml(nextAction(question.category, ok))}</span></div>
@@ -1823,6 +1957,68 @@
       renderExam180();
       renderProgress();
     }
+    function displayScoreLabel(row) {
+      if (row.target === 76) return "行政法";
+      if (row.target === 40) return "民法";
+      if (row.target === 32 && row.floor === 24) return "基礎知識";
+      if (row.target === 24) return "記述式";
+      if (row.target === 16) return "憲法";
+      if (row.target === 8) return "商法";
+      if (row.target === 4) return "基礎法学";
+      return row.label;
+    }
+    function routeMemo(row, index) {
+      if (row.target === 32 && row.floor === 24) return "足切り回避。行政書士法・個人情報・情報通信を先に取る。";
+      if (row.target === 76) return "最大得点源。訴訟選択・手続・不服申立てを固める。";
+      if (row.target === 24) return "採点語で部分点を取る。40字全文よりキーワード優先。";
+      if (row.target === 40) return "民法は深追いせず、代理・時効・債権・賃貸借に絞る。";
+      return index === 0 ? "180点までの不足を埋める。" : "短時間で拾える範囲だけ進める。";
+    }
+    function scoreStatus(row) {
+      const ratio = row.target ? row.score / row.target : 0;
+      if (row.score < row.floor) return { text: "危険", klass: "risk-bad" };
+      if (ratio < 0.65) return { text: "注意", klass: "risk-warn" };
+      return { text: "良好", klass: "risk-good" };
+    }
+    function todayRoutes180(rows, law, basic, total) {
+      const basicRow = rows.find((row) => row.target === 32 && row.floor === 24);
+      const lawRow = rows.find((row) => row.target === 76);
+      const writingRow = rows.find((row) => row.target === 24);
+      const sorted = rows.slice().sort((a, b) => routePriority(b) - routePriority(a));
+      const routes = [];
+      if (basic < 24 && basicRow) routes.push({ ...basicRow, mode: "score180" });
+      if (law < 122 && lawRow) routes.push({ ...lawRow, mode: "score180" });
+      if (writingRow && writingRow.score < Math.max(14, Math.round(writingRow.target * 0.55))) routes.push({ ...writingRow, mode: "score180" });
+      sorted.forEach((row) => {
+        if (routes.length >= 3) return;
+        if (!routes.some((item) => item.key === row.key)) routes.push({ ...row, mode: row.mode || "score180" });
+      });
+      return routes.slice(0, 3);
+    }
+    function renderScoreRiskRows(rows) {
+      return rows.map((row) => {
+        const status = scoreStatus(row);
+        const pct = Math.max(4, Math.min(100, Math.round((row.score / row.target) * 100)));
+        return `
+          <div class="risk-row">
+            <span>${displayScoreLabel(row)}</span>
+            <div class="risk-meter" aria-hidden="true"><i style="width:${pct}%"></i></div>
+            <strong class="${status.klass}">${status.text}</strong>
+          </div>`;
+      }).join("");
+    }
+    function renderTodayRoutes(routes) {
+      return routes.map((row, index) => `
+        <div class="today-route">
+          <span class="order">${index + 1}</span>
+          <div>
+            <strong>${displayScoreLabel(row)} ${row.score}/${row.target}点設計</strong>
+            <span>${routeMemo(row, index)}</span>
+          </div>
+          <button type="button" data-category="${escapeHtml(row.command)}" data-mode="${escapeHtml(row.mode || "score180")}" onclick="start180Route('${escapeHtml(row.command)}', '${escapeHtml(row.mode || "score180")}')">やる</button>
+        </div>
+      `).join("");
+    }
     function renderExam180() {
       const rows = scorePlan180.map((part) => {
         const readiness = partReadiness(part);
@@ -1838,6 +2034,25 @@
         .slice()
         .sort((a, b) => routePriority(b) - routePriority(a))
         .slice(0, 3);
+      const todayRoutes = todayRoutes180(rows, law, basic, total);
+      els.exam180.innerHTML = `
+        <h2>行政書士180点ルート</h2>
+        <div class="score-grid">
+          <div class="score-box"><span>現在推定</span><strong>${total}</strong></div>
+          <div class="score-box"><span>180点まで</span><strong>${rest}</strong></div>
+          <div class="score-box"><span>足切り</span><strong>${riskLabel(law, basic)}</strong></div>
+        </div>
+        <div class="mission">${mission}</div>
+        <div class="today-block">
+          <h3>今日の最短メニュー</h3>
+          ${renderTodayRoutes(todayRoutes)}
+        </div>
+        <div class="risk-block">
+          <h3>科目別危険度</h3>
+          ${renderScoreRiskRows(rows)}
+        </div>
+      `;
+      return;
       els.exam180.innerHTML = `
         <h2>180点ミニマムモード</h2>
         <div class="score-grid">
