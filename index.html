@@ -1508,8 +1508,7 @@
         const dx = event.changedTouches[0].clientX - touchStartX;
         const dy = event.changedTouches[0].clientY - touchStartY;
         if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.4) return;
-        if (dx > 0) previousQuestion();
-        if (dx < 0 && !els.answer.classList.contains("hidden")) nextQuestion();
+        previousQuestion();
       }, { passive: true });
       renderAudioButton();
       els.speedRange.value = state.speechRate;
@@ -1712,9 +1711,9 @@
       let list = questions.filter((x) => category === "全分野" || x.category === category);
       if (mode === "due") list = list.filter(due);
       if (mode === "first") list = list.filter((x) => qs(x.id).attempts === 0);
-      if (mode === "weak") list = list.filter((x) => qs(x.id).wrong > 0 || qs(x.id).level < 2);
+      if (mode === "weak") list = list.filter((x) => qs(x.id).attempts > 0 && due(x) && (qs(x.id).wrong > 0 || qs(x.id).level < 2));
       if (mode === "new") list = list.filter((x) => qs(x.id).attempts === 0);
-      if (mode === "score180") list = list.filter((x) => qs(x.id).attempts === 0 || qs(x.id).wrong > 0 || qs(x.id).level < 3);
+      if (mode === "score180") list = list.filter((x) => qs(x.id).attempts === 0 || due(x));
       return list;
     }
     function unansweredInCategory(category) {
@@ -1763,10 +1762,7 @@
       }
       if (!list.length && mode === "score180") {
         list = questions.filter((x) => (category === "全分野" || x.category === category) && due(x));
-        if (!list.length) list = questions.filter((x) => (category === "全分野" || x.category === category) && (qs(x.id).wrong > 0 || qs(x.id).level < 5));
-        if (!list.length) list = questions.filter((x) => category === "全分野" || x.category === category);
       }
-      if (!list.length) list = questions.filter((x) => category === "全分野" || x.category === category);
       return list.sort((a, b) => qs(a.id).dueAt - qs(b.id).dueAt || qs(a.id).level - qs(b.id).level || qs(a.id).correct - qs(b.id).correct);
     }
     function next180Category() {
@@ -1780,13 +1776,58 @@
     function pick(options = {}) {
       const remember = options.remember !== false;
       const next = pool()[0];
-      if (!next) return;
+      if (!next) {
+        renderCategoryComplete();
+        return;
+      }
       if (remember && currentQuestion && currentQuestion.id !== next.id) {
         questionHistory.push(currentQuestion.id);
         if (questionHistory.length > 80) questionHistory.shift();
       }
       currentQuestion = next;
       renderQuestion();
+    }
+    function reviewCurrentCategory() {
+      const category = els.category.value;
+      const scoped = questions
+        .filter((question) => category === "全分野" || question.category === category)
+        .filter((question) => qs(question.id).attempts > 0)
+        .sort((a, b) => qs(a.id).level - qs(b.id).level || qs(b.id).wrong - qs(a.id).wrong);
+      if (!scoped.length) return;
+      currentQuestion = scoped[0];
+      renderQuestion();
+    }
+    function goNextUnansweredCategory() {
+      const nextCategory = nextCategoryWithUnanswered(els.category.value);
+      if (!nextCategory) {
+        els.mode.value = "due";
+        els.category.value = "全分野";
+      } else {
+        els.category.value = nextCategory;
+        els.mode.value = "first";
+      }
+      pick();
+    }
+    function renderCategoryComplete() {
+      const category = els.category.value;
+      currentDisplayChoices = [];
+      els.qCat.textContent = category;
+      els.qStats.textContent = "一周完了";
+      els.qText.textContent = `${category}の未学習問題はここで一度完了です。今すぐ同じ問題を回すより、次の課題へ進むか、苦手だけ復習してください。`;
+      els.choices.innerHTML = "";
+      const nextButton = document.createElement("button");
+      nextButton.className = "choice";
+      nextButton.type = "button";
+      nextButton.textContent = "次の未学習分野へ進む";
+      nextButton.addEventListener("click", goNextUnansweredCategory);
+      const reviewButton = document.createElement("button");
+      reviewButton.className = "choice";
+      reviewButton.type = "button";
+      reviewButton.textContent = "この分野を復習する";
+      reviewButton.addEventListener("click", reviewCurrentCategory);
+      els.choices.append(nextButton, reviewButton);
+      els.answer.classList.add("hidden");
+      updatePreviousQuestionButton();
     }
     function nextQuestion() {
       pick();
