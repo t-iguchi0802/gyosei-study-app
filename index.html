@@ -353,11 +353,13 @@
     .answer p { margin: 0 0 8px; }
     .primary {
       width: 100%;
-      margin-top: 4px;
+      min-height: 56px;
+      margin-top: 8px;
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 900;
     }
     .card {
       min-height: 280px;
@@ -1224,7 +1226,12 @@
       document.querySelectorAll(".tab").forEach((tab) => tab.addEventListener("click", () => switchView(tab.dataset.view)));
       els.category.addEventListener("change", pick);
       els.mode.addEventListener("change", pick);
-      els.next.addEventListener("click", pick);
+      els.next.addEventListener("click", () => {
+        pick();
+        setTimeout(() => {
+          el("learnView").scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 30);
+      });
       els.resume.addEventListener("click", resumeLastQuestion);
       els.relatedLecture.addEventListener("click", () => goRelatedLecture(currentQuestion.category));
       el("log10Button").addEventListener("click", () => logStudy(10));
@@ -1600,6 +1607,9 @@
       els.result.textContent = ok ? "正解。本試験でも取りたい基本論点です。" : "不正解。5分後以降に優先して再出題します。";
       els.explain.textContent = currentQuestion.explain + " " + nextAction(currentQuestion.category, ok);
       els.answer.classList.remove("hidden");
+      setTimeout(() => {
+        els.next.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 80);
       speakAnswer(ok);
       state.lastQuestionId = currentQuestion.id;
       state.lastCategory = currentQuestion.category;
