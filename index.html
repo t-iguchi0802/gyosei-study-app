@@ -319,7 +319,7 @@
     }
     .resume-tools {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
       margin-bottom: 10px;
     }
@@ -777,6 +777,7 @@
       </div>
       <div class="resume-tools">
         <button id="resumeButton" type="button">前回の続きから始める</button>
+        <button id="previousQuestionButton" type="button">前の問題へ</button>
       </div>
       <div class="study-log">
         <button id="log10Button" type="button">10分勉強した</button>
@@ -1361,6 +1362,9 @@
     if (!state.speechRate) state.speechRate = 1;
     let currentQuestion = questions[0];
     let currentDisplayChoices = [];
+    const questionHistory = [];
+    let touchStartX = 0;
+    let touchStartY = 0;
     let cardIndex = 0;
 
     const el = (id) => document.getElementById(id);
@@ -1368,7 +1372,7 @@
       mastery: el("masteryText"), due: el("dueText"), streak: el("streakText"), logged: el("loggedText"), coach: el("coachText"),
       category: el("categoryFilter"), mode: el("modeFilter"), qCat: el("questionCategory"), qStats: el("questionStats"),
       qText: el("questionText"), choices: el("choices"), answer: el("answerPanel"), result: el("answerResult"),
-      explain: el("answerExplain"), next: el("nextButton"), relatedLecture: el("relatedLectureButton"), resume: el("resumeButton"), cardCategory: el("cardCategoryFilter"),
+      explain: el("answerExplain"), next: el("nextButton"), previousQuestion: el("previousQuestionButton"), relatedLecture: el("relatedLectureButton"), resume: el("resumeButton"), cardCategory: el("cardCategoryFilter"),
       flashCat: el("flashCategory"), flashFront: el("flashFront"), flashBack: el("flashBack"),
       progress: el("progressList"), subjectMap: el("subjectMap"), audioToggle: el("audioToggleButton"), readQuestion: el("readQuestionButton"),
       speedRange: el("speedRange"), speedText: el("speedText"), readGuide: el("readGuideButton"), stopAudio: el("stopAudioButton"),
@@ -1400,12 +1404,10 @@
       els.category.addEventListener("change", pick);
       els.mode.addEventListener("change", pick);
       els.next.addEventListener("click", () => {
-        pick();
-        setTimeout(() => {
-          el("learnView").scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 30);
+        nextQuestion();
       });
       els.resume.addEventListener("click", resumeLastQuestion);
+      els.previousQuestion.addEventListener("click", previousQuestion);
       els.relatedLecture.addEventListener("click", () => goRelatedLecture(currentQuestion.category));
       el("log10Button").addEventListener("click", () => logStudy(10));
       el("log30Button").addEventListener("click", () => logStudy(30));
@@ -1496,6 +1498,19 @@
           location.reload();
         }
       });
+      el("learnView").addEventListener("touchstart", (event) => {
+        if (!event.touches || event.touches.length !== 1) return;
+        touchStartX = event.touches[0].clientX;
+        touchStartY = event.touches[0].clientY;
+      }, { passive: true });
+      el("learnView").addEventListener("touchend", (event) => {
+        if (!event.changedTouches || event.changedTouches.length !== 1) return;
+        const dx = event.changedTouches[0].clientX - touchStartX;
+        const dy = event.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.4) return;
+        if (dx > 0) previousQuestion();
+        if (dx < 0 && !els.answer.classList.contains("hidden")) nextQuestion();
+      }, { passive: true });
       renderAudioButton();
       els.speedRange.value = state.speechRate;
       els.speedText.textContent = `${Number(state.speechRate).toFixed(1)}倍`;
@@ -1766,9 +1781,41 @@
       }).sort((a, b) => routePriority(b) - routePriority(a));
       return rows.find((row) => categoryPool(row.command, "score180").length)?.command || "行政事件訴訟法";
     }
-    function pick() {
-      currentQuestion = pool()[0];
+    function pick(options = {}) {
+      const remember = options.remember !== false;
+      const next = pool()[0];
+      if (!next) return;
+      if (remember && currentQuestion && currentQuestion.id !== next.id) {
+        questionHistory.push(currentQuestion.id);
+        if (questionHistory.length > 80) questionHistory.shift();
+      }
+      currentQuestion = next;
       renderQuestion();
+    }
+    function nextQuestion() {
+      pick();
+      setTimeout(() => {
+        el("learnView").scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 30);
+    }
+    function previousQuestion() {
+      while (questionHistory.length) {
+        const previousId = questionHistory.pop();
+        const previous = questions.find((question) => question.id === previousId);
+        if (!previous || previous.id === currentQuestion.id) continue;
+        currentQuestion = previous;
+        if (categories.includes(previous.category)) els.category.value = previous.category;
+        switchView("learn");
+        renderQuestion();
+        setTimeout(() => {
+          el("learnView").scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 30);
+        return;
+      }
+      els.previousQuestion.disabled = true;
+    }
+    function updatePreviousQuestionButton() {
+      if (els.previousQuestion) els.previousQuestion.disabled = questionHistory.length === 0;
     }
     function shuffledChoices(question) {
       const items = question.choices.map((text, originalIndex) => ({ text, originalIndex }));
@@ -1794,6 +1841,7 @@
         button.addEventListener("click", () => answer(i));
         els.choices.appendChild(button);
       });
+      updatePreviousQuestionButton();
       speakQuestion(false);
     }
     function escapeHtml(value) {
