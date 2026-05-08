@@ -180,6 +180,8 @@
     }
     .route-item button {
       min-width: 70px;
+      min-height: 52px;
+      padding: 10px 12px;
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
@@ -1258,13 +1260,16 @@
         pick();
       });
       els.exam180.addEventListener("click", (event) => {
-        const category = event.target.dataset.category;
-        const mode = event.target.dataset.mode || "weak";
-        if (!category) return;
-        els.category.value = category;
-        els.mode.value = mode;
-        switchView("learn");
-        pick();
+        const button = event.target.closest("button[data-category]");
+        if (!button) return;
+        event.preventDefault();
+        start180Route(button.dataset.category, button.dataset.mode || "weak");
+      });
+      els.exam180.addEventListener("touchend", (event) => {
+        const button = event.target.closest("button[data-category]");
+        if (!button) return;
+        event.preventDefault();
+        start180Route(button.dataset.category, button.dataset.mode || "weak");
       });
       el("showBackButton").addEventListener("click", () => {
         els.flashBack.classList.remove("hidden");
@@ -1731,12 +1736,25 @@
                 <strong>${row.label} ${row.score}/${row.target}点設計</strong>
                 <span class="small">${row.note}</span>
               </div>
-              <button type="button" data-category="${row.command}" data-mode="${row.mode}">やる</button>
+              <button type="button" data-category="${row.command}" data-mode="${row.mode}" onclick="start180Route('${row.command}', '${row.mode}')">やる</button>
             </div>
           `).join("")}
         </div>
       `;
     }
+    function start180Route(category, mode = "weak") {
+      if (!category) return;
+      const categoryValues = [...els.category.options].map((option) => option.value);
+      els.category.value = categoryValues.includes(category) ? category : "全分野";
+      const modeValues = [...els.mode.options].map((option) => option.value);
+      els.mode.value = modeValues.includes(mode) ? mode : "weak";
+      switchView("learn");
+      pick();
+      setTimeout(() => {
+        el("learnView").scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 30);
+    }
+    window.start180Route = start180Route;
     function partReadiness(part) {
       const values = part.cats.map(categoryReadiness).filter((value) => Number.isFinite(value));
       if (!values.length) return 0;
