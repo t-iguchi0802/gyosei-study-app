@@ -433,6 +433,16 @@
       border-radius: 8px;
       line-height: 1.55;
     }
+    .answer.answer-ok {
+      background: #e8f6ee;
+      border-color: #176b5b;
+      box-shadow: inset 5px 0 0 #176b5b;
+    }
+    .answer.answer-wrong {
+      background: #fff1ec;
+      border-color: #c83b2b;
+      box-shadow: inset 5px 0 0 #c83b2b;
+    }
     .answer p { margin: 0 0 8px; }
     .writing-steps {
       display: grid;
@@ -658,12 +668,26 @@
       font-weight: 800;
     }
     .tip.done {
-      border-color: #b7d5ca;
-      background: #f3fbf7;
+      border-color: #176b5b;
+      background: #e5f5ee;
+      box-shadow: inset 5px 0 0 #176b5b;
     }
     .tip.done .lecture-status {
-      background: #dcefe8;
-      color: var(--accent);
+      background: #176b5b;
+      color: #fff;
+    }
+    .tip:not(.done) {
+      border-color: #e6d6a2;
+      background: #fffdf4;
+    }
+    .tip:not(.done) .lecture-status {
+      background: #fff0b8;
+      color: #6b4c00;
+    }
+    .tip.done .lecture-actions button[data-action="complete"] {
+      background: #fff;
+      border-color: #176b5b;
+      color: #176b5b;
     }
     .lecture-mode {
       display: grid;
@@ -1024,6 +1048,7 @@
       lecture("行政事件訴訟法", "当事者訴訟・民衆訴訟・機関訴訟", "当事者訴訟は、公法上の法律関係を争う訴訟です。民衆訴訟は、選挙訴訟や住民訴訟のように、法律に定めがある場合だけ認められます。機関訴訟は、国や公共団体の機関同士の争いです。主観訴訟と客観訴訟の区別が重要です。"),
       lecture("民法", "債権譲渡", "債権譲渡では、譲渡人から債務者への通知または債務者の承諾が対抗要件です。第三者対抗要件では、確定日付ある証書による通知または承諾が必要です。誰に対抗するのか、債務者か第三者かを分けて考えます。"),
       lecture("民法", "契約不適合責任", "売買で目的物が契約内容に適合しない場合、買主は追完請求、代金減額請求、損害賠償請求、解除を検討できます。まず追完、それが無理なら代金減額、重大なら解除という流れで理解します。旧瑕疵担保責任という言葉に引っ張られないようにします。"),
+      lecture("民法", "賃貸借と解除", "賃貸借では、賃料不払いがあっても直ちに自力で追い出すのではなく、催告、相当期間、不履行、信頼関係破壊、解除、明渡しという流れで考えます。記述式では、賃貸人が賃借人に対して解除と明渡しを請求できる、という骨子を短く作れるようにします。"),
       lecture("民法", "相殺", "相殺は、互いに同種の債権を持つ場合に、一方的意思表示で対当額を消滅させる制度です。自働債権と受働債権を区別します。相殺禁止や差押えとの関係もありますが、まず同種債権、弁済期、一方的意思表示を押さえます。"),
       lecture("民法", "保証", "保証では、主債務と保証債務の関係を押さえます。保証債務は主債務に付従します。連帯保証では、催告の抗弁権や検索の抗弁権がありません。行政書士試験では、保証人がどこまで責任を負うかを聞かれます。"),
       lecture("民法", "共有", "共有では、保存行為、管理行為、変更行為を区別します。保存行為は各共有者が単独でできます。管理行為は持分価格の過半数。変更行為は原則として全員の同意が必要です。この数字と権限の違いが頻出です。"),
@@ -1032,6 +1057,7 @@
       lecture("憲法", "適正手続と人身の自由", "適正手続では、刑罰や身体拘束に関する手続保障が問題になります。令状主義、黙秘権、弁護人依頼権、拷問禁止などを条文ベースで押さえます。細かい刑訴法知識ではなく、憲法上の保障として理解します。"),
       lecture("憲法", "財産権", "財産権は保障されますが、公共の福祉による制約を受けます。正当な補償の要否が問題になります。条例による制約、損失補償、規制と補償の関係を短く押さえます。"),
       lecture("基礎知識", "行政書士法の業務", "行政書士の業務は、官公署に提出する書類、権利義務または事実証明に関する書類の作成、提出手続代理、相談などが中心です。無資格者規制や業務制限も基礎知識で狙われます。改正法では使命や職責の文言にも注意します。"),
+      lecture("基礎知識", "戸籍法と住民基本台帳法", "戸籍法は出生、婚姻、離婚、死亡などの身分関係を公証する制度です。住民基本台帳法は住所、転入、転出、住民票などの居住関係を行政事務の基礎にする制度です。試験では、戸籍は身分関係、住民基本台帳は居住関係と分ければ足切り回避に使えます。"),
       lecture("基礎知識", "情報セキュリティ", "情報セキュリティでは、機密性、完全性、可用性を押さえます。マルウェア、ランサムウェア、フィッシング、標的型攻撃、ゼロデイ攻撃、二要素認証、バックアップが頻出です。用語を聞いて説明できる状態にします。"),
       lecture("基礎知識", "政治・経済・社会", "政治経済社会は範囲が広いので、深追いしません。行政、地方自治、財政、社会保障、選挙、国際機関などの基本語だけ拾います。時事は直前期に薄く確認し、個人情報保護と情報通信で安定点を取りに行きます。"),
       lecture("記述式", "行政法記述の書き方", "行政法記述は、訴訟類型、被告、要件、主張内容を短く書きます。誰が、誰を被告として、どの訴訟を提起し、何を主張するか、という順番で考えます。取消訴訟、義務付け訴訟、差止訴訟、執行停止、裁決固有の瑕疵が重要です。"),
@@ -1402,7 +1428,7 @@
       });
       els.resume.addEventListener("click", resumeLastQuestion);
       els.previousQuestion.addEventListener("click", previousQuestion);
-      els.relatedLecture.addEventListener("click", () => goRelatedLecture(currentQuestion.category));
+      els.relatedLecture.addEventListener("click", () => goRelatedLecture(currentQuestion));
       el("log10Button").addEventListener("click", () => logStudy(10));
       el("log30Button").addEventListener("click", () => logStudy(30));
       els.audioToggle.addEventListener("click", toggleAudio);
@@ -1430,10 +1456,7 @@
       els.subjectMap.addEventListener("click", (event) => {
         const category = event.target.dataset.category;
         if (!category) return;
-        els.category.value = category;
-        els.mode.value = "first";
-        switchView("learn");
-        pick();
+        startQuestionsForCategory(category);
       });
       els.exam180.addEventListener("click", (event) => {
         const button = event.target.closest("button[data-category]");
@@ -1459,7 +1482,7 @@
         const action = event.target.dataset.action;
         const guideItem = guideItemFromTip(tip, event.target);
         if (guideItem && action === "complete") {
-          markGuideItemDone(guideItem.key);
+          toggleGuideItemDone(guideItem.key);
           renderLectures();
           renderStats();
           return;
@@ -1473,10 +1496,7 @@
         }
         if (action === "questions") {
           const category = event.target.dataset.category;
-          els.category.value = category;
-          els.mode.value = "first";
-          switchView("learn");
-          pick();
+          startQuestionsForCategory(category);
           return;
         }
         if (guideItem) markGuideItemDone(guideItem.key);
@@ -1550,7 +1570,7 @@
           <p class="small">${item.body}</p>
           <div class="lecture-actions">
             <button type="button" data-action="read" data-lecture-index="${index}">この講義を聞く</button>
-            <button type="button" data-action="complete" data-lecture-index="${index}">${isLectureDone(item) ? "完了済み" : "完了にする"}</button>
+            <button type="button" data-action="complete" data-lecture-index="${index}">${isLectureDone(item) ? "未完了に戻す" : "完了にする"}</button>
             <button type="button" data-action="questions" data-category="${item.category}">関連問題へ</button>
           </div>
         </article>
@@ -1572,7 +1592,7 @@
           <div class="textbook-body">${item.html}</div>
           <div class="lecture-actions">
             <button type="button" data-action="read" data-text-index="${index}">このテキストを聞く</button>
-            <button type="button" data-action="complete" data-text-index="${index}">${done ? "完了済み" : "完了にする"}</button>
+            <button type="button" data-action="complete" data-text-index="${index}">${done ? "未完了に戻す" : "完了にする"}</button>
             <button type="button" data-action="questions" data-category="${item.category}">関連問題へ</button>
           </div>
         </article>`;
@@ -1598,7 +1618,7 @@
           <div class="law-quote"><span class="key-red">試験用の条文内容：</span><br>${highlightLawText(item.quote)}</div>
           <div class="lecture-actions">
             <button type="button" data-action="read" data-statute-index="${index}">この条文要約を聞く</button>
-            <button type="button" data-action="complete" data-statute-index="${index}">${done ? "完了済み" : "完了にする"}</button>
+            <button type="button" data-action="complete" data-statute-index="${index}">${done ? "未完了に戻す" : "完了にする"}</button>
             <button type="button" data-action="questions" data-category="${item.category}">関連問題へ</button>
           </div>
         </article>`;
@@ -1661,6 +1681,14 @@
       state.lecturesSeen[key] = true;
       save();
     }
+    function toggleGuideItemDone(key) {
+      if (state.lecturesSeen[key]) {
+        delete state.lecturesSeen[key];
+      } else {
+        state.lecturesSeen[key] = true;
+      }
+      save();
+    }
     function plainText(html) {
       const node = document.createElement("div");
       node.innerHTML = html;
@@ -1695,6 +1723,30 @@
       if (state.lectureMode === "advanced") return "応用編";
       if (state.lectureMode === "all") return "全件";
       return "基本編";
+    }
+    function startQuestionsForCategory(category, preferredMode = "first") {
+      const categoryValues = [...els.category.options].map((option) => option.value);
+      const targetCategory = categoryValues.includes(category) ? category : "全分野";
+      const firstList = categoryPool(targetCategory, "first");
+      const weakList = categoryPool(targetCategory, "weak");
+      const dueList = categoryPool(targetCategory, "due");
+      els.category.value = targetCategory;
+      if (preferredMode !== "first") {
+        els.mode.value = preferredMode;
+      } else if (firstList.length) {
+        els.mode.value = "first";
+      } else if (weakList.length) {
+        els.mode.value = "weak";
+      } else if (dueList.length) {
+        els.mode.value = "due";
+      } else {
+        els.mode.value = "all";
+      }
+      switchView("learn");
+      pick({ remember: false });
+      setTimeout(() => {
+        el("learnView").scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 30);
     }
     function switchView(name) {
       document.querySelectorAll(".tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.view === name));
@@ -1886,6 +1938,7 @@
       els.qText.textContent = currentQuestion.prompt;
       els.choices.innerHTML = "";
       els.answer.classList.add("hidden");
+      els.answer.classList.remove("answer-ok", "answer-wrong");
       currentDisplayChoices = shuffledChoices(currentQuestion);
       currentDisplayChoices.forEach((choice, i) => {
         const button = document.createElement("button");
@@ -1993,6 +2046,8 @@
       els.result.textContent = ok ? "正解。" : "不正解。復習対象に入れました。";
       els.explain.innerHTML = explainHtml(currentQuestion, ok);
       els.answer.classList.remove("hidden");
+      els.answer.classList.toggle("answer-ok", ok);
+      els.answer.classList.toggle("answer-wrong", !ok);
       setTimeout(() => {
         els.next.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 80);
@@ -2016,16 +2071,103 @@
       switchView("learn");
       renderQuestion();
     }
-    function goRelatedLecture(category) {
+    const relatedLectureRules = [
+      { category: "行政手続法", terms: ["審査基準", "標準処理期間", "申請", "申請拒否"], lectures: ["審査基準", "申請処分", "処理手順"] },
+      { category: "行政手続法", terms: ["不利益処分", "聴聞", "弁明", "処分基準"], lectures: ["聴聞", "弁明", "不利益処分", "処分基準"] },
+      { category: "行政手続法", terms: ["理由提示", "理由不備"], lectures: ["理由提示"] },
+      { category: "行政手続法", terms: ["行政指導", "届出"], lectures: ["行政指導", "届出"] },
+      { category: "行政不服審査法", terms: ["審査請求", "裁決", "却下", "棄却", "認容"], lectures: ["審査請求", "裁決", "処分について"] },
+      { category: "行政不服審査法", terms: ["不作為", "相当期間"], lectures: ["不作為"] },
+      { category: "行政不服審査法", terms: ["執行停止"], lectures: ["執行停止"] },
+      { category: "行政不服審査法", terms: ["審理員", "審査会"], lectures: ["審理員", "審査会"] },
+      { category: "行政事件訴訟法", terms: ["処分性", "公権力", "直接具体的"], lectures: ["処分性"] },
+      { category: "行政事件訴訟法", terms: ["原告適格", "法律上保護"], lectures: ["原告適格"] },
+      { category: "行政事件訴訟法", terms: ["訴えの利益", "回復される法律上の利益"], lectures: ["訴えの利益"] },
+      { category: "行政事件訴訟法", terms: ["被告", "被告適格"], lectures: ["被告適格"] },
+      { category: "行政事件訴訟法", terms: ["義務付け", "申請型", "非申請型"], lectures: ["義務付け"] },
+      { category: "行政事件訴訟法", terms: ["差止", "差止め", "重大な損害"], lectures: ["差止"] },
+      { category: "行政事件訴訟法", terms: ["執行停止", "仮の救済", "仮の義務付け", "仮の差止め"], lectures: ["仮の救済", "執行停止"] },
+      { category: "行政事件訴訟法", terms: ["裁決取消訴訟", "裁決固有の瑕疵"], lectures: ["訴訟類型", "裁決取消", "使い分け"] },
+      { category: "行政事件訴訟法", terms: ["拘束力", "取消判決"], lectures: ["取消判決", "拘束力"] },
+      { category: "国家賠償法", terms: ["国家賠償", "国賠", "公務員", "職務", "故意過失"], lectures: ["1条", "公務員"] },
+      { category: "国家賠償法", terms: ["営造物", "設置管理", "道路", "河川", "瑕疵"], lectures: ["2条", "営造物"] },
+      { category: "地方自治法", terms: ["住民監査", "住民訴訟", "財務会計"], lectures: ["住民監査", "住民訴訟"] },
+      { category: "地方自治法", terms: ["条例", "規則", "議会", "長", "直接請求"], lectures: ["条例", "議会", "直接請求"] },
+      { category: "行政法総論", terms: ["公定力", "不可争力", "行政行為", "行政立法", "行政計画", "行政契約"], lectures: ["行政行為", "行政立法", "行政計画", "行政契約"] },
+      { category: "民法", terms: ["詐欺", "強迫", "心裡留保", "錯誤", "意思表示", "善意無過失"], lectures: ["意思表示"] },
+      { category: "民法", terms: ["代理", "無権代理", "表見代理", "追認", "催告"], lectures: ["代理"] },
+      { category: "民法", terms: ["時効", "援用", "完成猶予", "更新", "債務承認"], lectures: ["時効"] },
+      { category: "民法", terms: ["物権変動", "登記", "第三者", "即時取得", "占有"], lectures: ["物権変動", "即時取得", "占有"] },
+      { category: "民法", terms: ["債務不履行", "解除", "催告", "賃貸借", "明渡し", "不履行"], lectures: ["債務不履行", "賃貸借", "民法記述", "典型テーマ"] },
+      { category: "民法", terms: ["契約不適合", "追完", "代金減額"], lectures: ["契約不適合"] },
+      { category: "民法", terms: ["不法行為", "故意", "過失", "損害", "因果関係"], lectures: ["不法行為"] },
+      { category: "民法", terms: ["相続", "親族", "婚姻", "離婚", "親権"], lectures: ["親族", "相続"] },
+      { category: "憲法", terms: ["表現の自由", "検閲", "事前抑制", "知る権利"], lectures: ["人権判例", "表現"] },
+      { category: "憲法", terms: ["内閣", "国会", "裁判所", "違憲審査", "統治"], lectures: ["統治", "違憲審査"] },
+      { category: "憲法", terms: ["信教", "政教分離"], lectures: ["信教"] },
+      { category: "憲法", terms: ["生存権", "教育", "労働基本権"], lectures: ["生存権", "教育", "労働"] },
+      { category: "基礎知識", terms: ["個人情報", "個人データ", "要配慮", "安全管理", "開示", "漏えい"], lectures: ["個人情報"] },
+      { category: "基礎知識", terms: ["フィッシング", "二要素", "ランサムウェア", "セキュリティ", "マルウェア"], lectures: ["情報セキュリティ", "情報通信"] },
+      { category: "基礎知識", terms: ["AI", "生成AI", "ディープフェイク", "なりすまし", "デジタル"], lectures: ["AI", "デジタル"] },
+      { category: "基礎知識", terms: ["行政書士法", "特定行政書士", "使命", "職責", "業務制限", "官公署"], lectures: ["行政書士", "業務"] },
+      { category: "基礎知識", terms: ["戸籍", "出生", "婚姻", "死亡", "住民基本台帳", "住民票", "居住関係"], lectures: ["戸籍", "住民基本台帳"] },
+      { category: "商法・会社法", terms: ["設立", "発起人", "定款"], lectures: ["設立", "会社法"] },
+      { category: "商法・会社法", terms: ["株式", "株主総会", "議決権"], lectures: ["株式", "株主総会"] },
+      { category: "商法・会社法", terms: ["取締役", "取締役会", "代表取締役", "善管注意", "忠実義務", "利益相反", "競業"], lectures: ["取締役"] },
+      { category: "基礎法学", terms: ["特別法", "一般法", "上位法", "下位法", "法解釈", "類推解釈"], lectures: ["法解釈", "直前暗記"] },
+      { category: "基礎法学", terms: ["民事訴訟", "刑事訴訟", "既判力", "裁判制度"], lectures: ["裁判制度", "裁判の効力"] },
+      { category: "記述式", terms: ["40字", "採点語", "答案", "記述"], lectures: ["40字", "書き方", "典型テーマ"] }
+    ];
+    function questionSearchText(question) {
+      if (!question) return "";
+      const correctChoice = Array.isArray(question.choices) ? question.choices[question.answer] : "";
+      return [question.category, question.prompt, correctChoice, question.explain].join(" ");
+    }
+    function hasAny(text, words) {
+      return words.some((word) => text.includes(word));
+    }
+    function relatedLectureScore(question, item, index) {
+      const questionText = questionSearchText(question);
+      const lectureText = `${item.category} ${item.title} ${item.body}`;
+      const lectureTitle = `${item.category} ${item.title}`;
+      let score = 0;
+      if (question.category && question.category !== "記述式" && item.category !== question.category) score -= 200;
+      if (item.category === question.category) score += 20;
+      if (question.category === "記述式" && item.category === "記述式") score -= 25;
+      const broadTitles = ["足切り回避", "要件・効果で解く", "直前暗記で拾う", "型で部分点を取る"];
+      if (item.title && !broadTitles.includes(item.title) && questionText.includes(item.title)) score += 150;
+      relatedLectureRules.forEach((rule) => {
+        if (!hasAny(questionText, rule.terms)) return;
+        if (item.category === rule.category) score += 25;
+        if (hasAny(lectureTitle, rule.lectures)) score += 120;
+        else if (hasAny(lectureText, rule.lectures)) score += 30;
+        rule.terms.forEach((term) => {
+          if (questionText.includes(term) && lectureText.includes(term)) score += 8;
+        });
+      });
+      return score - index * 0.001;
+    }
+    function bestRelatedLecture(questionOrCategory) {
+      const question = typeof questionOrCategory === "string"
+        ? { category: questionOrCategory, prompt: "", explain: "", choices: [] }
+        : questionOrCategory;
+      const scored = lectures.map((item, index) => ({ item, index, score: relatedLectureScore(question, item, index) }))
+        .sort((a, b) => b.score - a.score);
+      if (scored[0] && scored[0].score > 0) return scored[0];
+      const fallbackCategory = question?.category || "";
+      return lectures.map((item, index) => ({ item, index, score: item.category === fallbackCategory ? 1 : 0 }))
+        .filter((entry) => entry.score > 0)[0] || null;
+    }
+    function goRelatedLecture(questionOrCategory) {
+      const match = bestRelatedLecture(questionOrCategory);
       switchView("guide");
+      state.guideKind = "lecture";
+      state.lectureMode = "all";
+      save();
       renderLectures();
-      let target = [...el("lectureList").querySelectorAll(".tip")].find((tip) => tip.dataset.category === category);
-      if (!target && state.lectureMode !== "all") {
-        state.lectureMode = "all";
-        save();
-        renderLectures();
-        target = [...el("lectureList").querySelectorAll(".tip")].find((tip) => tip.dataset.category === category);
-      }
+      const fallbackCategory = typeof questionOrCategory === "string" ? questionOrCategory : questionOrCategory?.category;
+      let target = match ? el("lectureList").querySelector(`.tip[data-lecture-index="${match.index}"]`) : null;
+      if (!target) target = [...el("lectureList").querySelectorAll(".tip")].find((tip) => tip.dataset.category === fallbackCategory);
       document.querySelectorAll(".tip.focused").forEach((tip) => tip.classList.remove("focused"));
       if (target) {
         target.classList.add("focused");
