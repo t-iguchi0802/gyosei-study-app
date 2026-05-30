@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4試験アプリ Facebook投稿プレビュー</title>
+  <style>
+    :root {
+      --bg: #f3f6f1;
+      --ink: #17211c;
+      --muted: #66736a;
+      --panel: #ffffff;
+      --line: #dce4dc;
+      --fp: #176b5b;
+      --it: #245f9f;
+      --law: #7a5423;
+      --boki: #2f6b3f;
+      --note: #fff4d9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #e8eee8;
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-text-size-adjust: 100%;
+    }
+    .canvas {
+      width: 1200px;
+      min-height: 630px;
+      margin: 0 auto;
+      padding: 34px 42px;
+      background:
+        linear-gradient(135deg, rgba(23, 107, 91, 0.12), transparent 36%),
+        linear-gradient(315deg, rgba(36, 95, 159, 0.12), transparent 34%),
+        var(--bg);
+      overflow: hidden;
+    }
+    .headline {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--fp);
+      font-size: 21px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    h1 {
+      margin: 0;
+      font-size: 52px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .lead {
+      margin: 10px 0 0;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 22px;
+      line-height: 1.42;
+      font-weight: 700;
+    }
+    .badge {
+      width: 204px;
+      padding: 18px;
+      background: var(--note);
+      border: 1px solid #ead99b;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 900;
+    }
+    .badge span {
+      display: block;
+      color: #8a5f17;
+      font-size: 15px;
+    }
+    .badge strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 34px;
+      line-height: 1;
+    }
+    .phones {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    .phone {
+      height: 422px;
+      padding: 12px;
+      background: #101815;
+      border-radius: 30px;
+      box-shadow: 0 18px 42px rgba(30, 45, 35, 0.18);
+    }
+    .screen {
+      height: 100%;
+      padding: 12px 10px;
+      background: #f8faf7;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+    .screen.fp { --accent: var(--fp); --soft: #e7f3ef; }
+    .screen.it { --accent: var(--it); --soft: #e7f0fb; }
+    .screen.law { --accent: var(--law); --soft: #f4eddf; }
+    .screen.boki { --accent: var(--boki); --soft: #e7f3e9; }
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .screen h2 {
+      margin: 0 0 8px;
+      font-size: 25px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      margin-bottom: 8px;
+      padding: 5px;
+      background: #eef3ed;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .tab {
+      min-height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      color: #617067;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .tab.active {
+      background: var(--accent);
+      color: white;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+    .metric {
+      min-height: 52px;
+      padding: 7px 6px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .metric strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .question {
+      min-height: 160px;
+      padding: 10px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .cat {
+      margin: 0 0 7px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .q {
+      margin: 0 0 9px;
+      font-size: 16px;
+      line-height: 1.38;
+      font-weight: 900;
+    }
+    .choice {
+      margin-top: 5px;
+      padding: 7px 8px;
+      background: #f7f8f5;
+      border: 1px solid #e1e7df;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+    .choice.correct {
+      background: var(--soft);
+      border-color: color-mix(in srgb, var(--accent) 42%, white);
+      color: var(--accent);
+    }
+    .coach {
+      margin-top: 8px;
+      padding: 9px 10px;
+      background: var(--soft);
+      border-radius: 8px;
+      color: #26312c;
+      font-size: 12px;
+      line-height: 1.38;
+      font-weight: 800;
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .url {
+      color: var(--fp);
+      font-weight: 900;
+    }
+  </style>
+</head>
+<body>
+  <main class="canvas" aria-label="Facebook投稿用4試験アプリプレビュー">
+    <section class="headline">
+      <div>
+        <p class="eyebrow">スマホで一周。暗記と頻出問題に集中。</p>
+        <h1>やさしめ資格を<br>合格優先で4本アプリ化</h1>
+        <p class="lead">FP3級、ITパスポート、ビジ法3級、簿記3級。過去問頻出テーマを絞って、外出先でも問題・要点・進捗を回せます。</p>
+      </div>
+      <div class="badge">
+        <span>各アプリ</span>
+        <strong>30問</strong>
+        <span>合格優先コア</span>
+      </div>
+    </section>
+
+    <section class="phones">
+      <article class="phone">
+        <div class="screen fp">
+          <div class="topline"><span>短期一周型</span><span>FP3級</span></div>
+          <h2>FP3級</h2>
+          <div class="tabs"><div class="tab active">問題</div><div class="tab">要点</div><div class="tab">進捗</div></div>
+          <div class="metrics"><div class="metric"><span>理解</span><strong>68%</strong></div><div class="metric"><span>一周</span><strong>80%</strong></div><div class="metric"><span>復習</span><strong>4</strong></div></div>
+          <div class="question">
+            <p class="cat">相続・事業承継</p>
+            <p class="q">相続税の基礎控除額の計算式は？</p>
+            <div class="choice correct">3,000万円 + 600万円 × 法定相続人</div>
+            <div class="choice">110万円 × 法定相続人</div>
+          </div>
+          <div class="coach">6分野を均等に一周。数字と制度名を先に固定。</div>
+        </div>
+      </article>
+
+      <article class="phone">
+        <div class="screen it">
+          <div class="topline"><span>用語暗記</span><span>ITパスポート</span></div>
+          <h2>ITパスポート</h2>
+          <div class="tabs"><div class="tab active">問題</div><div class="tab">要点</div><div class="tab">進捗</div></div>
+          <div class="metrics"><div class="metric"><span>理解</span><strong>72%</strong></div><div class="metric"><span>一周</span><strong>90%</strong></div><div class="metric"><span>復習</span><strong>3</strong></div></div>
+          <div class="question">
+            <p class="cat">テクノロジ</p>
+            <p class="q">DNSの役割として正しいものは？</p>
+            <div class="choice correct">ドメイン名とIPアドレスを対応付ける</div>
+            <div class="choice">データを暗号化するだけ</div>
+          </div>
+          <div class="coach">シラバス頻出の用語、SQL、セキュリティを優先。</div>
+        </div>
+      </article>
+
+      <article class="phone">
+        <div class="screen law">
+          <div class="topline"><span>法律基礎</span><span>ビジ法3級</span></div>
+          <h2>ビジ法3級</h2>
+          <div class="tabs"><div class="tab active">問題</div><div class="tab">要点</div><div class="tab">進捗</div></div>
+          <div class="metrics"><div class="metric"><span>理解</span><strong>65%</strong></div><div class="metric"><span>一周</span><strong>76%</strong></div><div class="metric"><span>復習</span><strong>5</strong></div></div>
+          <div class="question">
+            <p class="cat">契約法務</p>
+            <p class="q">契約の成立で基本となるものは？</p>
+            <div class="choice correct">申込みと承諾の意思表示の合致</div>
+            <div class="choice">必ず公正証書が必要</div>
+          </div>
+          <div class="coach">契約、会社法、債権管理を得点源に。</div>
+        </div>
+      </article>
+
+      <article class="phone">
+        <div class="screen boki">
+          <div class="topline"><span>仕訳反復</span><span>簿記3級</span></div>
+          <h2>日商簿記3級</h2>
+          <div class="tabs"><div class="tab active">問題</div><div class="tab">要点</div><div class="tab">進捗</div></div>
+          <div class="metrics"><div class="metric"><span>理解</span><strong>70%</strong></div><div class="metric"><span>一周</span><strong>83%</strong></div><div class="metric"><span>復習</span><strong>2</strong></div></div>
+          <div class="question">
+            <p class="cat">決算</p>
+            <p class="q">売上原価の基本式は？</p>
+            <div class="choice correct">期首商品 + 当期仕入 - 期末商品</div>
+            <div class="choice">売掛金 - 買掛金</div>
+          </div>
+          <div class="coach">仕訳と決算整理を短く反復。70点ラインへ。</div>
+        </div>
+      </article>
+    </section>
+
+    <section class="footer">
+      <span>音声読み上げ / 苦手優先 / 一周進捗 / スマホ特化</span>
+      <span class="url">gyosei-study-app-wheat.vercel.app</span>
+    </section>
+  </main>
+</body>
+</html>
