@@ -270,6 +270,31 @@
     .risk-bad { color: var(--bad); }
     .risk-warn { color: #8a5a00; }
     .risk-good { color: var(--accent); }
+    .cutoff-block {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      background: #fff8f6;
+      border: 1px solid #e8cfc8;
+      border-radius: 8px;
+    }
+    .cutoff-block h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+    .cutoff-row {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 8px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
     .tabs {
       position: sticky;
       top: 74px;
@@ -498,6 +523,115 @@
       width: 20px;
       height: 20px;
       accent-color: var(--accent);
+    }
+    .writing-input-wrap {
+      display: grid;
+      gap: 10px;
+    }
+    .writing-label {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .writing-textarea {
+      width: 100%;
+      min-height: 88px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 16px;
+      line-height: 1.55;
+      font-family: inherit;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    .writing-textarea:disabled {
+      background: #f4f4f4;
+      color: var(--muted);
+    }
+    .writing-char-count {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .writing-char-count.warn {
+      color: #c83b2b;
+      font-weight: 800;
+    }
+    .writing-error {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: #c83b2b;
+    }
+    .writing-status {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .writing-submit {
+      margin-top: 0;
+    }
+    .writing-score-result {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .writing-score-summary {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--ink);
+    }
+    .writing-keyword-group strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: var(--accent);
+    }
+    .writing-keyword-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .keyword-hit,
+    .keyword-miss {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+    .keyword-hit {
+      background: #edf8f0;
+      border: 1px solid #7fb896;
+      color: #1f5c3a;
+    }
+    .keyword-miss {
+      background: #fff1ec;
+      border: 1px solid #e0a698;
+      color: #8b2e1f;
+    }
+    .writing-model-block {
+      padding: 10px;
+      background: #fffaf0;
+      border: 1px solid #ead687;
+      border-radius: 8px;
+    }
+    .writing-model-block strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #4a350d;
+      font-size: 14px;
+    }
+    .writing-model-block p {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 900;
+      color: #4a350d;
+      line-height: 1.55;
     }
     .primary {
       width: 100%;
@@ -894,6 +1028,10 @@
       { key: "商法・会社法", label: "商法", target: 8, floor: 4, cats: ["商法・会社法"], command: "商法・会社法", mode: "first", note: "設立・株式・機関だけ。時間を使いすぎない。" },
       { key: "基礎法学", label: "基礎法学", target: 4, floor: 0, cats: ["基礎法学"], command: "基礎法学", mode: "first", note: "直前暗記。長時間使わない。" }
     ];
+    const WRITING_FREE_INPUT_IDS = new Set(["w100", "w101", "w102", "w103", "w104", "w105"]);
+    function isWritingFreeInput(question) {
+      return Boolean(question && WRITING_FREE_INPUT_IDS.has(question.id));
+    }
     const questions = [
       q("t01", "行政手続法", "審査基準が使われる場面はどれか。", ["不利益処分", "申請に対する処分", "行政指導", "住民訴訟"], 1, "審査基準は申請に対する処分。処分基準は不利益処分。"),
       q("t02", "行政手続法", "処分基準の公表について正しいものはどれか。", ["必ず公にする", "公にするよう努める", "申請者だけに通知する", "裁判所だけに提出する"], 1, "処分基準は公にするよう努める。審査基準は原則として公にする。"),
@@ -909,17 +1047,11 @@
       q("f06", "行政不服審査法", "審理員について正しいものはどれか。", ["原則として審理手続を行う", "必ず裁判官である", "取消判決をする", "条例を制定する"], 0, "行政不服審査法では、原則として審理員が審理手続を行う。"),
       q("j01", "行政事件訴訟法", "取消訴訟の出訴期間として正しいものはどれか。", ["知った日から6か月、処分の日から1年", "知った日の翌日から3か月だけ", "処分の日から5年", "期間制限なし"], 0, "取消訴訟は、処分を知った日から6か月以内、処分の日から1年以内。"),
       q("j02", "行政事件訴訟法", "取消訴訟の被告として原則正しいものはどれか。", ["公務員個人", "処分庁の所属する国または公共団体", "審理員", "行政不服審査会"], 1, "取消訴訟の被告は、処分庁または裁決庁の所属する国または公共団体。"),
-      q("j03", "行政事件訴訟法", "裁決取消訴訟で原則として主張できる違法はどれか。", ["原処分のすべての違法", "裁決固有の瑕疵", "契約不適合", "行政指導の不当性だけ"], 1, "裁決取消訴訟では原則として裁決固有の瑕疵だけを主張する。"),
       q("j04", "行政事件訴訟法", "取消訴訟で最初に問題となりやすい要件はどれか。", ["処分性", "相続分", "株式併合", "契約不適合"], 0, "取消訴訟は、行政庁の処分その他公権力の行使にあたる行為かが出発点。"),
       q("j05", "行政事件訴訟法", "原告適格の判断で中心となる考え方はどれか。", ["法律上の利益を有する者か", "政治的意見が強いか", "納税額が多いか", "行政指導を受けたか"], 0, "原告適格は、法律上の利益を有する者かどうかで判断する。"),
       q("j06", "行政事件訴訟法", "差止訴訟の要件として重要なものはどれか。", ["軽微な不便", "重大な損害を生ずるおそれ", "処分後10年経過", "住民監査請求"], 1, "差止訴訟では重大な損害を生ずるおそれ、補充性などが重要。"),
       q("j07", "行政事件訴訟法", "執行停止について正しいものはどれか。", ["取消訴訟提起で当然に認められる", "重大な損害を避けるため緊急の必要がある場合に問題となる", "行政庁だけが申し立てる", "公共の福祉に重大な影響があっても必ず認められる"], 1, "執行停止は、重大な損害を避けるため緊急の必要がある場合に認められ得る。"),
       q("j08", "行政事件訴訟法", "事情判決が問題となる場面はどれか。", ["処分は違法だが取消しが公共の福祉に適合しない場合", "審査請求が不適法な場合", "行政指導に従わない場合", "条例制定請求をする場合"], 0, "事情判決は、処分は違法だが取消しが公共の福祉に適合しない場合の制度。"),
-      q("j09", "行政事件訴訟法", "義務付け訴訟の目的として正しいものはどれか。", ["行政庁に一定の処分をすべきことを命じる", "処分効力を当然に止める", "公務員個人を処罰する", "条例案を住民が可決する"], 0, "義務付け訴訟は、行政庁に一定の処分または裁決をすべき旨を命じることを求める。"),
-      q("k01", "国家賠償法", "国家賠償法1条の要件として不要なものはどれか。", ["公務員", "公権力の行使", "故意または過失", "契約の成立"], 3, "国賠1条は、公務員、公権力の行使、職務上、故意過失、違法、損害が軸。"),
-      q("k02", "国家賠償法", "国賠法2条の中心テーマはどれか。", ["公の営造物の設置管理の瑕疵", "審査請求期間", "条例制定請求", "聴聞手続"], 0, "国賠2条は、道路や河川など公の営造物の設置または管理の瑕疵。"),
-      q("k03", "国家賠償法", "国賠1条について判例上正しいものはどれか。", ["公務員個人が常に被害者へ直接責任を負う", "国または公共団体が賠償責任を負う", "損害がなくても責任成立", "故意過失は不要"], 1, "国または公共団体が賠償責任を負う。公務員個人の直接責任は否定されるのが判例。"),
-      q("k04", "国家賠償法", "国賠2条の瑕疵の意味として近いものはどれか。", ["通常有すべき安全性を欠くこと", "審査請求を却下すること", "条例が制定されること", "申請者が不満を持つこと"], 0, "瑕疵とは、通常有すべき安全性を欠いている状態をいう。"),
       q("c01", "地方自治法", "条例制定改廃請求に必要な署名数はどれか。", ["有権者の50分の1以上", "有権者の10分の1以上", "有権者の3分の1以上", "議員全員"], 0, "条例制定改廃請求と監査請求は、有権者の50分の1以上。"),
       q("c02", "地方自治法", "住民訴訟の前に必要となるものはどれか。", ["審査請求", "住民監査請求", "聴聞", "行政指導"], 1, "住民訴訟には住民監査請求の前置が必要。"),
       q("c03", "地方自治法", "住民訴訟の対象として正しいものはどれか。", ["あらゆる行政活動", "違法な財務会計行為", "民間企業の契約全般", "刑事事件"], 1, "住民訴訟は違法な財務会計行為を対象とする民衆訴訟。"),
@@ -928,48 +1060,27 @@
       q("s01", "行政法総論", "公定力の説明として正しいものはどれか。", ["行政行為は取り消されるまで有効に扱われる", "行政庁は常に裁判なしで強制執行できる", "私人は永久に争える", "行政指導に強制力がある"], 0, "公定力とは、違法な行政行為でも取り消されるまでは有効に扱われる効力。"),
       q("s02", "行政法総論", "行政上の強制執行に含まれるものはどれか。", ["代執行", "裁決取消訴訟", "事情判決", "行政指導"], 0, "行政上の強制執行には、代執行、執行罰、直接強制、強制徴収がある。"),
       q("s03", "行政法総論", "不可争力の説明として正しいものはどれか。", ["争える期間を過ぎると私人から争えなくなる", "行政庁が常に自由に変更できる", "行政行為は必ず無効になる", "行政指導が強制になる"], 0, "不可争力とは、不服申立てや出訴期間の経過で私人から争えなくなる効力。"),
-      q("w01", "記述式", "裁決だけに手続上の瑕疵がある場合、最も適切なものはどれか。", ["裁決取消訴訟を提起し、裁決固有の瑕疵を主張する", "住民訴訟を提起する", "契約解除を主張する", "審査基準の公表を求める"], 0, "裁決固有の瑕疵を争う場合は、裁決取消訴訟が記述式の定番。"),
-      q("m01", "民法", "詐欺による意思表示について正しいものはどれか。", ["常に無効", "取り消すことができる", "相手方が善意なら常に有効", "第三者には常に対抗できる"], 1, "詐欺による意思表示は取り消すことができる。ただし善意無過失の第三者には対抗できない。"),
       q("m02", "民法", "心裡留保について正しいものはどれか。", ["常に無効", "相手方が真意でないことを知り又は知ることができたときは無効", "常に取消し", "代理だけの制度"], 1, "心裡留保は原則有効だが、相手方が真意でないことを知り又は知ることができたときは無効。"),
       q("m03", "民法", "無権代理について本人ができることはどれか。", ["追認または追認拒絶", "必ず損害賠償だけ", "常に契約を無効にするだけ", "時効取得だけ"], 0, "無権代理では、本人は追認または追認拒絶ができる。追認すれば原則として契約時にさかのぼって有効。"),
-      q("m04", "民法", "消滅時効について正しいものはどれか。", ["権利行使できる時から常に1年", "時効利益はあらかじめ放棄できる", "時効完成後の債務承認は援用権喪失につながり得る", "所有権も消滅時効にかかる"], 2, "時効完成後に債務を承認すると、信義則上、時効援用権を失うことがある。"),
       q("m05", "民法", "債務不履行解除について正しいものはどれか。", ["解除には常に裁判が必要", "履行遅滞では催告しても解除不可", "契約目的を達成できないとき無催告解除が認められる場合がある", "解除すると損害賠償請求は常に不可"], 2, "履行不能や契約目的を達成できない場合など、無催告解除が認められる場合がある。"),
       q("m06", "民法", "不法行為の基本要件として不要なものはどれか。", ["故意または過失", "権利又は法律上保護される利益の侵害", "損害", "契約の成立"], 3, "不法行為は、故意過失、権利利益侵害、損害、因果関係が軸。契約成立は不要。"),
-      q("m07", "民法", "賃貸借で賃料不払いが長期化した場合、賃貸人の基本対応として近いものはどれか。", ["直ちに自力で追い出す", "催告し、信頼関係破壊があれば解除を検討する", "所有権を時効取得する", "常に契約は当然終了する"], 1, "賃料不払いでは、催告解除と信頼関係破壊の有無が重要。記述式でも狙われる。"),
       q("ken01", "憲法", "表現の自由について正しいものはどれか。", ["検閲は憲法上明文で禁止される", "経済的自由より常に弱い", "報道の自由は保障されない", "事前抑制は常に許される"], 0, "検閲は禁止。表現の自由は民主政の過程に関わるため重要度が高い。"),
       q("ken02", "憲法", "内閣について正しいものはどれか。", ["国務大臣の過半数は国会議員でなければならない", "総理大臣は天皇が自由に任命する", "参議院の不信任で当然総辞職", "最高裁長官は国会が任命する"], 0, "国務大臣の過半数は国会議員でなければならない。内閣総理大臣は国会の指名に基づき天皇が任命。"),
       q("ken03", "憲法", "違憲審査について正しいものはどれか。", ["日本は抽象的違憲審査制を原則とする", "具体的事件を前提に法令の憲法適合性を判断する", "行政庁だけが判断する", "地方議会だけが判断する"], 1, "日本の違憲審査は、具体的事件を前提に裁判所が判断する付随的違憲審査制。"),
-      q("chi01", "基礎知識", "個人情報保護法上の個人情報にあたるものはどれか。", ["完全匿名化され復元不能な統計", "特定個人を識別できる氏名付き顧客情報", "天気予報", "法人の売上高だけ"], 1, "氏名などにより特定個人を識別できる情報は個人情報。"),
-      q("chi02", "基礎知識", "フィッシングの説明として正しいものはどれか。", ["利用者をだまして情報を入力させる手口", "二要素認証の別名", "合法的な暗号化技術", "行政訴訟の一種"], 0, "フィッシングは、偽サイトや偽メールでID・パスワード等を入力させる手口。"),
-      q("chi04", "基礎知識", "2026年施行の改正行政書士法で特に狙われる可能性が高いものはどれか。", ["行政書士の使命・職責・デジタル対応", "刑法の殺人罪", "会社法の剰余金配当だけ", "民法の相続放棄期間だけ"], 0, "2026年1月1日施行の改正行政書士法は、令和8年度の基礎知識で要注意。使命、職責、特定行政書士、業務制限、両罰規定を押さえる。"),
       q("sho01", "商法・会社法", "株式会社の設立について正しいものはどれか。", ["発起人は1人でもよい", "定款作成は不要", "必ず取締役会が必要", "必ず監査役が必要"], 0, "株式会社の発起人は1人でもよい。会社法は設立、株式、機関を優先。"),
       q("sho02", "商法・会社法", "取締役について正しいものはどれか。", ["会社に対し善管注意義務を負う", "株主だけに義務を負う", "利益相反取引は常に自由", "競業取引に承認は不要"], 0, "取締役は会社に対して善管注意義務・忠実義務を負う。競業・利益相反は承認が重要。"),
       q("hou01", "基礎法学", "特別法と一般法の関係として正しいものはどれか。", ["特別法は一般法に優先する", "一般法は常に特別法に優先する", "後法は常に無効", "判例は常に法律に優先"], 0, "特別法は一般法に優先する。基礎法学は法の分類、裁判制度、法令用語を短時間で押さえる。"),
       q("hou02", "基礎法学", "民事訴訟について正しいものはどれか。", ["私人間の権利義務の確定を目的とする", "国家刑罰権の実現だけを目的とする", "被告人という用語を使う", "判決に既判力はない"], 0, "民事訴訟は私人間の権利義務の確定を目的とする。刑事訴訟との違いを押さえる。"),
-      q("w02", "記述式", "処分の効力を一時的に止めたい場合に検討する手段はどれか。", ["執行停止の申立て", "直接請求", "戒告処分", "再調査の請求だけ"], 0, "重大な損害を避けるため緊急の必要があるとして、執行停止を申し立てる。"),
-      q("w03", "記述式", "AがBにだまされて売買契約をした場合、Aの主張として最も適切なものはどれか。", ["詐欺を理由に意思表示を取り消せる", "契約は当然無効で何も不要", "錯誤無効だけを主張する", "解除しかできない"], 0, "民法記述では、誰が誰に何を主張できるかを40字で書く。詐欺取消しと第三者保護が頻出。"),
       q("w04", "記述式", "【行政法記述】営業停止処分を受けたXが、その処分自体を争う。最初に選ぶ答案骨子はどれか。", ["Xは処分庁所属の公共団体を被告として、営業停止処分の取消訴訟を提起する", "XはBに対し、契約解除を主張する", "Xは選挙管理委員会に解職請求をする", "Xは審査基準の制定を裁判所に求める"], 0, "出題意図：取消訴訟の基本型。制度：取消訴訟。当事者：Xが国または公共団体を被告。採点語：処分、取消訴訟、被告、違法。40字答案：XはYを被告として営業停止処分の取消訴訟を提起する。部分点：取消訴訟と被告を書けば拾える。"),
       q("w05", "記述式", "【行政法記述】処分後に期間が経過し、取消しても回復する利益がない。記述で最も意識すべき論点はどれか。", ["訴えの利益", "催告解除", "即時取得", "検閲禁止"], 0, "出題意図：取消訴訟の入口で落とす論点。制度：取消訴訟。当事者：原告X。採点語：訴えの利益、回復される法律上の利益。40字答案：取消判決で回復される法律上の利益がなく訴えの利益を欠く。部分点：訴えの利益という語で大きく拾う。"),
-      q("w06", "記述式", "【行政法記述】申請を拒否されたXが、行政庁に許可処分をさせたい。最も点になる骨子はどれか。", ["拒否処分取消訴訟と申請型義務付け訴訟を併合提起する", "住民監査請求だけをする", "国家賠償法2条だけを主張する", "行政指導に従う義務を主張する"], 0, "出題意図：申請型義務付けの型。制度：義務付け訴訟。当事者：Xが行政庁側を被告。採点語：拒否処分取消訴訟、申請型義務付け、併合提起。40字答案：拒否処分取消訴訟と許可処分の義務付け訴訟を併合提起する。部分点：義務付けだけでなく取消訴訟とのセットを書く。"),
-      q("w07", "記述式", "【行政法記述】行政庁が近く不利益処分をしそうで、処分前に止めたい。記述で使う制度はどれか。", ["差止訴訟", "不作為の違法確認訴訟", "裁決取消訴訟", "住民訴訟"], 0, "出題意図：処分前救済の選択。制度：差止訴訟。当事者：Xが国または公共団体を被告。採点語：差止訴訟、重大な損害、補充性。40字答案：重大な損害を避けるため、当該処分の差止訴訟を提起する。部分点：差止訴訟と重大な損害を書けば拾える。"),
       q("w08", "記述式", "【行政法記述】法令に基づく申請をしたのに行政庁が相当期間何もしない。最も適切な骨子はどれか。", ["不作為の違法確認訴訟を提起する", "事情判決を求める", "詐欺取消しを主張する", "条例制定請求をする"], 0, "出題意図：不作為救済の型。制度：不作為の違法確認訴訟。当事者：申請者X。採点語：法令に基づく申請、相当期間、不作為、違法確認。40字答案：Xは相当期間処分しない不作為の違法確認訴訟を提起する。部分点：不作為と相当期間を入れる。"),
       q("w09", "記述式", "【行政法記述】公務員が職務中に違法に損害を与えた。請求の骨子として最も適切なものはどれか。", ["国または公共団体に国家賠償法1条の損害賠償を請求する", "公務員個人に必ず取消訴訟を提起する", "行政代執行を請求する", "裁決固有の瑕疵を主張する"], 0, "出題意図：国賠1条の相手方。制度：国家賠償法1条。当事者：被害者Xが国または公共団体へ。採点語：公務員、職務、故意過失、違法、損害賠償。40字答案：Xは国又は公共団体に国賠法1条に基づき損害賠償請求できる。部分点：国または公共団体と1条を書く。"),
-      q("w10", "記述式", "【行政法記述】道路の穴で通行人が負傷した。請求の骨子として最も適切なものはどれか。", ["公の営造物の設置管理の瑕疵として国家賠償法2条を使う", "審査請求期間の徒過を主張する", "処分基準の公表を求める", "無権代理の追認拒絶をする"], 0, "出題意図：国賠1条と2条の切分け。制度：国家賠償法2条。当事者：被害者Xが国または公共団体へ。採点語：公の営造物、設置管理の瑕疵、損害。40字答案：道路の設置管理の瑕疵を理由に国賠法2条で損害賠償請求する。部分点：営造物、瑕疵、2条を入れる。"),
       q("w11", "記述式", "【行政法記述】審査請求の裁決だけに理由不備がある。原処分の違法ではなく何を主張するか。", ["裁決取消訴訟で裁決固有の瑕疵を主張する", "処分取消訴訟で民法の解除を主張する", "住民訴訟で財務会計行為を争う", "行政指導の任意性だけを主張する"], 0, "出題意図：裁決取消訴訟の定番。制度：裁決取消訴訟。当事者：Xが裁決庁所属の国等を被告。採点語：裁決取消訴訟、裁決固有の瑕疵。40字答案：Xは裁決取消訴訟を提起し、理由不備という裁決固有の瑕疵を主張する。部分点：裁決固有の瑕疵を落とさない。"),
-      q("w12", "記述式", "【民法記述】AがBの詐欺で売買契約をした。Aの答案骨子として最も点になるものはどれか。", ["AはBに対し、詐欺を理由に意思表示を取り消すことができる", "AはBに対し、常に無効を主張するだけでよい", "AはCに対し、常に対抗できる", "Aは行政庁に取消訴訟を提起する"], 0, "出題意図：民法記述の誰が誰に何を。制度：詐欺取消し。当事者：AがBへ。採点語：詐欺、意思表示、取消し、善意無過失の第三者。40字答案：AはBの詐欺を理由に売買の意思表示を取り消すことができる。部分点：詐欺と取消しで拾う。"),
       q("w13", "記述式", "【民法記述】無権代理人Bが本人Aの代理人として契約した。Aが契約を有効にしたくない場合の骨子はどれか。", ["Aは追認を拒絶でき、原則として契約の効果はAに帰属しない", "Aは必ず契約を追認しなければならない", "Aは取消訴訟を提起する", "Aは住民監査請求をする"], 0, "出題意図：代理記述の基本。制度：無権代理。当事者：本人A、相手方、無権代理人B。採点語：無権代理、追認拒絶、効果帰属しない。40字答案：Aは無権代理行為の追認を拒絶し、効果帰属を否定できる。部分点：追認拒絶と効果帰属を入れる。"),
-      q("w14", "記述式", "【民法記述】賃借人が賃料を長期不払い。賃貸人が明渡しを狙う場合の答案骨子はどれか。", ["催告後も不履行なら解除し、建物明渡しを請求する", "直ちに自力で追い出す", "詐欺取消しだけを主張する", "行政事件訴訟を提起する"], 0, "出題意図：賃貸借解除の部分点回収。制度：債務不履行解除。当事者：賃貸人が賃借人へ。採点語：催告、相当期間、不履行、解除、明渡し。40字答案：賃貸人は催告後も不履行なら契約を解除し建物明渡しを請求できる。部分点：催告、解除、明渡しを入れる。"),
-      q("w15", "記述式", "【民法記述】時効完成後、債務者が債務を承認した。債務者側の主張で問題になるものはどれか。", ["信義則上、時効の援用が制限され得る", "時効完成後も援用は常に自由", "債権は当然に消滅し主張不要", "処分性が必要になる"], 0, "出題意図：時効の記述で差がつく論点。制度：消滅時効。当事者：債務者、債権者。採点語：時効完成後、債務承認、信義則、援用権喪失。40字答案：時効完成後の債務承認により信義則上時効援用が制限され得る。部分点：援用と信義則を入れる。"),
-      q("w16", "記述式", "【2026予測・行政法】申請拒否処分を受けたXが、取消しだけでなく許可を得るところまで狙う。最も点になる組合せはどれか。", ["拒否処分取消訴訟と申請型義務付け訴訟", "裁決取消訴訟と住民訴訟", "国家賠償法2条と事情判決", "行政指導の中止請求だけ"], 0, "予測理由：近年は訴訟選択と組合せが狙われやすい。出題意図：取消しで終わらず許可まで取る型。採点語：拒否処分取消訴訟、申請型義務付け、併合提起。40字答案：拒否処分取消訴訟と許可処分の義務付け訴訟を併合提起する。"),
-      q("w17", "記述式", "【2026予測・行政法】行政庁が申請に対して相当期間応答しない。裁判で確認させるべき違法はどれか。", ["不作為の違法", "裁決固有の瑕疵", "公の営造物の瑕疵", "契約不適合"], 0, "予測理由：不作為は行政不服審査法と行政事件訴訟法を横断しやすい。出題意図：申請、相当期間、不作為を拾う。採点語：法令に基づく申請、相当期間、不作為の違法確認訴訟。40字答案：相当期間処分しない不作為の違法確認訴訟を提起する。"),
-      q("w18", "記述式", "【2026予測・行政法】処分前に、重大な損害を避けるため行政庁の処分を止めたい。使う訴訟はどれか。", ["差止訴訟", "取消訴訟", "当事者訴訟", "住民訴訟"], 0, "予測理由：差止めは要件語が明確で記述式にしやすい。出題意図：処分前救済を選ぶ。採点語：差止訴訟、重大な損害、補充性。40字答案：重大な損害を避けるため当該処分の差止訴訟を提起する。"),
       q("w19", "記述式", "【2026予測・行政法】取消判決後、行政庁が同じ理由で同じ処分を繰り返そうとしている。記述で狙われる効力はどれか。", ["取消判決の拘束力", "即時取得", "検閲禁止", "時効の援用"], 0, "予測理由：行政事件訴訟法33条の拘束力は条文要約から記述へつなげやすい。出題意図：判決効を答案化する。採点語：取消判決、拘束力、関係行政庁、同一理由。40字答案：取消判決の拘束力により行政庁は同一理由で同じ処分をできない。"),
-      q("w20", "記述式", "【2026予測・行政法】公務員の違法な職務行為で損害が生じた。誰に何を請求する答案が安全か。", ["国又は公共団体に国賠法1条の損害賠償請求", "公務員個人に取消訴訟", "行政庁に義務付け訴訟", "選挙管理委員会に解職請求"], 0, "予測理由：国賠1条は行政法記述で短く部分点化しやすい。出題意図：個人責任に飛びつかない。採点語：国又は公共団体、公務員、職務、故意過失、違法、損害。40字答案：国又は公共団体に国賠法1条に基づく損害賠償を請求する。"),
       q("w21", "記述式", "【2026予測・地方自治法】住民が自治体の違法な公金支出を裁判で争いたい。訴訟前に必要なものはどれか。", ["住民監査請求", "行政不服審査会への諮問", "聴聞", "審査基準の公表"], 0, "予測理由：住民監査請求前置は地方自治法の得点源。出題意図：住民訴訟の前提を落とさない。採点語：住民監査請求、住民訴訟、財務会計行為。40字答案：住民監査請求を経た上で違法な財務会計行為につき住民訴訟を提起する。"),
       q("w22", "記述式", "【2026予測・民法】買った物が契約内容に適合しない。買主がまず検討する請求として最も実戦的なものはどれか。", ["追完請求、代金減額請求、損害賠償、解除", "取消訴訟と執行停止", "住民監査請求", "審査請求だけ"], 0, "予測理由：契約不適合責任は改正民法後の定番で記述化しやすい。出題意図：旧瑕疵担保ではなく請求メニューを出す。採点語：契約不適合、追完、代金減額、損害賠償、解除。40字答案：買主は追完、代金減額、損害賠償又は解除を請求し得る。"),
       q("w23", "記述式", "【2026予測・民法】無権代理人が契約し、相手方が本人に返答を求めた。本人が放置した場合に問われやすい制度はどれか。", ["催告に対する確答がなければ追認拒絶とみなす", "当然に追認となる", "常に契約取消しとなる", "処分性が発生する"], 0, "予測理由：代理は短文で採点語を作りやすい。出題意図：追認、追認拒絶、催告を結びつける。採点語：無権代理、催告、確答、追認拒絶。40字答案：本人が相当期間内に確答しなければ追認拒絶とみなされる。"),
-      q("w24", "記述式", "【2026予測・民法】賃料不払いで解除と明渡しを狙う。答案に最低限入れるべき語の組合せはどれか。", ["催告、相当期間、不履行、解除、明渡し", "検閲、事前抑制、明確性", "審査基準、標準処理期間、届出", "処分性、原告適格、事情判決だけ"], 0, "予測理由：賃貸借は記述で当事者と請求が作りやすい。出題意図：自力救済ではなく解除と明渡し。採点語：催告、相当期間、不履行、解除、明渡し。40字答案：催告後相当期間内に支払わなければ解除し建物明渡しを請求できる。"),
-      q("w25", "記述式", "【2026予測・基礎知識連動】改正行政書士法を記述ではなく基礎知識で問われるなら、最優先で押さえる軸はどれか。", ["使命、職責、デジタル対応、特定行政書士", "裁決固有の瑕疵だけ", "契約不適合だけ", "検閲禁止だけ"], 0, "予測理由：2026年1月1日施行の改正行政書士法は今年度基礎知識で狙われやすい。出題意図：記述式ではなく足切り回避用に拾う。採点語：使命、職責、デジタル社会、特定行政書士、業務範囲。40字答案訓練ではなく、基礎知識の正誤判断で使う。"),
       q("b26", "基礎知識", "【足切り回避・行政書士法】令和8年度向けに、行政書士法で最も優先して押さえるべき組合せはどれか。", ["使命・職責・業務範囲・業務制限・特定行政書士", "処分性・原告適格・訴えの利益・事情判決・執行停止", "共有・相隣関係・占有訴権・即時取得・登記", "設立・株式・機関設計・取締役・代表取締役", "平等・表現の自由・職業選択・財産権・統治"], 0, "基礎知識の足切り回避用。行政書士法等業務関連諸法令は令和6年度以降の明示範囲。行政書士法は使命、職責、業務、業務制限、特定行政書士を正誤判断できるようにする。"),
       q("b27", "基礎知識", "【足切り回避・行政書士法】無資格者による業務制限で狙われやすい視点はどれか。", ["報酬を得て官公署提出書類等を業として作成する制限", "相談料名目なら官公署提出書類作成は常に自由となる", "行政書士法は試験制度と登録手続だけを定めている", "行政書士でない者も不服申立て代理を業としてできる", "業務制限は努力義務で罰則や取締りとは関係しない"], 0, "有料相談、代行、コンサル料など名目を変えた無資格業務が問われやすい。ポイントは、報酬、官公署提出書類等、業として、行政書士でない者の制限。"),
       q("b28", "基礎知識", "【足切り回避・戸籍法】戸籍法を基礎知識で問うなら、最も安全に押さえるべき軸はどれか。", ["身分関係を公証し、出生・婚姻・離婚・死亡を扱う", "居住関係を公証し、転入・転出・住民票だけを扱う", "会社関係を公証し、設立・役員・株式だけを扱う", "行政救済を定め、取消訴訟・義務付け訴訟を扱う", "情報管理を定め、個人情報保護委員会だけを扱う"], 0, "戸籍法は細かい条文暗記より、身分関係の公証、届出、出生・婚姻・離婚・死亡という骨格を押さえる。住民基本台帳法との区別が足切り回避に効く。"),
@@ -1012,7 +1123,7 @@
       q("sho101", "商法・会社法", "【本試験型・組合せ】取締役で押さえるべき語の組合せとして最も適切なものはどれか。", ["善管注意義務・忠実義務・競業取引・利益相反取引", "審査基準・標準処理期間・理由提示", "詐欺・錯誤・強迫", "住民監査請求・住民訴訟", "個人情報・要配慮個人情報"], 0, "取締役は会社に対する善管注意義務・忠実義務、競業取引、利益相反取引を優先。会社法は深入りしすぎない。"),
       q("hou100", "基礎法学", "【本試験型・組合せ】法の適用関係として正しいものはどれか。", ["特別法は一般法に優先し、後法は前法に優先することがある", "一般法は常に特別法に優先する", "判例は常に法律に優先する", "条例は常に憲法に優先する", "行政指導は法律より上位である"], 0, "基礎法学は短時間で拾う科目。特別法と一般法、上位法と下位法、後法と前法の基本を押さえる。"),
       q("hou101", "基礎法学", "【本試験型・裁判制度】民事訴訟と刑事訴訟の区別として最も適切なものはどれか。", ["民事訴訟は私人間の権利義務、刑事訴訟は国家刑罰権の実現が中心", "民事訴訟では被告人と呼ぶ", "刑事訴訟は契約解除だけを扱う", "行政事件訴訟は常に刑事訴訟である", "民事訴訟に判決はない"], 0, "民事訴訟、刑事訴訟、行政事件訴訟の目的と用語を区別するだけで拾える問題がある。"),
-      q("w100", "記述式", "【本試験型・記述採点語】申請拒否処分を受けたXが、許可処分を得るところまで狙う。40字答案に最低限入れるべき組合せはどれか。", ["拒否処分取消訴訟・申請型義務付け訴訟・併合提起", "住民監査請求・財務会計行為・住民訴訟", "詐欺・意思表示・取消し", "公務員・職務・故意過失", "検閲・事前抑制・明確性"], 0, "予測理由：行政事件訴訟法の訴訟選択は記述式で部分点化しやすい。出題意図：取消しだけで終わらず許可まで狙う型。採点語：拒否処分取消訴訟、申請型義務付け訴訟、併合提起。40字答案：拒否処分取消訴訟と許可処分の義務付け訴訟を併合提起する。部分点：義務付けだけでなく取消訴訟とのセットを書く。"),
+      q("w100", "記述式", "【本試験型・記述採点語】申請拒否処分を受けたXが、許可処分を得るところまで狙う。40字答案に最低限入れるべき組合せはどれか。", ["拒否処分取消訴訟・申請型義務付け訴訟・併合提起", "住民監査請求・財務会計行為・住民訴訟", "詐欺・意思表示・取消し", "公務員・職務・故意過失", "検閲・事前抑制・明確性"], 0, "予測理由：行政事件訴訟法の訴訟選択は記述式で部分点化しやすい。出題意図：取消しだけで終わらず許可まで狙う型。採点語：拒否処分取消訴訟、申請型義務付け訴訟、併合提起。40字答案：拒否処分取消訴訟と申請型義務付け訴訟を併合提起する。部分点：義務付けだけでなく取消訴訟とのセットを書く。"),
       q("w101", "記述式", "【本試験型・記述採点語】行政庁が近く不利益処分をしそうで、処分前に止めたい。答案に入れるべき語はどれか。", ["差止訴訟・重大な損害・補充性", "執行停止・処分後・効力停止", "裁決取消訴訟・裁決固有の瑕疵", "時効・援用・債務承認", "株主総会・特別決議"], 0, "予測理由：差止めは要件語が明確で記述式にしやすい。出題意図：処分前救済を選ぶ。採点語：差止訴訟、重大な損害、補充性。40字答案：重大な損害を避けるため当該処分の差止訴訟を提起する。部分点：差止訴訟と重大な損害を入れる。"),
       q("w102", "記述式", "【本試験型・記述採点語】時効完成後に債務者が債務を承認した。債務者が後で時効を主張する場面で問題となる語はどれか。", ["時効完成後・債務承認・信義則・援用権喪失", "詐欺・善意無過失・第三者", "契約不適合・追完・代金減額", "住民監査請求・財務会計行為", "審査基準・標準処理期間"], 0, "予測理由：時効は民法記述で短く点を作りやすい。出題意図：完成後の承認と援用制限を結びつける。採点語：時効完成後、債務承認、信義則、援用権喪失。40字答案：時効完成後の債務承認により信義則上時効援用が制限され得る。部分点：信義則と援用を入れる。"),
       q("w103", "記述式", "【本試験型・記述採点語】AがBの詐欺で売買契約をした。Aの40字答案に必要な核はどれか。", ["AはBの詐欺を理由に意思表示を取り消すことができる", "Aは行政庁を被告として取消訴訟を提起する", "Aは住民監査請求を経て住民訴訟を提起する", "Aは国に国賠法2条で請求する", "Aは株主総会決議を取り消す"], 0, "予測理由：詐欺取消しは民法記述の基礎だが本試験では第三者保護も絡む。出題意図：誰が誰に何を主張するか。採点語：詐欺、意思表示、取消し、善意無過失の第三者。40字答案：AはBの詐欺を理由に売買の意思表示を取り消すことができる。部分点：詐欺と取消し。"),
@@ -1996,6 +2107,13 @@
       els.choices.innerHTML = "";
       els.answer.classList.add("hidden");
       els.answer.classList.remove("answer-ok", "answer-wrong");
+      updatePreviousQuestionButton();
+      if (isWritingFreeInput(currentQuestion)) {
+        currentDisplayChoices = [];
+        renderWritingQuestion();
+        speakQuestion(false);
+        return;
+      }
       currentDisplayChoices = shuffledChoices(currentQuestion);
       currentDisplayChoices.forEach((choice, i) => {
         const button = document.createElement("button");
@@ -2005,8 +2123,132 @@
         button.addEventListener("click", () => answer(i));
         els.choices.appendChild(button);
       });
-      updatePreviousQuestionButton();
       speakQuestion(false);
+    }
+    function writingAnswerCharCount(text) {
+      return Array.from(String(text || "")).length;
+    }
+    function renderWritingQuestion() {
+      els.choices.innerHTML = `
+        <div class="writing-input-wrap">
+          <label class="writing-label" for="writingAnswerInput">40字答案（自由入力）</label>
+          <textarea id="writingAnswerInput" class="writing-textarea" rows="3" placeholder="答案を入力"></textarea>
+          <p class="writing-char-count" id="writingCharCount">字数: 0 / 40 （句読点含む）</p>
+          <p class="writing-error hidden" id="writingError"></p>
+          <button type="button" class="primary writing-submit" id="writingSubmitButton">答案を提出する</button>
+          <p class="writing-status hidden" id="writingStatus"></p>
+        </div>`;
+      const textarea = document.getElementById("writingAnswerInput");
+      const charCount = document.getElementById("writingCharCount");
+      const submitButton = document.getElementById("writingSubmitButton");
+      const errorEl = document.getElementById("writingError");
+      const statusEl = document.getElementById("writingStatus");
+      const syncCharCount = () => {
+        const length = writingAnswerCharCount(textarea.value);
+        charCount.textContent = `字数: ${length} / 40 （句読点含む）`;
+        charCount.classList.toggle("warn", length > 40);
+      };
+      textarea.addEventListener("input", syncCharCount);
+      submitButton.addEventListener("click", () => {
+        errorEl.classList.add("hidden");
+        statusEl.classList.add("hidden");
+        const outcome = submitWritingAnswer(textarea.value);
+        if (!outcome.ok) {
+          if (outcome.reason === "empty") {
+            errorEl.textContent = "答案を入力してください";
+            errorEl.classList.remove("hidden");
+          } else if (outcome.reason === "unscorable") {
+            errorEl.textContent = "採点語が設定されていません";
+            errorEl.classList.remove("hidden");
+          }
+          return;
+        }
+        textarea.disabled = true;
+        submitButton.disabled = true;
+      });
+      syncCharCount();
+    }
+    function writingResultMessage(result) {
+      if (result.grade === "pass") return "よくできました。";
+      if (result.grade === "partial") return "部分点。不足語句を確認。";
+      return "復習対象に入れました。";
+    }
+    function renderWritingResult(result, question) {
+      const matchedCount = result.matched.length;
+      const totalCount = result.keywords.length;
+      const percent = Math.round(result.ratio * 100);
+      const model = explainPart(question.explain || "", "40字答案");
+      const matchedHtml = result.matched.length
+        ? result.matched.map((word) => `<span class="keyword-hit">✓ ${escapeHtml(word)}</span>`).join("")
+        : `<span class="keyword-miss">一致した採点語はありません</span>`;
+      const missingHtml = result.missing.length
+        ? result.missing.map((word) => `<span class="keyword-miss">✗ ${escapeHtml(word)}</span>`).join("")
+        : `<span class="keyword-hit">すべての採点語を拾えました</span>`;
+      return `
+        <div class="writing-score-result" aria-label="採点結果">
+          <p class="writing-score-summary">部分点: ${matchedCount}/${totalCount} 語一致（${percent}%）</p>
+          <div class="writing-keyword-group">
+            <strong>一致した採点語</strong>
+            <div class="writing-keyword-list">${matchedHtml}</div>
+          </div>
+          <div class="writing-keyword-group">
+            <strong>不足している採点語</strong>
+            <div class="writing-keyword-list">${missingHtml}</div>
+          </div>
+          <div class="writing-model-block">
+            <strong>模範答案（40字）</strong>
+            <p>${escapeHtml(model || "—")}</p>
+          </div>
+        </div>`;
+    }
+    function showWritingAnswerPanel(result) {
+      const pass = result.grade === "pass";
+      els.result.textContent = writingResultMessage(result);
+      els.explain.innerHTML = `${renderWritingResult(result, currentQuestion)}${writingStepsHtml(currentQuestion, pass, { hideChecklist: true })}`;
+      els.answer.classList.remove("hidden");
+      els.answer.classList.toggle("answer-ok", pass);
+      els.answer.classList.toggle("answer-wrong", result.grade === "fail");
+      setTimeout(() => {
+        els.next.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 80);
+      speakWritingAnswer(result);
+    }
+    function submitWritingAnswer(text) {
+      const trimmed = String(text || "").trim();
+      if (!trimmed) return { ok: false, reason: "empty" };
+      const keywords = parseScoringKeywords(currentQuestion.explain || "");
+      const result = scoreWritingAnswer(trimmed, keywords);
+      if (result.grade === "unscorable") return { ok: false, reason: "unscorable" };
+      const s = qs(currentQuestion.id);
+      s.writingAttempts = (s.writingAttempts ?? 0) + 1;
+      s.writingLastRatio = result.ratio;
+      s.writingBestRatio = Math.max(s.writingBestRatio ?? 0, result.ratio);
+      s.writingLastAnswer = trimmed.slice(0, 80);
+      s.writingLastMissing = result.missing.slice(0, 8);
+      s.attempts += 1;
+      state.answered += 1;
+      if (result.grade === "pass") {
+        s.correct += 1;
+        s.level = Math.min(5, s.level + 1);
+        s.dueAt = Date.now() + interval(s.level);
+        state.correct += 1;
+        state.streak += 1;
+      } else if (result.grade === "partial") {
+        s.dueAt = Date.now() + interval(s.level);
+        state.streak = 0;
+      } else {
+        s.wrong += 1;
+        s.level = Math.max(0, s.level - 1);
+        s.dueAt = Date.now() + 5 * 60 * 1000;
+        state.streak = 0;
+      }
+      state.lastQuestionId = currentQuestion.id;
+      state.lastCategory = currentQuestion.category;
+      state.lastMode = els.mode.value || "first";
+      save();
+      renderStats();
+      showWritingAnswerPanel(result);
+      return { ok: true, result };
     }
     function escapeHtml(value) {
       return String(value || "").replace(/[&<>"']/g, (char) => ({
@@ -2031,6 +2273,32 @@
       });
       return text.slice(from, end).replace(/[。,\s]+$/g, "").trim();
     }
+    function parseScoringKeywords(explain) {
+      return explainPart(explain, "採点語")
+        .split(/[、,，・／\/]/)
+        .map((word) => word.trim())
+        .filter(Boolean)
+        .slice(0, 8);
+    }
+    function scoreWritingAnswer(answerText, keywords) {
+      const list = Array.isArray(keywords) ? keywords.map((word) => String(word).trim()).filter(Boolean) : [];
+      if (!list.length) {
+        return { keywords: [], matched: [], missing: [], ratio: 0, grade: "unscorable" };
+      }
+      const normalized = String(answerText || "").replace(/\s+/g, " ").trim();
+      const matched = [];
+      const missing = [];
+      list.forEach((keyword) => {
+        const needle = String(keyword).replace(/\s+/g, " ").trim();
+        if (normalized.includes(needle)) matched.push(keyword);
+        else missing.push(keyword);
+      });
+      const ratio = matched.length / list.length;
+      let grade = "fail";
+      if (ratio >= 0.8) grade = "pass";
+      else if (ratio >= 0.5) grade = "partial";
+      return { keywords: list, matched, missing, ratio, grade };
+    }
     function keywordChecklistHtml(keywords) {
       const words = String(keywords || "")
         .split(/[、,，・／\/]/)
@@ -2048,7 +2316,8 @@
           `).join("")}
         </div>`;
     }
-    function writingStepsHtml(question, ok) {
+    function writingStepsHtml(question, ok, options) {
+      const settings = options || {};
       const text = question.explain || "";
       const prediction = explainPart(text, "予測理由");
       const intent = explainPart(text, "出題意図");
@@ -2061,13 +2330,14 @@
       const step2 = system ? `${system}を選ぶ。${intent || ""}` : (intent || "取消訴訟、義務付け訴訟、国賠、民法上の請求のどれかを選ぶ。");
       const step3 = keywords || "採点される法律用語を2個以上入れる。";
       const step4 = model || "主語、相手方、要件、効果の順で40字前後に圧縮する。";
+      const checklist = settings.hideChecklist ? "" : keywordChecklistHtml(keywords);
       const forecast = prediction ? `<div class="writing-step"><strong>今年度予測</strong><span>${escapeHtml(prediction)}</span></div>` : "";
       return `
         ${forecast}
         <div class="writing-steps">
           <div class="writing-step"><strong>1. 当事者と場面</strong><span>${escapeHtml(step1)}</span></div>
           <div class="writing-step"><strong>2. 制度を選ぶ</strong><span>${escapeHtml(step2)}</span></div>
-          <div class="writing-step"><strong>3. 採点語を拾う</strong><span>${escapeHtml(step3)}</span>${keywordChecklistHtml(keywords)}</div>
+          <div class="writing-step"><strong>3. 採点語を拾う</strong><span>${escapeHtml(step3)}</span>${checklist}</div>
           <div class="writing-step model-answer"><strong>4. 40字答案</strong><span>${escapeHtml(step4)}</span></div>
           <div class="writing-step"><strong>部分点の取り方</strong><span>${escapeHtml(partial || "結論を外しても、制度名と採点語を書けば部分点を拾える。")}</span></div>
           <div class="writing-step"><strong>次の行動</strong><span>${escapeHtml(nextAction(question.category, ok))}</span></div>
@@ -2281,6 +2551,11 @@
       const number = correctDisplayIndex >= 0 ? correctDisplayIndex + 1 : currentQuestion.answer + 1;
       speak(`${message} 正解は、${number}番、${correctChoice}。解説。${currentQuestion.explain}`, false);
     }
+    function speakWritingAnswer(result) {
+      const percent = Math.round(result.ratio * 100);
+      const model = explainPart(currentQuestion.explain || "", "40字答案");
+      speak(`${writingResultMessage(result)} 部分点。${result.matched.length}語中${result.keywords.length}語一致。${percent}パーセント。模範答案。${model}。`, false);
+    }
     function speakVisibleGuide() {
       let text = "";
       if (state.guideKind === "textbook") {
@@ -2317,7 +2592,10 @@
     function routeMemo(row, index) {
       if (row.target === 32 && row.floor === 24) return "足切り回避。行政書士法・戸籍法・住基法・個人情報・情報通信を先に取る。";
       if (row.target === 76) return "最大得点源。訴訟選択・手続・不服申立てを固める。";
-      if (row.target === 24) return "採点語で部分点を取る。40字全文よりキーワード優先。";
+      if (row.target === 24) {
+        if (writingReadinessScore() < 14) return "自由入力記述を1問。採点語で部分点を取り、14点ラインを超える。";
+        return "採点語で部分点を取る。40字全文よりキーワード優先。";
+      }
       if (row.target === 40) return "民法は深追いせず、代理・時効・債権・賃貸借に絞る。";
       return index === 0 ? "180点までの不足を埋める。" : "短時間で拾える範囲だけ進める。";
     }
@@ -2327,7 +2605,40 @@
       if (ratio < 0.65) return { text: "注意", klass: "risk-warn" };
       return { text: "良好", klass: "risk-good" };
     }
-    function todayRoutes180(rows, law, basic, total) {
+    function writingReadinessScore() {
+      const ids = [...WRITING_FREE_INPUT_IDS];
+      const ratios = ids.map((id) => qs(id).writingBestRatio ?? 0);
+      const avg = ratios.reduce((sum, value) => sum + value, 0) / ids.length;
+      return Math.round(24 * avg);
+    }
+    function cutoffStatus(actual, required) {
+      const ok = actual >= required;
+      return {
+        ok,
+        label: ok ? "OK" : "危険",
+        klass: ok ? "risk-good" : "risk-bad",
+        text: `${required}点必要 → 推定 ${actual}点`
+      };
+    }
+    function renderCutoffBlock(law, basic, writingScore) {
+      const items = [
+        { name: "法令等", ...cutoffStatus(law, 122) },
+        { name: "基礎知識", ...cutoffStatus(basic, 24) },
+        { name: "記述式", ...cutoffStatus(writingScore, 14) }
+      ];
+      return `
+        <div class="cutoff-block">
+          <h3>足切りチェック（本試験対照）</h3>
+          ${items.map((item) => `
+            <div class="cutoff-row">
+              <span>${item.name}</span>
+              <span>${item.text}</span>
+              <strong class="${item.klass}">${item.label}</strong>
+            </div>`).join("")}
+        </div>`;
+    }
+    function todayRoutes180(rows, law, basic, total, writingScore) {
+      const writingScoreValue = Number.isFinite(writingScore) ? writingScore : writingReadinessScore();
       const basicRow = rows.find((row) => row.target === 32 && row.floor === 24);
       const lawRow = rows.find((row) => row.target === 76);
       const writingRow = rows.find((row) => row.target === 24);
@@ -2335,7 +2646,7 @@
       const routes = [];
       if (basic < 24 && basicRow) routes.push({ ...basicRow, mode: "score180" });
       if (law < 122 && lawRow) routes.push({ ...lawRow, mode: "score180" });
-      if (writingRow && writingRow.score < Math.max(14, Math.round(writingRow.target * 0.55))) routes.push({ ...writingRow, mode: "score180" });
+      if (writingScoreValue < 14 && writingRow) routes.push({ ...writingRow, mode: "score180" });
       sorted.forEach((row) => {
         if (routes.length >= 3) return;
         if (!routes.some((item) => item.key === row.key)) routes.push({ ...row, mode: row.mode || "score180" });
@@ -2375,13 +2686,14 @@
       const total = rows.reduce((sum, row) => sum + row.score, 0);
       const law = rows.filter((row) => row.key !== "基礎知識").reduce((sum, row) => sum + row.score, 0);
       const basic = rows.find((row) => row.key === "基礎知識")?.score || 0;
+      const writingScore = writingReadinessScore();
       const rest = Math.max(0, 180 - total);
-      const mission = nextMission(rows, total, law, basic);
+      const mission = nextMission(rows, total, law, basic, writingScore);
       const topRoutes = rows
         .slice()
         .sort((a, b) => routePriority(b) - routePriority(a))
         .slice(0, 3);
-      const todayRoutes = todayRoutes180(rows, law, basic, total);
+      const todayRoutes = todayRoutes180(rows, law, basic, total, writingScore);
       els.exam180.innerHTML = `
         <h2>行政書士180点ルート</h2>
         <div class="score-grid">
@@ -2389,6 +2701,7 @@
           <div class="score-box"><span>180点まで</span><strong>${rest}</strong></div>
           <div class="score-box"><span>足切り</span><strong>${riskLabel(law, basic)}</strong></div>
         </div>
+        ${renderCutoffBlock(law, basic, writingScore)}
         <div class="mission">${mission}</div>
         <div class="today-block">
           <h3>今日の最短メニュー</h3>
@@ -2452,7 +2765,7 @@
     function routePriority(row) {
       const cutRisk = row.key === "基礎知識" && row.score < row.floor ? 80 : 0;
       const lawCore = row.key === "行政法" ? 45 : 0;
-      const writing = row.key === "記述式" && row.score < row.floor ? 25 : 0;
+      const writing = row.key === "記述式" && writingReadinessScore() < 14 ? 30 : 0;
       return row.gap + cutRisk + lawCore + writing;
     }
     function riskLabel(law, basic) {
@@ -2460,9 +2773,11 @@
       if (law < 122) return "法令";
       return "OK";
     }
-    function nextMission(rows, total, law, basic) {
+    function nextMission(rows, total, law, basic, writingScore) {
+      const writing = Number.isFinite(writingScore) ? writingScore : writingReadinessScore();
       if (basic < 24) return `最優先：基礎知識の足切り回避。現在${basic}点推定、まず24点ラインを超えます。`;
       if (law < 122) return `次：法令足切り突破。現在${law}点推定。行政法と民法を優先します。`;
+      if (writing < 14) return `記述足切り注意。自由入力記述で14点ラインを目指す（現在推定${writing}点）。`;
       if (total < 180) return `合格点まであと${180 - total}点。最短で伸びる科目だけやります。`;
       const weak = rows.slice().sort((a, b) => a.score / a.target - b.score / b.target)[0];
       return `180点設計上は合格圏。次は${weak.label}を補強して本試験型に耐える状態へ上げます。`;
