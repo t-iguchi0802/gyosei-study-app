@@ -710,6 +710,32 @@
       border: 1px solid #e0a698;
       color: #8b2e1f;
     }
+    .keyword-variant {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.4;
+      background: #eef4ff;
+      border: 1px solid #9bb8e8;
+      color: #1f4678;
+    }
+    .writing-warning-list {
+      display: grid;
+      gap: 6px;
+    }
+    .writing-warning {
+      margin: 0;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #fff8e8;
+      border: 1px solid #e6c76b;
+      color: #6b4f00;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
     .writing-model-block {
       padding: 10px;
       background: #fffaf0;
@@ -1112,6 +1138,131 @@
     const WRITING_FREE_INPUT_IDS = new Set(["w100", "w101", "w102", "w103", "w104", "w105"]);
     function isWritingFreeInput(question) {
       return Boolean(question && question.category === "記述式");
+    }
+    const WRITING_SCORING_CONCEPTS = {
+      "取消訴訟": ["取消訴訟", "取消し訴訟", "取り消し訴訟", "処分取消訴訟", "処分取消し訴訟", "取消の訴え", "取消しの訴え", "処分の取消訴訟", "処分の取消し訴訟"],
+      "拒否処分取消訴訟": ["拒否処分取消訴訟", "拒否処分の取消訴訟", "拒否処分取消し訴訟", "拒否処分の取消し訴訟"],
+      "申請型義務付け訴訟": ["申請型義務付け訴訟", "申請型の義務付け訴訟", "義務付け訴訟", "申請型義務付け"],
+      "併合提起": ["併合提起", "併合して提起", "併合"],
+      "差止訴訟": ["差止訴訟", "差止め訴訟", "差し止め訴訟", "差止め", "差止", "差し止め"],
+      "不作為": ["不作為", "不作為の", "無応答"],
+      "違法確認訴訟": ["違法確認訴訟", "不作為の違法確認訴訟", "違法確認"],
+      "裁決取消訴訟": ["裁決取消訴訟", "裁決取消し訴訟", "裁決の取消訴訟"],
+      "裁決固有の瑕疵": ["裁決固有の瑕疵", "裁決固有瑕疵", "固有の瑕疵"],
+      "訴えの利益": ["訴えの利益", "訴えの利益を欠", "訴えの利益がない", "訴えの利益を欠く"],
+      "回復する利益": ["回復する利益", "回復される利益", "回復する法律上の利益", "回復利益"],
+      "相当期間": ["相当期間", "相当の期間", "合理の期間"],
+      "国賠法1条": ["国賠法1条", "国賠法第1条", "国家賠償法1条", "国家賠償法第1条", "国賠1条"],
+      "国賠法2条": ["国賠法2条", "国賠法第2条", "国家賠償法2条", "国家賠償法第2条", "国賠2条"],
+      "損害賠償": ["損害賠償", "損害賠償請求", "賠償請求"],
+      "公の営造物": ["公の営造物", "営造物", "公営造物"],
+      "設置管理の瑕疵": ["設置管理の瑕疵", "設置又は管理の瑕疵", "管理の瑕疵", "設置管理瑕疵"],
+      "住民監査請求": ["住民監査請求", "監査請求", "住民監査"],
+      "住民訴訟": ["住民訴訟", "住民として訴訟"],
+      "財務会計行為": ["財務会計行為", "違法な財務会計行為", "財務会計"],
+      "契約不適合": ["契約不適合", "契約不適合責任", "目的物の契約不適合"],
+      "追完請求": ["追完請求", "追完", "修補請求"],
+      "代金減額請求": ["代金減額請求", "代金減額", "減額請求"],
+      "無権代理": ["無権代理", "無権代理行為", "無権代理人"],
+      "追認拒絶": ["追認拒絶", "追認を拒絶", "追認拒否", "追認しない"],
+      "効果帰属しない": ["効果帰属しない", "効果は帰属しない", "効果が帰属しない", "Aに及ばない", "本人に及ばない"],
+      "取消判決": ["取消判決", "取消し判決", "取り消し判決"],
+      "拘束力": ["拘束力", "判決の拘束力", "取消判決の拘束力"],
+      "同一理由": ["同一理由", "同じ理由", "同一の理由"],
+      "重大な損害": ["重大な損害", "重大損害", "重大な損害を避"],
+      "補充性": ["補充性", "補充性要件", "補充性を満た"],
+      "時効完成後": ["時効完成後", "時効が完成後", "時効完成の後"],
+      "債務承認": ["債務承認", "債務を承認", "承認した"],
+      "信義則": ["信義則", "信義則上", "信義則に反"],
+      "援用権喪失": ["援用権喪失", "援用を制限", "時効の援用", "援用権を失", "援用が制限"],
+      "意思表示": ["意思表示", "意思表示の", "売買の意思表示"],
+      "取消し": ["取消し", "取り消し", "取消", "意思表示の取消し"],
+      "詐欺": ["詐欺", "詐欺により", "詐欺を理由"],
+      "催告": ["催告", "催告し", "催告を"],
+      "不履行": ["不履行", "不履行のまま", "支払わない", "支払わなければ"],
+      "解除": ["解除", "契約を解除", "解除し"],
+      "明渡し": ["明渡し", "明渡", "明け渡し", "明渡しを請求"],
+      "被告": ["被告", "を被告", "被告とし", "被告として"],
+      "公務員": ["公務員", "職員", "公務員C"],
+      "理由不備": ["理由不備", "理由に不備", "理由の不備"],
+      "営業停止": ["営業停止", "営業停止処分", "停止処分"],
+      "B市": ["B市", "Ｂ市"],
+      "解体": ["解体", "解体済", "解体された", "既に解体"]
+    };
+    const WRITING_NEAR_MATCH_RULES = [
+      { pattern: /処分停止/, message: "「処分停止」は「執行停止」の誤用の可能性があります。取消訴訟を書けていれば、その部分は加点対象です。" },
+      { pattern: /執行停止/, message: "執行停止は処分後の救済です。処分前なら差止訴訟、違法争いなら取消訴訟が該当しやすいです。" },
+      { pattern: /確認訴訟/, message: "確認訴訟は無効確認等の場面です。処分取消なら取消訴訟を確認してください。" },
+      { pattern: /審査請求/, message: "審査請求は行政内部手続です。裁判所への手段と混同していないか確認してください。" }
+    ];
+    function normalizeWritingText(text) {
+      let s = String(text || "").normalize("NFKC");
+      s = s.replace(/[\s\u3000。、，．.,!！?？「」『』（）()【】\[\]・:：;；\-－—]/g, "");
+      const phraseRules = [
+        [/取り消し/g, "取消"],
+        [/取消し/g, "取消"],
+        [/取消の訴え/g, "取消訴訟"],
+        [/取消の訴/g, "取消訴"],
+        [/申し立て/g, "申立"],
+        [/申立て/g, "申立"],
+        [/差し止め/g, "差止"],
+        [/差止め/g, "差止"],
+        [/明け渡し/g, "明渡"],
+        [/明渡し/g, "明渡"],
+        [/引き渡し/g, "引渡"],
+        [/引渡し/g, "引渡"],
+        [/支払い/g, "支払"],
+        [/国家賠償法/g, "国賠法"],
+        [/国家賠/g, "国賠"]
+      ];
+      phraseRules.forEach(([re, rep]) => { s = s.replace(re, rep); });
+      return s;
+    }
+    function buildFlexiblePattern(phrase) {
+      let p = String(phrase).normalize("NFKC").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      p = p.replace(/取消/g, "(?:取?り?消(?:し)?|取消)");
+      p = p.replace(/訴訟/g, "(?:の)?訴(?:え|訟)");
+      p = p.replace(/訴え/g, "(?:の)?訴(?:え|訟)");
+      p = p.replace(/差止/g, "差(?:し)?止(?:め)?");
+      p = p.replace(/明渡/g, "明(?:け)?渡(?:し)?");
+      p = p.replace(/引渡/g, "引(?:き)?渡(?:し)?");
+      p = p.replace(/支払/g, "支払(?:い)?");
+      p = p.replace(/申立/g, "申(?:し)?立(?:て)?");
+      p = p.replace(/国賠法/g, "(?:国家賠償法|国賠法)");
+      return new RegExp(p, "i");
+    }
+    function findConceptExpression(original, acceptedList) {
+      const text = String(original || "").normalize("NFKC");
+      const sorted = [...acceptedList].sort((a, b) => b.length - a.length);
+      for (const accepted of sorted) {
+        const literal = text.match(buildFlexiblePattern(accepted));
+        if (literal && literal[0]) {
+          return { expression: literal[0], viaVariant: literal[0] !== accepted, canonical: accepted };
+        }
+      }
+      const normalizedAnswer = normalizeWritingText(text);
+      for (const accepted of sorted) {
+        const needle = normalizeWritingText(accepted);
+        if (needle && normalizedAnswer.includes(needle)) {
+          return { expression: accepted, viaVariant: true, canonical: accepted };
+        }
+      }
+      return null;
+    }
+    function buildScoringConcepts(keywords) {
+      const list = Array.isArray(keywords) ? keywords.map((word) => String(word).trim()).filter(Boolean) : [];
+      return list.map((label) => {
+        const aliases = WRITING_SCORING_CONCEPTS[label] || [];
+        const accepted = [...new Set([label, ...aliases])];
+        return { label, accepted };
+      });
+    }
+    function detectWritingWarnings(original, matchedLabels) {
+      const text = String(original || "").normalize("NFKC");
+      const matched = new Set(matchedLabels || []);
+      return WRITING_NEAR_MATCH_RULES
+        .filter((rule) => rule.pattern.test(text))
+        .map((rule) => ({ message: rule.message, pattern: String(rule.pattern) }));
     }
     const questions = [
       q("t01", "行政手続法", "審査基準が使われる場面はどれか。", ["不利益処分", "申請に対する処分", "行政指導", "住民訴訟"], 1, "審査基準は申請に対する処分。処分基準は不利益処分。"),
@@ -2250,23 +2401,36 @@
       const totalCount = result.keywords.length;
       const percent = Math.round(result.ratio * 100);
       const model = explainPart(question.explain || "", "40字答案");
-      const matchedHtml = result.matched.length
-        ? result.matched.map((word) => `<span class="keyword-hit">✓ ${escapeHtml(word)}</span>`).join("")
-        : `<span class="keyword-miss">一致した採点語はありません</span>`;
+      const matchedConceptHtml = (result.conceptMatches || []).length
+        ? result.conceptMatches.map((item) => `
+            <span class="keyword-hit">✓ ${escapeHtml(item.label)}${item.viaVariant ? "（表記ゆれ）" : ""}<br><small>拾った表現: ${escapeHtml(item.expression)}</small></span>
+          `).join("")
+        : `<span class="keyword-miss">一致した採点概念はありません</span>`;
       const missingHtml = result.missing.length
         ? result.missing.map((word) => `<span class="keyword-miss">✗ ${escapeHtml(word)}</span>`).join("")
-        : `<span class="keyword-hit">すべての採点語を拾えました</span>`;
+        : `<span class="keyword-hit">すべての採点概念を拾えました</span>`;
+      const variantHtml = (result.variants || []).length
+        ? result.variants.map((item) => `<span class="keyword-variant">↔ ${escapeHtml(item.label)}: ${escapeHtml(item.expression)}</span>`).join("")
+        : `<span class="keyword-hit">表記ゆれの自動認識はありません</span>`;
+      const warningHtml = (result.warnings || []).length
+        ? result.warnings.map((item) => `<p class="writing-warning">${escapeHtml(item.message)}</p>`).join("")
+        : "";
       return `
         <div class="writing-score-result" aria-label="採点結果">
-          <p class="writing-score-summary">部分点: ${matchedCount}/${totalCount} 語一致（${percent}%）</p>
+          <p class="writing-score-summary">部分点: ${matchedCount}/${totalCount} 概念一致（${percent}%）</p>
           <div class="writing-keyword-group">
-            <strong>一致した採点語</strong>
-            <div class="writing-keyword-list">${matchedHtml}</div>
+            <strong>一致した採点概念</strong>
+            <div class="writing-keyword-list">${matchedConceptHtml}</div>
           </div>
           <div class="writing-keyword-group">
-            <strong>不足している採点語</strong>
+            <strong>不足している採点概念</strong>
             <div class="writing-keyword-list">${missingHtml}</div>
           </div>
+          <div class="writing-keyword-group">
+            <strong>表記ゆれとして認識</strong>
+            <div class="writing-keyword-list">${variantHtml}</div>
+          </div>
+          ${warningHtml ? `<div class="writing-keyword-group"><strong>注意（近い表現）</strong><div class="writing-warning-list">${warningHtml}</div></div>` : ""}
           <div class="writing-model-block">
             <strong>模範答案（40字）</strong>
             <p>${escapeHtml(model || "—")}</p>
@@ -2352,23 +2516,58 @@
         .slice(0, 8);
     }
     function scoreWritingAnswer(answerText, keywords) {
-      const list = Array.isArray(keywords) ? keywords.map((word) => String(word).trim()).filter(Boolean) : [];
-      if (!list.length) {
-        return { keywords: [], matched: [], missing: [], ratio: 0, grade: "unscorable" };
+      const concepts = buildScoringConcepts(Array.isArray(keywords) ? keywords : parseScoringKeywords(keywords || ""));
+      if (!concepts.length) {
+        return { keywords: [], concepts: [], matched: [], missing: [], conceptMatches: [], variants: [], warnings: [], ratio: 0, grade: "unscorable" };
       }
-      const normalized = String(answerText || "").replace(/\s+/g, " ").trim();
+      const original = String(answerText || "");
+      const normalizedAnswer = normalizeWritingText(original);
+      const conceptMatches = [];
+      const variants = [];
       const matched = [];
       const missing = [];
-      list.forEach((keyword) => {
-        const needle = String(keyword).replace(/\s+/g, " ").trim();
-        if (normalized.includes(needle)) matched.push(keyword);
-        else missing.push(keyword);
+      concepts.forEach((concept) => {
+        const hit = findConceptExpression(original, concept.accepted);
+        if (hit) {
+          matched.push(concept.label);
+          conceptMatches.push({
+            label: concept.label,
+            expression: hit.expression,
+            viaVariant: hit.viaVariant
+          });
+          if (hit.viaVariant) {
+            variants.push({ label: concept.label, expression: hit.expression });
+          }
+          return;
+        }
+        const normalizedHit = concept.accepted.some((accepted) => {
+          const needle = normalizeWritingText(accepted);
+          return needle && normalizedAnswer.includes(needle);
+        });
+        if (normalizedHit) {
+          matched.push(concept.label);
+          conceptMatches.push({ label: concept.label, expression: concept.label, viaVariant: true });
+          variants.push({ label: concept.label, expression: concept.label });
+          return;
+        }
+        missing.push(concept.label);
       });
-      const ratio = matched.length / list.length;
+      const ratio = matched.length / concepts.length;
       let grade = "fail";
       if (ratio >= 0.8) grade = "pass";
       else if (ratio >= 0.5) grade = "partial";
-      return { keywords: list, matched, missing, ratio, grade };
+      const warnings = detectWritingWarnings(original, matched);
+      return {
+        keywords: concepts.map((c) => c.label),
+        concepts,
+        matched,
+        missing,
+        conceptMatches,
+        variants,
+        warnings,
+        ratio,
+        grade
+      };
     }
     function keywordChecklistHtml(keywords) {
       const words = String(keywords || "")
