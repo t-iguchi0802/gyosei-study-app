@@ -295,6 +295,77 @@
       font-size: 14px;
       font-weight: 800;
     }
+    .progress-dashboard {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .dash-180 {
+      padding: 12px;
+      background: #ffffff;
+      border: 2px solid #c9ddd6;
+      border-radius: 8px;
+    }
+    .dash-180 h2,
+    .dash-section-title {
+      margin: 0 0 8px;
+      font-size: 20px;
+      line-height: 1.35;
+    }
+    .dash-section-title {
+      font-size: 18px;
+    }
+    .dash-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-bottom: 8px;
+    }
+    .dash-summary:last-child {
+      margin-bottom: 0;
+    }
+    .dash-box {
+      padding: 10px 7px;
+      background: #f5f7f2;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      text-align: center;
+    }
+    .dash-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .dash-box strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 21px;
+      line-height: 1;
+    }
+    .dash-cat-list {
+      display: grid;
+      gap: 7px;
+    }
+    .dash-cat-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      padding: 9px;
+      background: #fafbf8;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .dash-cat-row .acc {
+      min-width: 48px;
+      text-align: right;
+    }
+    .dash-cat-row .acc.none {
+      color: var(--muted);
+    }
     .tabs {
       position: sticky;
       top: 74px;
@@ -2679,7 +2750,21 @@
         </div>
       `).join("");
     }
-    function renderExam180() {
+    function aggregateQuestionStats() {
+      const total = questions.length;
+      let done = 0;
+      let correct = 0;
+      let attempts = 0;
+      questions.forEach((question) => {
+        const s = qs(question.id);
+        if (s.attempts > 0) done += 1;
+        correct += s.correct;
+        attempts += s.attempts;
+      });
+      const accuracy = attempts > 0 ? Math.round((correct / attempts) * 100) : 0;
+      return { total, done, correct, attempts, accuracy };
+    }
+    function score180Snapshot() {
       const rows = scorePlan180.map((part) => {
         const readiness = partReadiness(part);
         const score = Math.round(part.target * readiness);
@@ -2690,6 +2775,54 @@
       const basic = rows.find((row) => row.key === "基礎知識")?.score || 0;
       const writingScore = writingReadinessScore();
       const rest = Math.max(0, 180 - total);
+      return { rows, total, law, basic, writingScore, rest };
+    }
+    function renderCategoryAccuracyRows() {
+      return categories.map((category) => {
+        const list = questions.filter((x) => x.category === category);
+        let correct = 0;
+        let attempts = 0;
+        const done = list.filter((x) => qs(x.id).attempts > 0).length;
+        list.forEach((x) => {
+          const s = qs(x.id);
+          correct += s.correct;
+          attempts += s.attempts;
+        });
+        const accText = attempts > 0 ? `${Math.round((correct / attempts) * 100)}%` : "—";
+        const accClass = attempts > 0 ? "acc" : "acc none";
+        return `<div class="dash-cat-row"><span>${category}</span><span class="small">${done}/${list.length}問</span><strong class="${accClass}">${accText}</strong></div>`;
+      }).join("");
+    }
+    function renderProgressDashboard() {
+      const stats = aggregateQuestionStats();
+      const snap = score180Snapshot();
+      return `
+        <div class="progress-dashboard">
+          <article class="panel dash-180">
+            <h2>学習ダッシュボード</h2>
+            <div class="dash-summary">
+              <div class="dash-box"><span>総問題数</span><strong>${stats.total}</strong></div>
+              <div class="dash-box"><span>実施済み</span><strong>${stats.done}</strong></div>
+              <div class="dash-box"><span>正答率</span><strong>${stats.accuracy}%</strong></div>
+            </div>
+          </article>
+          <article class="panel dash-180">
+            <h2>180点到達状況</h2>
+            <div class="dash-summary">
+              <div class="dash-box"><span>推定得点</span><strong>${snap.total}</strong></div>
+              <div class="dash-box"><span>180点まで不足</span><strong>${snap.rest}</strong></div>
+              <div class="dash-box"><span>目標</span><strong>180</strong></div>
+            </div>
+            ${renderCutoffBlock(snap.law, snap.basic, snap.writingScore)}
+          </article>
+          <article class="panel">
+            <h2 class="dash-section-title">分野別正答率</h2>
+            <div class="dash-cat-list">${renderCategoryAccuracyRows()}</div>
+          </article>
+        </div>`;
+    }
+    function renderExam180() {
+      const { rows, total, law, basic, writingScore, rest } = score180Snapshot();
       const mission = nextMission(rows, total, law, basic, writingScore);
       const topRoutes = rows
         .slice()
@@ -2858,17 +2991,20 @@
       const first = firstPassStats();
       const header = `<article class="progress-item panel"><div class="progress-head"><span>一周進捗</span><span>${first.overall}%</span></div><div class="bar"><span style="width:${first.overall}%"></span></div><p class="small">講義 ${first.lectures}% / 要点 ${first.cards}% / 問題 ${first.questions}%。まずは100%まで急いで一周しましょう。</p></article>`;
       renderSubjectMap();
-      els.progress.innerHTML = header + categories.map((category) => {
+      els.progress.innerHTML = renderProgressDashboard() + header + categories.map((category) => {
         const list = questions.filter((x) => x.category === category);
         const level = list.reduce((sum, x) => sum + qs(x.id).level, 0);
         const attempts = list.reduce((sum, x) => sum + qs(x.id).attempts, 0);
+        const correct = list.reduce((sum, x) => sum + qs(x.id).correct, 0);
         const wrong = list.reduce((sum, x) => sum + qs(x.id).wrong, 0);
         const pct = list.length ? Math.round(level / (list.length * 5) * 100) : 0;
         const total = list.length || 1;
         const touched = list.filter((x) => qs(x.id).attempts > 0).length;
         const firstPct = Math.round(touched / total * 100);
+        const accPct = attempts > 0 ? Math.round(correct / attempts * 100) : null;
         const status = firstPct >= 100 ? (pct >= 60 ? "Good" : "一周済。次は苦手優先") : "未完。一周優先";
-        return `<article class="progress-item panel"><div class="progress-head"><span>${category}</span><span>${firstPct}%一周</span></div><div class="bar"><span style="width:${firstPct}%"></span></div><p class="small">理解度 ${pct}%。解答 ${attempts}回 / ミス ${wrong}回。判定：${status}</p></article>`;
+        const accLabel = accPct === null ? "正答率 —" : `正答率 ${accPct}%`;
+        return `<article class="progress-item panel"><div class="progress-head"><span>${category}</span><span>${firstPct}%一周</span></div><div class="bar"><span style="width:${firstPct}%"></span></div><p class="small">理解度 ${pct}%。${accLabel}。解答 ${attempts}回 / ミス ${wrong}回。判定：${status}</p></article>`;
       }).join("");
     }
     function renderSubjectMap() {
