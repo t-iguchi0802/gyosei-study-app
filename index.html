@@ -496,41 +496,6 @@
       outline: 3px solid var(--accent);
       background: #f3fbf7;
     }
-    .audio-tools {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .audio-tools button {
-      background: #edf5f2;
-      border-color: #c9ddd6;
-      color: var(--accent);
-      font-weight: 800;
-    }
-    .global-audio {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin: 0 0 10px;
-    }
-    .speed-control {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 8px;
-      padding: 8px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 800;
-    }
-    .speed-control input {
-      width: 100%;
-    }
     label {
       display: grid;
       gap: 4px;
@@ -1007,8 +972,6 @@
       .filters { grid-template-columns: 1fr; }
       .study-log { grid-template-columns: 1fr; }
       .resume-tools { grid-template-columns: 1fr; }
-      .audio-tools { grid-template-columns: 1fr; }
-      .global-audio { grid-template-columns: 1fr; }
       .compact-dash-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
@@ -1038,16 +1001,6 @@
 
     <section class="exam180" id="exam180Panel" aria-label="180点モード"></section>
 
-    <section class="global-audio" aria-label="音声コントロール">
-      <button id="audioToggleButton" type="button">音声 ON</button>
-      <button id="stopAudioButton" type="button">音声を止める</button>
-      <label class="speed-control">
-        読む速さ
-        <span id="speedText">1.0倍</span>
-        <input id="speedRange" type="range" min="0.8" max="3" step="0.1" value="1">
-      </label>
-    </section>
-
     <nav class="tabs" aria-label="メニュー">
       <button class="tab active" type="button" data-view="learn">問題</button>
       <button class="tab" type="button" data-view="cards">要点</button>
@@ -1075,9 +1028,6 @@
       <div class="study-log">
         <button id="log10Button" type="button">10分勉強した</button>
         <button id="log30Button" type="button">30分勉強した</button>
-      </div>
-      <div class="audio-tools">
-        <button id="readQuestionButton" type="button">問題を聞く</button>
       </div>
       <article class="question panel">
         <div class="meta">
@@ -1119,9 +1069,6 @@
     </section>
 
     <section class="view" id="guideView">
-      <div class="audio-tools">
-        <button id="readGuideButton" type="button">表示中の講義を聞く</button>
-      </div>
       <div class="lecture-mode guide-kind" id="guideKindButtons">
         <button class="active" type="button" data-guide-kind="lecture">短文講義</button>
         <button type="button" data-guide-kind="textbook">体系テキスト</button>
@@ -1320,7 +1267,7 @@
       lecture("憲法", "経済的自由", "職業選択の自由や財産権では、規制目的によって審査の厳しさが変わります。消極目的規制と積極目的規制の違いが有名です。学説に深入りせず、判例の結論を短く押さえます。"),
       lecture("憲法", "統治", "統治では、国会、内閣、裁判所を条文中心に押さえます。国会は国権の最高機関、唯一の立法機関。内閣は行政権を担い、国会に対して連帯責任を負います。裁判所は司法権を担い、違憲審査権を持ちます。"),
       lecture("基礎知識", "個人情報保護", "個人情報保護では、個人情報、個人データ、保有個人データ、要配慮個人情報を区別します。特定個人を識別できる情報が個人情報です。本人同意、第三者提供、安全管理措置もよく出ます。"),
-      lecture("基礎知識", "情報通信", "情報通信では、フィッシング、ランサムウェア、二要素認証、暗号化、Cookie、クラウド、AIなどを押さえます。用語問題は短時間で点にしやすいため、音声で反復する価値があります。"),
+      lecture("基礎知識", "情報通信", "情報通信では、フィッシング、ランサムウェア、二要素認証、暗号化、Cookie、クラウド、AIなどを押さえます。用語問題は短時間で点にしやすいため、反復確認すると効果があります。"),
       lecture("基礎知識", "改正行政書士法", "令和8年度で注意したいのは、2026年1月1日施行の改正行政書士法です。行政書士の使命、職責、デジタル社会への対応、特定行政書士、業務範囲、無資格者規制、両罰規定を直前に確認します。"),
       lecture("商法・会社法", "株式会社の設立", "株式会社の設立では、発起人、定款、出資、設立時役員を押さえます。発起人は1人でもよく、定款作成は必要です。細かい手続より、基本用語と機関設計を優先します。"),
       lecture("商法・会社法", "株式と機関", "株式では、株主平等原則、譲渡制限株式、株主総会を押さえます。機関では、取締役、取締役会、監査役、会計参与などの役割を確認します。配点が小さいので、基本問題だけ取りに行きます。"),
@@ -1413,7 +1360,7 @@
 
       lecture("基礎法学", "法解釈", "法解釈には、文理解釈、論理解釈、目的論的解釈、反対解釈、類推解釈などがあります。行政書士試験では、難しい理論より用語の意味が問われやすいです。条文をどう読むかの基本として押さえます。"),
       lecture("基礎法学", "裁判の効力", "判決の効力には、既判力、執行力、形成力などがあります。既判力は、確定判決の判断内容を後の裁判で争えなくする効力です。民事訴訟と行政事件訴訟の理解にもつながります。"),
-      lecture("基礎法学", "法令用語", "法令用語では、又は、と、若しくは、及び、並びに、推定する、みなす、直ちに、速やかに、遅滞なく、などが出ます。問題文のひっかけにもなるので、直前に音声で反復すると効果があります。"),
+      lecture("基礎法学", "法令用語", "法令用語では、又は、と、若しくは、及び、並びに、推定する、みなす、直ちに、速やかに、遅滞なく、などが出ます。問題文のひっかけにもなるので、直前に反復確認すると効果があります。"),
 
       lecture("記述式", "行政法の典型テーマ", "行政法記述では、取消訴訟、裁決取消訴訟、義務付け訴訟、差止訴訟、執行停止、不作為の違法確認、理由提示、聴聞が典型です。制度名、被告、要件、効果を短く書く練習をします。"),
       lecture("記述式", "民法の典型テーマ", "民法記述では、詐欺取消し、錯誤取消し、代理、時効、債務不履行解除、契約不適合責任、賃貸借解除、不法行為、相続が典型です。問題文から法律構成を選び、効果を端的に書きます。"),
@@ -1658,14 +1605,12 @@
     const studyOrder = ["行政手続法", "行政不服審査法", "行政事件訴訟法", "国家賠償法", "地方自治法", "行政法総論", "民法", "基礎知識", "憲法", "商法・会社法", "基礎法学", "記述式"];
     const statuteLawOrder = ["行政手続法", "行政不服審査法", "行政事件訴訟法", "国家賠償法", "地方自治法", "行政代執行法"];
     const storeKey = "gyosei-admin-mobile-v3";
-    const state = JSON.parse(localStorage.getItem(storeKey) || '{"streak":0,"answered":0,"correct":0,"questions":{},"minutes":{},"audioOn":false,"speechRate":1,"cardsSeen":{},"lecturesSeen":{},"lectureMode":"basic","guideKind":"lecture","lastQuestionId":"","lastCategory":"全分野","lastMode":"first"}');
+    const state = JSON.parse(localStorage.getItem(storeKey) || '{"streak":0,"answered":0,"correct":0,"questions":{},"minutes":{},"cardsSeen":{},"lecturesSeen":{},"lectureMode":"basic","guideKind":"lecture","lastQuestionId":"","lastCategory":"全分野","lastMode":"first"}');
     if (!state.minutes) state.minutes = {};
     if (!state.cardsSeen) state.cardsSeen = {};
     if (!state.lecturesSeen) state.lecturesSeen = {};
     if (!state.lectureMode) state.lectureMode = "basic";
     if (!state.guideKind) state.guideKind = "lecture";
-    if (typeof state.audioOn !== "boolean") state.audioOn = false;
-    if (!state.speechRate) state.speechRate = 1;
     let currentQuestion = questions[0];
     let currentDisplayChoices = [];
     const questionHistory = [];
@@ -1680,8 +1625,7 @@
       qText: el("questionText"), choices: el("choices"), answer: el("answerPanel"), result: el("answerResult"),
       explain: el("answerExplain"), next: el("nextButton"), previousQuestion: el("previousQuestionButton"), relatedLecture: el("relatedLectureButton"), resume: el("resumeButton"), cardCategory: el("cardCategoryFilter"),
       flashCat: el("flashCategory"), flashFront: el("flashFront"), flashBack: el("flashBack"),
-      progress: el("progressList"), subjectMap: el("subjectMap"), audioToggle: el("audioToggleButton"), readQuestion: el("readQuestionButton"),
-      speedRange: el("speedRange"), speedText: el("speedText"), readGuide: el("readGuideButton"), stopAudio: el("stopAudioButton"),
+      progress: el("progressList"), subjectMap: el("subjectMap"),
       exam180: el("exam180Panel"), compactDash: el("compactDashPanel")
     };
 
@@ -1717,13 +1661,6 @@
       els.relatedLecture.addEventListener("click", () => goRelatedLecture(currentQuestion));
       el("log10Button").addEventListener("click", () => logStudy(10));
       el("log30Button").addEventListener("click", () => logStudy(30));
-      els.audioToggle.addEventListener("click", toggleAudio);
-      els.readQuestion.addEventListener("click", () => speakQuestion(true));
-      els.speedRange.addEventListener("input", () => {
-        state.speechRate = Number(els.speedRange.value);
-        els.speedText.textContent = `${state.speechRate.toFixed(1)}倍`;
-        save();
-      });
       els.cardCategory.addEventListener("change", () => { cardIndex = 0; renderCard(); });
       el("lectureModeButtons").addEventListener("click", (event) => {
         const mode = event.target.dataset.lectureMode;
@@ -1766,7 +1703,6 @@
       });
       el("showBackButton").addEventListener("click", () => {
         els.flashBack.classList.remove("hidden");
-        speak(`${els.flashFront.textContent}。答え。${els.flashBack.textContent}`, false);
       });
       el("nextCardButton").addEventListener("click", () => { cardIndex += 1; renderCard(); });
       el("prevCardButton").addEventListener("click", () => { cardIndex -= 1; renderCard(); });
@@ -1785,7 +1721,7 @@
           markGuideItemDone(guideItem.key);
           renderLectures();
           renderStats();
-          speak(guideItem.text, true);
+          tip.scrollIntoView({ behavior: "smooth", block: "center" });
           return;
         }
         if (action === "questions") {
@@ -1796,10 +1732,7 @@
         if (guideItem) markGuideItemDone(guideItem.key);
         save();
         renderStats();
-        speak(guideItem ? guideItem.text : tip.innerText, true);
       });
-      els.readGuide.addEventListener("click", () => speakVisibleGuide());
-      els.stopAudio.addEventListener("click", () => window.speechSynthesis && window.speechSynthesis.cancel());
       el("resetButton").addEventListener("click", () => {
         if (!confirm("学習記録をすべて削除します。元に戻せません。本当にリセットしますか？")) return;
         const typed = prompt("確認のため「リセット」と入力してください。");
@@ -1822,9 +1755,6 @@
         if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.4) return;
         previousQuestion();
       }, { passive: true });
-      renderAudioButton();
-      els.speedRange.value = state.speechRate;
-      els.speedText.textContent = `${Number(state.speechRate).toFixed(1)}倍`;
       pick();
       renderCard();
       renderStats();
@@ -1863,7 +1793,7 @@
           <span class="lecture-status">${isLectureDone(item) ? "完了済み" : "未完了"}</span>
           <p class="small">${item.body}</p>
           <div class="lecture-actions">
-            <button type="button" data-action="read" data-lecture-index="${index}">この講義を聞く</button>
+            <button type="button" data-action="read" data-lecture-index="${index}">この講義を読む</button>
             <button type="button" data-action="complete" data-lecture-index="${index}">${isLectureDone(item) ? "未完了に戻す" : "完了にする"}</button>
             <button type="button" data-action="questions" data-category="${item.category}">関連問題へ</button>
           </div>
@@ -1885,7 +1815,7 @@
           <span class="lecture-status">${done ? "完了済み" : "未完了"}</span>
           <div class="textbook-body">${item.html}</div>
           <div class="lecture-actions">
-            <button type="button" data-action="read" data-text-index="${index}">このテキストを聞く</button>
+            <button type="button" data-action="read" data-text-index="${index}">このテキストを読む</button>
             <button type="button" data-action="complete" data-text-index="${index}">${done ? "未完了に戻す" : "完了にする"}</button>
             <button type="button" data-action="questions" data-category="${item.category}">関連問題へ</button>
           </div>
@@ -1911,7 +1841,7 @@
           <p class="small"><span class="key-blue">覚え方：</span>${statuteMemoryTip(item)}</p>
           <div class="law-quote"><span class="key-red">試験用の条文内容：</span><br>${highlightLawText(item.quote)}</div>
           <div class="lecture-actions">
-            <button type="button" data-action="read" data-statute-index="${index}">この条文要約を聞く</button>
+            <button type="button" data-action="read" data-statute-index="${index}">この条文要約を読む</button>
             <button type="button" data-action="complete" data-statute-index="${index}">${done ? "未完了に戻す" : "完了にする"}</button>
             <button type="button" data-action="questions" data-category="${item.category}">関連問題へ</button>
           </div>
@@ -2255,7 +2185,6 @@
       if (isWritingFreeInput(currentQuestion)) {
         currentDisplayChoices = [];
         renderWritingQuestion();
-        speakQuestion(false);
         return;
       }
       currentDisplayChoices = shuffledChoices(currentQuestion);
@@ -2267,7 +2196,6 @@
         button.addEventListener("click", () => answer(i));
         els.choices.appendChild(button);
       });
-      speakQuestion(false);
     }
     function writingAnswerCharCount(text) {
       return Array.from(String(text || "")).length;
@@ -2355,7 +2283,6 @@
       setTimeout(() => {
         els.next.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 80);
-      speakWritingAnswer(result);
     }
     function submitWritingAnswer(text) {
       const trimmed = String(text || "").trim();
@@ -2528,7 +2455,6 @@
       setTimeout(() => {
         els.next.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 80);
-      speakAnswer(ok);
       state.lastQuestionId = currentQuestion.id;
       state.lastCategory = currentQuestion.category;
       state.lastMode = els.mode.value || "first";
@@ -2649,73 +2575,7 @@
       if (target) {
         target.classList.add("focused");
         target.scrollIntoView({ behavior: "smooth", block: "center" });
-        speak(target.innerText, true);
       }
-    }
-    function speechSupported() {
-      return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
-    }
-    function toggleAudio() {
-      if (!speechSupported()) {
-        els.audioToggle.textContent = "音声非対応";
-        return;
-      }
-      state.audioOn = !state.audioOn;
-      save();
-      renderAudioButton();
-      if (state.audioOn) speak("音声をオンにしました。問題文と選択肢を読み上げます。", true);
-      else window.speechSynthesis.cancel();
-    }
-    function renderAudioButton() {
-      if (!speechSupported()) {
-        els.audioToggle.textContent = "音声非対応";
-        els.readQuestion.textContent = "読み上げ不可";
-        return;
-      }
-      els.audioToggle.textContent = state.audioOn ? "音声ON中・押すとOFF" : "音声OFF中・押すとON";
-    }
-    function speak(text, force = false) {
-      if (!speechSupported()) return;
-      if (!force && !state.audioOn) return;
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "ja-JP";
-      utterance.rate = actualSpeechRate();
-      utterance.pitch = 1;
-      window.speechSynthesis.speak(utterance);
-    }
-    function actualSpeechRate() {
-      const shownRate = Math.min(3, Math.max(0.8, Number(state.speechRate) || 1));
-      if (shownRate <= 1) return shownRate;
-      return 1 + (shownRate - 1) * 0.45;
-    }
-    function speakQuestion(force) {
-      const visibleChoices = currentDisplayChoices.length ? currentDisplayChoices : currentQuestion.choices.map((text, originalIndex) => ({ text, originalIndex }));
-      const choices = visibleChoices.map((choice, index) => `${index + 1}番。${choice.text}`).join("。");
-      speak(`${currentQuestion.category}の問題です。${currentQuestion.prompt}。選択肢。${choices}。`, force);
-    }
-    function speakAnswer(ok) {
-      const correctChoice = currentQuestion.choices[currentQuestion.answer];
-      const message = ok ? "正解です。" : "不正解です。";
-      const correctDisplayIndex = currentDisplayChoices.findIndex((choice) => choice.originalIndex === currentQuestion.answer);
-      const number = correctDisplayIndex >= 0 ? correctDisplayIndex + 1 : currentQuestion.answer + 1;
-      speak(`${message} 正解は、${number}番、${correctChoice}。解説。${currentQuestion.explain}`, false);
-    }
-    function speakWritingAnswer(result) {
-      const percent = Math.round(result.ratio * 100);
-      const model = explainPart(currentQuestion.explain || "", "40字答案");
-      speak(`${writingResultMessage(result)} 部分点。${result.matched.length}語中${result.keywords.length}語一致。${percent}パーセント。模範答案。${model}。`, false);
-    }
-    function speakVisibleGuide() {
-      let text = "";
-      if (state.guideKind === "textbook") {
-        text = adminTextbooks.slice(0, 1).map((item) => `${item.category}。${item.title}。${plainText(item.html)}`).join("。");
-      } else if (state.guideKind === "statutes") {
-        text = importantStatuteListForStudy().slice(0, 3).map(({ item }) => `${item.category}。${item.law}${item.article}。正解を出すポイント。${item.point}。覚え方。${statuteMemoryTip(item)}。試験用の条文内容。${item.quote}`).join("。");
-      } else {
-        text = lectureListForMode().slice(0, 3).map(({ item }) => `${item.category}。${item.title}。${item.body}`).join("。");
-      }
-      speak(text || "講義が見つかりません。", true);
     }
     function renderStats() {
       const levelSum = questions.reduce((sum, x) => sum + qs(x.id).level, 0);
