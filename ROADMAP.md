@@ -58,7 +58,8 @@ Version 1〜3 すべての判断基準: **180点達成に必要か。** 300点�
 |------|------|------|
 | Step 0 | 棚卸し・Phase2採用案（98問） | ✅ |
 | **Step 1（P1）** | **w100 40字答案整合** | **✅ 2026-05-31** |
-| Step 2（P2） | 記述MC統合（123→~98） | ⬜ 未着手 |
+| Step 2（P2） | 記述MC統合（123→96） | **✅ 2026-05-31** |
+| **Step 3（P4-1）** | **文章理解 V1（b35/b36 → 98問）** | **✅ 2026-05-31** |
 
 ### Phase 2 Step 1（P1）完了（2026-05-31）
 
@@ -69,15 +70,16 @@ Version 1〜3 すべての判断基準: **180点達成に必要か。** 300点�
 | 回帰 | T1-1〜T1-10 / T3-1〜T3-7 全 PASS |
 | 非影響 | 採点ロジック・storeKey・localStorage・MC問題 |
 
-**次:** P2（記述MC統合）— 未着手
+**次:** P3（記述自由入力拡大）/ P5（改題）/ P6（メタデータ）
 
 | 優先 | 項目 | 状態 |
 |------|------|------|
 | ~~1~~ | ~~w100 採点語/40字答案の整合~~ | ✅ P1 |
-| 2 | 記述MC統合（123→~98） | ⬜ P2 |
+| ~~2~~ | ~~記述MC統合（123→96）~~ | ✅ P2 |
 | 3 | 記述自由入力拡大（w04–w15 等） | ⬜ P3 |
-| 4 | 文章理解 V1（b35/b36） | ⬜ P4 |
-| 5 | メタデータ第1波 | ⬜ P6 |
+| ~~4~~ | ~~文章理解 V1（b35/b36 → 98問）~~ | ✅ P4-1 |
+| 5 | 改題（b26 R8・b33） | ⬜ P5 |
+| 6 | メタデータ第1波 | ⬜ P6 |
 
 **Phase 2 正本:** [PHASE2_SPEC.md](./PHASE2_SPEC.md) / [PHASE1_SPEC.md](./PHASE1_SPEC.md)（凍結）/ [GAP_ANALYSIS.md](./GAP_ANALYSIS.md) / [QUESTION_MASTER.md](./QUESTION_MASTER.md)
 
@@ -115,8 +117,8 @@ Version 1〜3 すべての判断基準: **180点達成に必要か。** 300点�
 
 ### その他（Phase 2 以降）
 
-- 文章理解8問 / 多肢+6 / 基礎知識・行政法・民法の高ROI追加
-- b35/b36（文章理解）追加
+- ~~b35/b36（文章理解）追加~~ → **P4-1 完了（2問）**
+- 文章理解 V2（+8問）/ 多肢+6 / 基礎知識・行政法・民法の高ROI追加
 
 ---
 
@@ -191,7 +193,7 @@ Version 1〜3 すべての判断基準: **180点達成に必要か。** 300点�
 
 - [PHASE1_SPEC.md](./PHASE1_SPEC.md) — Phase1 実装仕様書（**凍結・Phase 1 完了**）
 - [PHASE2_SPEC.md](./PHASE2_SPEC.md) — Phase2 実装仕様書（**コンテンツ設計**）
-- [PHASE2_INVENTORY.md](./PHASE2_INVENTORY.md) — Phase2 棚卸し・**P1 完了記録**
+- [PHASE2_INVENTORY.md](./PHASE2_INVENTORY.md) — Phase2 棚卸し・**P4-1 完了記録**
 - [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) — 実装優先順位・フェーズ計画
 - [GAP_ANALYSIS.md](./GAP_ANALYSIS.md) — 合格ギャップ分析・Priority A/B/C・V1整理方針
 - [PAST_EXAM_ANALYSIS.md](./PAST_EXAM_ANALYSIS.md) — 過去問分析（R1–R7・公式PDF/正解例ベース）・Tier根拠
