@@ -1,647 +1,877 @@
-const categories = [
-  "行政手続法",
-  "行政不服審査法",
-  "行政事件訴訟法",
-  "国家賠償法",
-  "地方自治法",
-  "行政法総論",
-  "記述式"
-];
+(function () {
+  "use strict";
 
-const questions = [
-  {
-    id: "tetsuzuki-001",
-    category: "行政手続法",
-    prompt: "審査基準が使われる場面として正しいものはどれか。",
-    choices: ["不利益処分", "申請に対する処分", "行政指導", "住民訴訟"],
-    answer: 1,
-    explain: "審査基準は申請に対する処分で使う。処分基準は不利益処分で使う。"
-  },
-  {
-    id: "tetsuzuki-002",
-    category: "行政手続法",
-    prompt: "標準処理期間を定めた場合の扱いとして正しいものはどれか。",
-    choices: ["必ず官報で公示する", "公にしておくよう努める", "申請者だけに口頭で伝える", "不利益処分にだけ適用する"],
-    answer: 1,
-    explain: "標準処理期間を定めた場合は、公にしておくよう努める。"
-  },
-  {
-    id: "tetsuzuki-003",
-    category: "行政手続法",
-    prompt: "行政指導について正しいものはどれか。",
-    choices: ["相手方は必ず従う義務がある", "従わないことを理由に不利益取扱いできる", "任意の協力を求める行為である", "必ず聴聞を経る"],
-    answer: 2,
-    explain: "行政指導は任意。従わないことを理由とする不利益取扱いは禁止される。"
-  },
-  {
-    id: "tetsuzuki-004",
-    category: "行政手続法",
-    prompt: "届出について、手続上の義務が履行されたといえる時点はどれか。",
-    choices: ["行政庁が受理印を押した時", "行政庁が審査を終えた時", "形式上の要件を満たした届出が行政庁に到達した時", "許可通知が出た時"],
-    answer: 2,
-    explain: "届出は、形式上の要件を満たして行政庁に到達した時に手続上の義務が履行される。"
-  },
-  {
-    id: "tetsuzuki-005",
-    category: "行政手続法",
-    prompt: "許認可の取消しなど重大な不利益処分で原則必要となる手続はどれか。",
-    choices: ["聴聞", "住民監査請求", "再審査請求", "事情判決"],
-    answer: 0,
-    explain: "許認可取消しなど重大な不利益処分では、原則として聴聞手続が必要。"
-  },
-  {
-    id: "tetsuzuki-006",
-    category: "行政手続法",
-    prompt: "処分基準の公表について正しいものはどれか。",
-    choices: ["必ず公にしなければならない", "公にするよう努める", "申請者だけに通知する", "行政指導にだけ適用される"],
-    answer: 1,
-    explain: "処分基準は、不利益処分の基準。公にするよう努める。審査基準は原則として公にする。"
-  },
-  {
-    id: "tetsuzuki-007",
-    category: "行政手続法",
-    prompt: "弁明の機会の付与が主に問題となる場面はどれか。",
-    choices: ["申請に対する許可処分", "聴聞を要しない不利益処分", "住民訴訟", "国家賠償請求"],
-    answer: 1,
-    explain: "不利益処分では、重大なものは聴聞、それ以外は弁明の機会付与が原則。"
-  },
-  {
-    id: "tetsuzuki-008",
-    category: "行政手続法",
-    prompt: "意見公募手続が問題となる場面として正しいものはどれか。",
-    choices: ["行政庁が命令等を定める場合", "住民が損害賠償を請求する場合", "取消訴訟を提起する場合", "公務員個人を訴える場合"],
-    answer: 0,
-    explain: "意見公募手続は、命令等を定める場合に国民の意見提出機会を設ける制度。"
-  },
-  {
-    id: "fufuku-001",
-    category: "行政不服審査法",
-    prompt: "審査請求期間として正しいものはどれか。",
-    choices: ["処分を知った日から6か月", "処分を知った日の翌日から3か月", "処分の日から3年", "処分を知った日の翌日から1年のみ"],
-    answer: 1,
-    explain: "審査請求は、処分を知った日の翌日から3か月以内。客観的には処分日の翌日から1年以内。"
-  },
-  {
-    id: "fufuku-002",
-    category: "行政不服審査法",
-    prompt: "審査請求と処分の効力の関係として正しいものはどれか。",
-    choices: ["審査請求すると当然に効力が止まる", "審査請求しても原則として効力は止まらない", "必ず裁判所が効力を止める", "処分庁の同意がない限り審査請求できない"],
-    answer: 1,
-    explain: "審査請求をしても、処分の効力・執行・手続続行は原則として妨げられない。"
-  },
-  {
-    id: "fufuku-003",
-    category: "行政不服審査法",
-    prompt: "裁決で、審査請求が不適法な場合の結論はどれか。",
-    choices: ["認容", "棄却", "却下", "事情判決"],
-    answer: 2,
-    explain: "不適法なら却下。理由がなければ棄却、理由があれば認容。"
-  },
-  {
-    id: "fufuku-004",
-    category: "行政不服審査法",
-    prompt: "不作為について正しいものはどれか。",
-    choices: ["審査請求の対象にならない", "審査請求できる", "必ず住民訴訟で争う", "国家賠償でしか争えない"],
-    answer: 1,
-    explain: "行政庁の不作為についても審査請求できる。"
-  },
-  {
-    id: "fufuku-005",
-    category: "行政不服審査法",
-    prompt: "再調査の請求について正しいものはどれか。",
-    choices: ["常に審査請求より先に必要", "法律に定めがある場合にできる", "裁判所に対して行う", "行政事件訴訟法上の訴訟である"],
-    answer: 1,
-    explain: "再調査の請求は、法律に定めがある場合に限って認められる。"
-  },
-  {
-    id: "fufuku-006",
-    category: "行政不服審査法",
-    prompt: "審理員について正しいものはどれか。",
-    choices: ["原則として審理手続を行う", "必ず裁判官である", "処分の取消判決をする", "住民訴訟の原告である"],
-    answer: 0,
-    explain: "行政不服審査法では、原則として審理員が審理手続を行う。"
-  },
-  {
-    id: "fufuku-007",
-    category: "行政不服審査法",
-    prompt: "行政不服審査会の役割として近いものはどれか。",
-    choices: ["第三者機関として審査庁の判断をチェックする", "国家賠償を命じる", "条例を制定する", "裁判所として判決する"],
-    answer: 0,
-    explain: "行政不服審査会は、第三者的立場から審査庁の判断過程をチェックする。"
-  },
-  {
-    id: "jiken-001",
-    category: "行政事件訴訟法",
-    prompt: "取消訴訟の出訴期間として正しいものはどれか。",
-    choices: ["処分を知った日から6か月、処分の日から1年", "処分を知った日の翌日から3か月のみ", "処分の日から5年", "期間制限はない"],
-    answer: 0,
-    explain: "取消訴訟は、処分または裁決を知った日から6か月以内、処分または裁決の日から1年以内。"
-  },
-  {
-    id: "jiken-002",
-    category: "行政事件訴訟法",
-    prompt: "取消訴訟の被告として原則正しいものはどれか。",
-    choices: ["処分をした公務員個人", "処分庁の所属する国または公共団体", "審理員", "行政不服審査会"],
-    answer: 1,
-    explain: "取消訴訟の被告は、原則として処分庁または裁決庁の所属する国または公共団体。"
-  },
-  {
-    id: "jiken-003",
-    category: "行政事件訴訟法",
-    prompt: "裁決取消訴訟で原則として主張できる違法はどれか。",
-    choices: ["原処分のすべての違法", "裁決固有の瑕疵", "民法上の契約不適合", "行政指導の不当性のみ"],
-    answer: 1,
-    explain: "裁決取消訴訟では、原則として裁決固有の瑕疵だけを主張できる。"
-  },
-  {
-    id: "jiken-004",
-    category: "行政事件訴訟法",
-    prompt: "差止訴訟の要件として重要なものはどれか。",
-    choices: ["軽微な不便があること", "重大な損害を生ずるおそれがあること", "処分後10年が経過したこと", "住民監査請求をしたこと"],
-    answer: 1,
-    explain: "差止訴訟では、重大な損害を生ずるおそれ、補充性などが重要。"
-  },
-  {
-    id: "jiken-005",
-    category: "行政事件訴訟法",
-    prompt: "執行停止について正しいものはどれか。",
-    choices: ["取消訴訟を提起すれば当然に認められる", "重大な損害を避けるため緊急の必要がある場合に問題となる", "行政庁だけが申し立てる", "公共の福祉に重大な影響があっても必ず認められる"],
-    answer: 1,
-    explain: "執行停止は、重大な損害を避けるため緊急の必要がある場合に認められ得る。"
-  },
-  {
-    id: "jiken-006",
-    category: "行政事件訴訟法",
-    prompt: "取消訴訟で最初に問題となりやすい要件はどれか。",
-    choices: ["処分性", "契約不適合", "相続分", "株式併合"],
-    answer: 0,
-    explain: "取消訴訟は、行政庁の処分その他公権力の行使にあたる行為であること、つまり処分性が出発点。"
-  },
-  {
-    id: "jiken-007",
-    category: "行政事件訴訟法",
-    prompt: "原告適格の判断で中心となる考え方はどれか。",
-    choices: ["法律上の利益を有する者か", "政治的意見が強い者か", "納税額が多い者か", "行政指導を受けた者なら常に認める"],
-    answer: 0,
-    explain: "取消訴訟の原告適格は、法律上の利益を有する者かどうかで判断する。"
-  },
-  {
-    id: "jiken-008",
-    category: "行政事件訴訟法",
-    prompt: "取消判決の効力として正しいものはどれか。",
-    choices: ["拘束力がある", "行政庁は無視できる", "第三者には一切効力がない", "必ず損害賠償を命じる"],
-    answer: 0,
-    explain: "取消判決には拘束力がある。第三者効も重要論点。"
-  },
-  {
-    id: "jiken-009",
-    category: "行政事件訴訟法",
-    prompt: "事情判決が問題となる場面はどれか。",
-    choices: ["処分は違法だが、取消しが公共の福祉に適合しない場合", "審査請求が不適法な場合", "行政指導に従わない場合", "条例制定請求をする場合"],
-    answer: 0,
-    explain: "事情判決は、処分は違法だが取消しが公共の福祉に適合しない場合に請求を棄却する制度。"
-  },
-  {
-    id: "jiken-010",
-    category: "行政事件訴訟法",
-    prompt: "不作為の違法確認訴訟が使われる場面はどれか。",
-    choices: ["申請に対して相当期間内に処分がされない場合", "処分後に損害賠償だけを求める場合", "議会解散を求める場合", "行政指導に任意で従う場合"],
-    answer: 0,
-    explain: "不作為の違法確認訴訟は、法令に基づく申請に対して相当期間内に応答がない場合に使う。"
-  },
-  {
-    id: "jiken-011",
-    category: "行政事件訴訟法",
-    prompt: "義務付け訴訟の目的として正しいものはどれか。",
-    choices: ["行政庁に一定の処分をすべきことを命じる", "処分の効力を当然に止める", "公務員個人を処罰する", "条例案を住民が可決する"],
-    answer: 0,
-    explain: "義務付け訴訟は、行政庁が一定の処分または裁決をすべき旨を命ずることを求める訴訟。"
-  },
-  {
-    id: "kokubai-001",
-    category: "国家賠償法",
-    prompt: "国家賠償法1条の要件として不要なものはどれか。",
-    choices: ["公務員", "公権力の行使", "故意または過失", "契約の成立"],
-    answer: 3,
-    explain: "国賠1条は、公務員・公権力の行使・職務上・故意過失・違法・損害が軸。契約成立は不要。"
-  },
-  {
-    id: "kokubai-002",
-    category: "国家賠償法",
-    prompt: "国賠法2条の中心テーマはどれか。",
-    choices: ["公の営造物の設置管理の瑕疵", "審査請求期間", "条例制定請求", "聴聞手続"],
-    answer: 0,
-    explain: "国賠2条は、道路・河川など公の営造物の設置または管理の瑕疵による損害。"
-  },
-  {
-    id: "kokubai-003",
-    category: "国家賠償法",
-    prompt: "国賠1条について判例上の扱いとして正しいものはどれか。",
-    choices: ["公務員個人が常に被害者へ直接責任を負う", "国または公共団体が賠償責任を負う", "損害がなくても責任が成立する", "故意過失は一切不要である"],
-    answer: 1,
-    explain: "国賠1条では国または公共団体が賠償責任を負う。公務員個人の被害者への直接責任は否定されるのが判例。"
-  },
-  {
-    id: "kokubai-004",
-    category: "国家賠償法",
-    prompt: "国または公共団体が公務員に求償できる場面として正しいものはどれか。",
-    choices: ["公務員に故意または重大な過失がある場合", "公務員が軽過失でも常に全額", "被害者に損害がない場合", "行政指導をしただけの場合は常に"],
-    answer: 0,
-    explain: "国または公共団体は、公務員に故意または重大な過失があったとき求償できる。"
-  },
-  {
-    id: "kokubai-005",
-    category: "国家賠償法",
-    prompt: "国賠法2条の「瑕疵」の意味として最も近いものはどれか。",
-    choices: ["通常有すべき安全性を欠くこと", "行政庁が審査請求を却下すること", "条例が制定されること", "申請者が不満を持つこと"],
-    answer: 0,
-    explain: "公の営造物の瑕疵とは、通常有すべき安全性を欠いている状態をいう。"
-  },
-  {
-    id: "jichi-001",
-    category: "地方自治法",
-    prompt: "条例制定改廃請求に必要な署名数として正しいものはどれか。",
-    choices: ["有権者の50分の1以上", "有権者の10分の1以上", "有権者の3分の1以上", "議員全員"],
-    answer: 0,
-    explain: "条例制定改廃請求と監査請求は、有権者の50分の1以上。"
-  },
-  {
-    id: "jichi-002",
-    category: "地方自治法",
-    prompt: "住民訴訟の前に必要となるものはどれか。",
-    choices: ["審査請求", "住民監査請求", "聴聞", "行政指導"],
-    answer: 1,
-    explain: "住民訴訟には住民監査請求の前置が必要。"
-  },
-  {
-    id: "jichi-003",
-    category: "地方自治法",
-    prompt: "住民訴訟の対象として正しいものはどれか。",
-    choices: ["あらゆる行政活動", "違法な財務会計行為", "民間企業の契約全般", "刑事事件"],
-    answer: 1,
-    explain: "住民訴訟は違法な財務会計行為を対象とする民衆訴訟。"
-  },
-  {
-    id: "jichi-004",
-    category: "地方自治法",
-    prompt: "地方公共団体の長が制定するものとして正しいものはどれか。",
-    choices: ["規則", "法律", "最高裁判例", "国会議事規則"],
-    answer: 0,
-    explain: "地方公共団体の長は規則を制定する。条例は議会の議決を経る。"
-  },
-  {
-    id: "jichi-005",
-    category: "地方自治法",
-    prompt: "条例について正しいものはどれか。",
-    choices: ["法令に違反しない限り制定できる", "法律に常に優先する", "長が単独で制定する", "住民訴訟で必ず制定される"],
-    answer: 0,
-    explain: "普通地方公共団体は、法令に違反しない限り条例を制定できる。"
-  },
-  {
-    id: "jichi-006",
-    category: "地方自治法",
-    prompt: "住民監査請求の対象として正しいものはどれか。",
-    choices: ["違法または不当な財務会計行為", "刑事裁判の量刑", "民間企業の人事", "国会議員の資格争訟"],
-    answer: 0,
-    explain: "住民監査請求は、違法または不当な財務会計行為を対象にする。"
-  },
-  {
-    id: "souron-001",
-    category: "行政法総論",
-    prompt: "公定力の説明として正しいものはどれか。",
-    choices: ["行政行為は取り消されるまで有効に扱われる", "行政庁は常に裁判なしで強制執行できる", "私人は永久に争える", "行政指導に強制力がある"],
-    answer: 0,
-    explain: "公定力とは、違法な行政行為でも取り消されるまでは有効に扱われる効力。"
-  },
-  {
-    id: "souron-002",
-    category: "行政法総論",
-    prompt: "行政上の強制執行に含まれるものはどれか。",
-    choices: ["代執行", "裁決取消訴訟", "事情判決", "行政指導"],
-    answer: 0,
-    explain: "行政上の強制執行には、代執行、執行罰、直接強制、強制徴収がある。"
-  },
-  {
-    id: "souron-003",
-    category: "行政法総論",
-    prompt: "不可争力の説明として正しいものはどれか。",
-    choices: ["争える期間を過ぎると私人から争えなくなる", "行政庁が常に自由に変更できる", "行政行為は必ず無効になる", "行政指導が強制になる"],
-    answer: 0,
-    explain: "不可争力とは、不服申立てや出訴期間の経過により私人から争えなくなる効力。"
-  },
-  {
-    id: "souron-004",
-    category: "行政法総論",
-    prompt: "裁量の逸脱・濫用について正しいものはどれか。",
-    choices: ["裁量があっても限界を超えれば違法になる", "裁量行為は絶対に裁判で争えない", "裁量行為は常に無効", "裁量は民法だけの概念"],
-    answer: 0,
-    explain: "行政庁に裁量があっても、その逸脱・濫用があれば違法となる。"
-  },
-  {
-    id: "souron-005",
-    category: "行政法総論",
-    prompt: "即時強制の特徴として正しいものはどれか。",
-    choices: ["義務の存在を前提とせず目前の障害を除去する", "必ず審査請求後に行う", "住民訴訟の一種である", "行政指導の別名である"],
-    answer: 0,
-    explain: "即時強制は、義務の存在を前提とせず、目前の急迫した障害を除去するために行われる。"
-  },
-  {
-    id: "kijutsu-001",
-    category: "記述式",
-    prompt: "裁決にだけ手続上の瑕疵がある場合、提起すべき訴訟として最も適切なものはどれか。",
-    choices: ["裁決取消訴訟を提起し、裁決固有の瑕疵を主張する", "住民訴訟を提起する", "民事訴訟で契約解除を主張する", "審査基準の公表を求める"],
-    answer: 0,
-    explain: "裁決固有の瑕疵を争う場面では、裁決取消訴訟が記述式の定番。"
-  },
-  {
-    id: "kijutsu-002",
-    category: "記述式",
-    prompt: "処分の効力を一時的に止めたい場合、取消訴訟とあわせて検討する手段はどれか。",
-    choices: ["執行停止の申立て", "直接請求", "戒告処分", "再調査の請求だけ"],
-    answer: 0,
-    explain: "処分の効力を止めるには、重大な損害を避けるため緊急の必要があるとして執行停止を申し立てる。"
-  }
-];
-
-const cards = [
-  ["行政手続法", "審査基準は何に使う？", "申請に対する処分。"],
-  ["行政手続法", "処分基準は何に使う？", "不利益処分。"],
-  ["行政手続法", "申請拒否処分で原則必要なものは？", "理由提示。"],
-  ["行政手続法", "許認可取消など重大な不利益処分で必要な手続は？", "聴聞。"],
-  ["行政手続法", "行政指導の本質は？", "任意。従わないことを理由に不利益取扱いしてはならない。"],
-  ["行政手続法", "届出はいつ手続上の義務履行となる？", "形式上の要件を満たした届出が行政庁に到達した時。"],
-  ["行政不服審査法", "審査請求期間は？", "処分を知った日の翌日から3か月以内、処分日の翌日から1年以内。"],
-  ["行政不服審査法", "審査請求すると処分の効力は止まる？", "原則止まらない。必要があれば執行停止。"],
-  ["行政不服審査法", "不適法な審査請求への裁決は？", "却下。"],
-  ["行政不服審査法", "理由がない審査請求への裁決は？", "棄却。"],
-  ["行政不服審査法", "理由がある審査請求への裁決は？", "認容。"],
-  ["行政事件訴訟法", "取消訴訟の出訴期間は？", "処分を知った日から6か月以内、処分の日から1年以内。"],
-  ["行政事件訴訟法", "取消訴訟の被告は原則誰？", "処分庁または裁決庁の所属する国または公共団体。"],
-  ["行政事件訴訟法", "裁決取消訴訟で主張できる違法は？", "原則として裁決固有の瑕疵。"],
-  ["行政事件訴訟法", "差止訴訟の重要要件は？", "重大な損害を生ずるおそれ、補充性など。"],
-  ["行政事件訴訟法", "執行停止のキーワードは？", "重大な損害を避けるため緊急の必要。"],
-  ["国家賠償法", "国賠1条の軸は？", "公務員の違法な公権力行使による損害。"],
-  ["国家賠償法", "国賠2条の軸は？", "公の営造物の設置または管理の瑕疵。"],
-  ["国家賠償法", "公務員個人は被害者に直接責任を負う？", "判例上、直接責任は負わない。"],
-  ["地方自治法", "条例制定改廃請求の署名数は？", "有権者の50分の1以上。"],
-  ["地方自治法", "議会解散・長の解職請求の署名数は？", "原則、有権者の3分の1以上。"],
-  ["地方自治法", "住民訴訟の前置は？", "住民監査請求。"],
-  ["行政法総論", "公定力とは？", "行政行為は取り消されるまで有効に扱われること。"],
-  ["行政法総論", "行政上の強制執行の種類は？", "代執行、執行罰、直接強制、強制徴収。"],
-  ["記述式", "取消訴訟型の基本文は？", "Xは、Yを被告として、〇〇処分の取消訴訟を提起し、△△の違法を主張する。"],
-  ["記述式", "裁決取消訴訟型の基本文は？", "Xは、Yを被告として、裁決取消訴訟を提起し、裁決固有の瑕疵を主張する。"],
-  ["記述式", "執行停止型の基本文は？", "重大な損害を避けるため緊急の必要があるとして、執行停止を申し立てる。"]
-].map((item, index) => ({ id: `card-${index}`, category: item[0], front: item[1], back: item[2] }));
-
-const storageKey = "gyosei-admin-law-progress-v1";
-const state = loadState();
-let currentQuestion = null;
-let currentCardIndex = 0;
-
-const els = {
-  masteryText: document.querySelector("#masteryText"),
-  dueText: document.querySelector("#dueText"),
-  streakText: document.querySelector("#streakText"),
-  coachText: document.querySelector("#coachText"),
-  categoryFilter: document.querySelector("#categoryFilter"),
-  modeFilter: document.querySelector("#modeFilter"),
-  questionCategory: document.querySelector("#questionCategory"),
-  questionStats: document.querySelector("#questionStats"),
-  questionText: document.querySelector("#questionText"),
-  choices: document.querySelector("#choices"),
-  answerPanel: document.querySelector("#answerPanel"),
-  answerResult: document.querySelector("#answerResult"),
-  answerExplain: document.querySelector("#answerExplain"),
-  nextButton: document.querySelector("#nextButton"),
-  cardCategoryFilter: document.querySelector("#cardCategoryFilter"),
-  flashCategory: document.querySelector("#flashCategory"),
-  flashFront: document.querySelector("#flashFront"),
-  flashBack: document.querySelector("#flashBack"),
-  showBackButton: document.querySelector("#showBackButton"),
-  prevCardButton: document.querySelector("#prevCardButton"),
-  nextCardButton: document.querySelector("#nextCardButton"),
-  progressList: document.querySelector("#progressList"),
-  resetButton: document.querySelector("#resetButton")
-};
-
-function loadState() {
-  const saved = localStorage.getItem(storageKey);
-  if (saved) return JSON.parse(saved);
-  return {
-    streak: 0,
-    answered: 0,
-    correct: 0,
-    questions: {}
+  const EXAM = window.EXAM_DATA;
+  const STORAGE_KEY = "gyosei2026_mock1_learning_v1";
+  const SYNC_KEY = "gyosei2026_mock1_sync_v1";
+  const app = document.getElementById("app");
+  const state = {
+    view: "home",
+    round: 1,
+    mode: null,
+    index: 0,
+    revealed: false,
+    reviewDraft: null,
+    tick: null,
+    sync: {
+      code: normalizeSyncCode(localStorage.getItem(SYNC_KEY) || ""),
+      status: "local",
+      message: "この端末内に保存中",
+      busy: false,
+      pending: false,
+      revision: 0,
+      timer: null,
+    },
   };
-}
 
-function saveState() {
-  localStorage.setItem(storageKey, JSON.stringify(state));
-}
-
-function initialQuestionState() {
-  return {
-    attempts: 0,
-    correct: 0,
-    wrong: 0,
-    level: 0,
-    dueAt: 0,
-    lastAnsweredAt: 0
-  };
-}
-
-function setupFilters() {
-  const options = ["全分野", ...categories];
-  for (const select of [els.categoryFilter, els.cardCategoryFilter]) {
-    select.innerHTML = options.map((category) => `<option value="${category}">${category}</option>`).join("");
-  }
-}
-
-function questionState(id) {
-  if (!state.questions[id]) state.questions[id] = initialQuestionState();
-  return state.questions[id];
-}
-
-function isDue(question) {
-  return questionState(question.id).dueAt <= Date.now();
-}
-
-function getFilteredQuestions() {
-  const category = els.categoryFilter.value;
-  const mode = els.modeFilter.value;
-  let pool = questions.filter((question) => category === "全分野" || question.category === category);
-
-  if (mode === "due") pool = pool.filter(isDue);
-  if (mode === "weak") pool = pool.filter((question) => questionState(question.id).wrong > 0 || questionState(question.id).level < 2);
-  if (mode === "new") pool = pool.filter((question) => questionState(question.id).attempts === 0);
-
-  if (pool.length === 0) {
-    pool = questions.filter((question) => category === "全分野" || question.category === category);
+  function blankRound() {
+    return { status: "new", startedAt: null, submittedAt: null, examAnswers: {}, records: {}, writtenScores: {}, updatedAt: 0 };
   }
 
-  return pool.sort((a, b) => {
-    const sa = questionState(a.id);
-    const sb = questionState(b.id);
-    return sa.dueAt - sb.dueAt || sa.level - sb.level || sa.correct - sb.correct;
-  });
-}
-
-function pickQuestion() {
-  const pool = getFilteredQuestions();
-  currentQuestion = pool[0];
-  renderQuestion();
-}
-
-function renderQuestion() {
-  const qState = questionState(currentQuestion.id);
-  els.questionCategory.textContent = currentQuestion.category;
-  els.questionStats.textContent = `正解 ${qState.correct} / ミス ${qState.wrong}`;
-  els.questionText.textContent = currentQuestion.prompt;
-  els.choices.innerHTML = "";
-  els.answerPanel.classList.add("hidden");
-
-  currentQuestion.choices.forEach((choice, index) => {
-    const button = document.createElement("button");
-    button.className = "choice";
-    button.type = "button";
-    button.textContent = choice;
-    button.addEventListener("click", () => answerQuestion(index));
-    els.choices.appendChild(button);
-  });
-}
-
-function answerQuestion(index) {
-  const buttons = [...els.choices.querySelectorAll(".choice")];
-  buttons.forEach((button) => {
-    button.disabled = true;
-  });
-
-  const correct = index === currentQuestion.answer;
-  buttons[currentQuestion.answer].classList.add("correct");
-  if (!correct) buttons[index].classList.add("wrong");
-
-  const qState = questionState(currentQuestion.id);
-  qState.attempts += 1;
-  qState.lastAnsweredAt = Date.now();
-  state.answered += 1;
-
-  if (correct) {
-    qState.correct += 1;
-    qState.level = Math.min(5, qState.level + 1);
-    state.correct += 1;
-    state.streak += 1;
-    qState.dueAt = Date.now() + nextInterval(qState.level);
-  } else {
-    qState.wrong += 1;
-    qState.level = Math.max(0, qState.level - 1);
-    state.streak = 0;
-    qState.dueAt = Date.now() + 5 * 60 * 1000;
+  function blankStore() {
+    return { version: 1, updatedAt: 0, rounds: Object.fromEntries([1, 2, 3, 4, 5].map(n => [n, blankRound()])) };
   }
 
-  els.answerResult.textContent = correct ? "正解。ここは本試験でも取りたいところです。" : "不正解。5分後以降に優先して再出題します。";
-  els.answerExplain.textContent = currentQuestion.explain;
-  els.answerPanel.classList.remove("hidden");
-  saveState();
-  renderStats();
-}
+  function roundUpdatedAt(round) {
+    const recordTimes = Object.values(round?.records || {}).map(record => Number(record?.answeredAt) || 0);
+    return Math.max(Number(round?.updatedAt) || 0, Number(round?.submittedAt) || 0, Number(round?.startedAt) || 0, ...recordTimes, 0);
+  }
 
-function nextInterval(level) {
-  const minutes = [5, 30, 180, 24 * 60, 3 * 24 * 60, 7 * 24 * 60];
-  return minutes[level] * 60 * 1000;
-}
+  function normalizeStore(value) {
+    const normalized = value && value.version === 1 && value.rounds ? value : blankStore();
+    normalized.updatedAt = Number(normalized.updatedAt) || 0;
+    for (let n = 1; n <= 5; n++) {
+      normalized.rounds[n] ||= blankRound();
+      normalized.rounds[n].updatedAt = roundUpdatedAt(normalized.rounds[n]);
+    }
+    return normalized;
+  }
 
-function renderStats() {
-  const learnedLevels = questions.reduce((sum, question) => sum + questionState(question.id).level, 0);
-  const mastery = Math.round((learnedLevels / (questions.length * 5)) * 100);
-  const due = questions.filter(isDue).length;
-  els.masteryText.textContent = `${mastery}%`;
-  els.dueText.textContent = due;
-  els.streakText.textContent = state.streak;
-  els.coachText.textContent = coachComment(mastery, due);
-  renderProgress();
-}
+  function loadStore() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      if (parsed && parsed.version === 1 && parsed.rounds) return normalizeStore(parsed);
+    } catch (_) {}
+    return blankStore();
+  }
 
-function coachComment(mastery, due) {
-  if (state.answered === 0) return "まずは復習優先で10問。行政法は、申請・不利益処分・取消訴訟の軸が見えると一気に楽になります。";
-  if (due >= 8) return `今日の復習が${due}問あります。新しい範囲より、今はミスした問題の再出題を片付ける方が得点に直結します。`;
-  if (mastery < 35) return "土台作り中です。行政手続法と行政不服審査法の短い知識を落とさない状態にしましょう。";
-  if (mastery < 70) return "いい進み方です。ここからは行政事件訴訟法の要件と記述式テンプレを増やすと伸びます。";
-  return "かなり仕上がっています。弱点優先モードで、ミスした肢だけを本試験前の得点源に変えていきましょう。";
-}
+  let store = loadStore();
 
-function filteredCards() {
-  const category = els.cardCategoryFilter.value;
-  return cards.filter((card) => category === "全分野" || card.category === category);
-}
+  function saveStore() {
+    const now = Date.now();
+    store.updatedAt = now;
+    if (store.rounds[state.round]) store.rounds[state.round].updatedAt = now;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    scheduleSync();
+  }
+  function roundData() { return store.rounds[state.round]; }
+  function q() { return EXAM.questions[state.index]; }
 
-function renderCard() {
-  const pool = filteredCards();
-  if (currentCardIndex >= pool.length) currentCardIndex = 0;
-  if (currentCardIndex < 0) currentCardIndex = pool.length - 1;
-  const card = pool[currentCardIndex];
-  els.flashCategory.textContent = card.category;
-  els.flashFront.textContent = card.front;
-  els.flashBack.textContent = card.back;
-  els.flashBack.classList.add("hidden");
-}
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
 
-function renderProgress() {
-  const grouped = categories.map((category) => {
-    const qs = questions.filter((question) => question.category === category);
-    if (!qs.length) return null;
-    const levelSum = qs.reduce((sum, question) => sum + questionState(question.id).level, 0);
-    const attempts = qs.reduce((sum, question) => sum + questionState(question.id).attempts, 0);
-    const wrong = qs.reduce((sum, question) => sum + questionState(question.id).wrong, 0);
-    return { category, mastery: Math.round((levelSum / (qs.length * 5)) * 100), attempts, wrong };
-  }).filter(Boolean);
+  function button(text, className, onClick) {
+    const node = el("button", className, text);
+    node.type = "button";
+    node.addEventListener("click", onClick);
+    return node;
+  }
 
-  els.progressList.innerHTML = grouped.map((item) => `
-    <article class="progress-item">
-      <div class="progress-head">
-        <strong>${item.category}</strong>
-        <span>${item.mastery}%</span>
-      </div>
-      <div class="bar" aria-hidden="true"><span style="width: ${item.mastery}%"></span></div>
-      <p>解答 ${item.attempts}回 / ミス ${item.wrong}回</p>
-    </article>
-  `).join("");
-}
+  function normalizeSyncCode(value) {
+    const raw = String(value || "").toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 12);
+    return raw.replace(/(.{4})(?=.)/g, "$1-");
+  }
 
-function switchView(viewName) {
-  document.querySelectorAll(".tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.view === viewName));
-  document.querySelectorAll(".view").forEach((view) => view.classList.remove("active"));
-  document.querySelector(`#${viewName}View`).classList.add("active");
-}
+  function syncStatus(status, message) {
+    state.sync.status = status;
+    state.sync.message = message;
+    const label = document.querySelector(".sync-status");
+    if (label) {
+      label.className = `sync-status ${status}`;
+      label.textContent = message;
+    }
+  }
 
-function bindEvents() {
-  document.querySelectorAll(".tab").forEach((tab) => {
-    tab.addEventListener("click", () => switchView(tab.dataset.view));
-  });
-  els.categoryFilter.addEventListener("change", pickQuestion);
-  els.modeFilter.addEventListener("change", pickQuestion);
-  els.nextButton.addEventListener("click", pickQuestion);
-  els.cardCategoryFilter.addEventListener("change", () => {
-    currentCardIndex = 0;
-    renderCard();
-  });
-  els.showBackButton.addEventListener("click", () => els.flashBack.classList.remove("hidden"));
-  els.prevCardButton.addEventListener("click", () => {
-    currentCardIndex -= 1;
-    renderCard();
-  });
-  els.nextCardButton.addEventListener("click", () => {
-    currentCardIndex += 1;
-    renderCard();
-  });
-  els.resetButton.addEventListener("click", () => {
-    if (!confirm("学習記録を初期化しますか？")) return;
-    localStorage.removeItem(storageKey);
-    location.reload();
-  });
-}
+  function mergeStores(localValue, remoteValue) {
+    const local = normalizeStore(structuredClone(localValue || blankStore()));
+    const remote = normalizeStore(structuredClone(remoteValue || blankStore()));
+    const merged = blankStore();
+    for (let n = 1; n <= 5; n++) {
+      const localTime = roundUpdatedAt(local.rounds[n]);
+      const remoteTime = roundUpdatedAt(remote.rounds[n]);
+      merged.rounds[n] = remoteTime > localTime ? remote.rounds[n] : local.rounds[n];
+    }
+    merged.updatedAt = Math.max(Number(local.updatedAt) || 0, Number(remote.updatedAt) || 0);
+    return normalizeStore(merged);
+  }
 
-setupFilters();
-bindEvents();
-pickQuestion();
-renderCard();
-renderStats();
+  function scheduleSync() {
+    if (!state.sync.code) return;
+    clearTimeout(state.sync.timer);
+    syncStatus("pending", "保存内容を同期待ち");
+    state.sync.timer = setTimeout(() => syncNow(), 500);
+  }
+
+  async function syncNow() {
+    if (!state.sync.code) return;
+    if (state.sync.busy) {
+      state.sync.pending = true;
+      return;
+    }
+    state.sync.busy = true;
+    syncStatus("syncing", "同期中…");
+    try {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const response = await fetch(`/api/sync/${encodeURIComponent(state.sync.code)}`, { cache: "no-store" });
+        if (response.status === 404) throw new Error("同期コードが見つかりません");
+        if (!response.ok) throw new Error("同期データを取得できません");
+        const remote = await response.json();
+        state.sync.revision = Number(remote.revision) || 0;
+        const merged = mergeStores(store, remote.data);
+        const remoteText = JSON.stringify(normalizeStore(remote.data || blankStore()));
+        const mergedText = JSON.stringify(merged);
+        store = merged;
+        localStorage.setItem(STORAGE_KEY, mergedText);
+
+        if (remoteText !== mergedText) {
+          const put = await fetch(`/api/sync/${encodeURIComponent(state.sync.code)}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data: store, baseRevision: state.sync.revision }),
+          });
+          if (put.status === 409) continue;
+          if (!put.ok) throw new Error("同期データを保存できません");
+          const saved = await put.json();
+          state.sync.revision = Number(saved.revision) || state.sync.revision;
+        }
+        syncStatus("ok", `同期済み ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`);
+        if (state.view !== "solve") render();
+        return;
+      }
+      throw new Error("別端末の更新と競合しました。もう一度同期してください");
+    } catch (error) {
+      syncStatus("error", `${error.message}（端末内には保存済み）`);
+    } finally {
+      state.sync.busy = false;
+      if (state.sync.pending) {
+        state.sync.pending = false;
+        scheduleSync();
+      }
+    }
+  }
+
+  async function createSyncCode() {
+    syncStatus("syncing", "同期コードを作成中…");
+    try {
+      const response = await fetch("/api/sync/create", { method: "POST" });
+      if (!response.ok) throw new Error("同期コードを作成できません");
+      const result = await response.json();
+      state.sync.code = normalizeSyncCode(result.code);
+      state.sync.revision = Number(result.revision) || 0;
+      localStorage.setItem(SYNC_KEY, state.sync.code);
+      render();
+      await syncNow();
+    } catch (error) {
+      syncStatus("error", `${error.message}。同期対応サーバーから開いてください`);
+    }
+  }
+
+  async function connectSync(code) {
+    const normalized = normalizeSyncCode(code);
+    if (normalized.replace(/-/g, "").length !== 12) {
+      syncStatus("error", "12文字の同期コードを入力してください");
+      return;
+    }
+    syncStatus("syncing", "同期コードを確認中…");
+    try {
+      const response = await fetch(`/api/sync/${encodeURIComponent(normalized)}`, { cache: "no-store" });
+      if (response.status === 404) throw new Error("同期コードが見つかりません");
+      if (!response.ok) throw new Error("同期サーバーへ接続できません");
+      state.sync.code = normalized;
+      localStorage.setItem(SYNC_KEY, normalized);
+      render();
+      await syncNow();
+    } catch (error) {
+      syncStatus("error", error.message);
+    }
+  }
+
+  function disconnectSync() {
+    if (!confirm("この端末の同期を解除しますか？端末内の学習履歴は残ります。")) return;
+    clearTimeout(state.sync.timer);
+    localStorage.removeItem(SYNC_KEY);
+    state.sync.code = "";
+    state.sync.revision = 0;
+    state.sync.status = "local";
+    state.sync.message = "この端末内に保存中";
+    render();
+  }
+
+  async function copySyncCode() {
+    try {
+      await navigator.clipboard.writeText(state.sync.code);
+      syncStatus("ok", "同期コードをコピーしました");
+    } catch (_) {
+      prompt("同期コードをコピーしてください", state.sync.code);
+    }
+  }
+
+  function answerExists(question, value) {
+    if (question.type === "single") return value !== null && value !== undefined && value !== "";
+    if (question.type === "multi") return value && question.blanks.some(key => value[key]);
+    return Boolean(value && String(value).trim());
+  }
+
+  function emptyAnswer(question) {
+    if (question.type === "multi") return Object.fromEntries(question.blanks.map(key => [key, ""]));
+    return "";
+  }
+
+  function answerText(question, value) {
+    if (!answerExists(question, value)) return "未解答";
+    if (question.type === "multi") return question.blanks.map(k => `${k}:${value[k] || "－"}`).join(" / ");
+    return String(value);
+  }
+
+  function correctText(question) {
+    if (question.type === "multi") return question.blanks.map(k => `${k}:${question.answer[k]}`).join(" / ");
+    return String(question.answer);
+  }
+
+  function evaluate(question, value) {
+    if (question.type === "written") return { status: "pending", earned: null, max: 20 };
+    if (question.type === "multi") {
+      const correctCount = question.blanks.filter(k => Number(value?.[k]) === Number(question.answer[k])).length;
+      return { status: correctCount === 4 ? "ok" : "ng", earned: correctCount * 2, max: 8, correctCount };
+    }
+    const ok = Number(value) === Number(question.answer);
+    return { status: ok ? "ok" : "ng", earned: ok ? 4 : 0, max: 4 };
+  }
+
+  function roundStatusLabel(data) {
+    if (data.status === "submitted") return "完了";
+    if (data.status === "in_progress") return "途中";
+    const count = Object.keys(data.records || {}).length;
+    return count ? `${count}/60` : "未実施";
+  }
+
+  function render() {
+    clearInterval(state.tick);
+    state.tick = null;
+    app.innerHTML = "";
+    const shell = el("main", "app-shell");
+    app.appendChild(shell);
+    if (state.view === "home") renderHome(shell);
+    else if (state.view === "solve") renderSolve(shell);
+    else if (state.view === "results") renderResults(shell);
+    else if (state.view === "history") renderHistory(shell);
+  }
+
+  function renderHome(shell) {
+    const page = el("section", "home");
+    page.append(el("p", "eyebrow", "令和8年度 行政書士試験"));
+    page.append(el("h1", "", EXAM.title));
+    page.append(el("p", "subtitle", `${EXAM.subtitle}｜全60問｜試験時間3時間`));
+
+    const card = el("section", "home-card");
+    card.append(el("h2", "", "学習回を選ぶ"));
+    card.append(el("p", "subtitle", "問題を解いている間は、過去の正誤を表示しません。"));
+    const rounds = el("div", "round-selector");
+    for (let n = 1; n <= 5; n++) {
+      const b = el("button", `round-button${state.round === n ? " active" : ""}`);
+      b.type = "button";
+      b.append(document.createTextNode(`${n}回目`));
+      b.append(el("small", "", roundStatusLabel(store.rounds[n])));
+      b.addEventListener("click", () => { state.round = n; render(); });
+      rounds.append(b);
+    }
+    card.append(rounds);
+
+    const modes = el("div", "mode-grid");
+    const examBtn = button(roundData().status === "in_progress" ? "通し試験を再開" : "通し試験を始める", "primary", startExam);
+    examBtn.append(el("span", "button-note", "終了するまで正解・解説・過去成績は表示しません"));
+    const reviewBtn = button("1問ずつ復習する", "secondary", startReview);
+    reviewBtn.append(el("span", "button-note", "1問だけ解き、ボタンを押した時だけ解答・解説を表示"));
+    modes.append(examBtn, reviewBtn);
+    card.append(modes);
+
+    const actions = el("div", "home-actions");
+    actions.append(button("5回の履歴を見る", "ghost", () => { state.view = "history"; render(); }));
+    if (roundData().status === "submitted") {
+      actions.append(button(`${state.round}回目の結果を見る`, "ghost", () => { state.view = "results"; render(); }));
+    }
+    actions.append(button("この回をリセット", "danger", resetCurrentRound));
+    card.append(actions);
+    page.append(card);
+    page.append(renderSyncCard());
+    shell.append(page);
+  }
+
+  function renderSyncCard() {
+    const card = el("section", "sync-card");
+    const heading = el("div", "sync-heading");
+    const title = el("div");
+    title.append(el("h2", "", "PC・スマホの学習履歴を共有"));
+    title.append(el("p", "subtitle", "同じ同期コードを使うと、5回分の解答・正誤・自信度を共有できます。"));
+    heading.append(title);
+    card.append(heading);
+
+    const status = el("p", `sync-status ${state.sync.status}`, state.sync.message);
+    card.append(status);
+
+    if (state.sync.code) {
+      const codeBox = el("div", "sync-code-box");
+      codeBox.append(el("span", "sync-code-label", "同期コード"));
+      codeBox.append(el("strong", "sync-code", state.sync.code));
+      codeBox.append(button("コピー", "small-button", copySyncCode));
+      card.append(codeBox);
+      const actions = el("div", "sync-actions");
+      actions.append(button("今すぐ同期", "secondary", syncNow));
+      actions.append(button("この端末の同期を解除", "ghost", disconnectSync));
+      card.append(actions);
+      card.append(el("p", "sync-note", "別の端末でこのページを開き、「同期コードで接続」に同じコードを入力してください。"));
+    } else {
+      const actions = el("div", "sync-actions");
+      actions.append(button("同期コードを作る", "primary", createSyncCode));
+      const join = el("form", "sync-join");
+      const input = document.createElement("input");
+      input.type = "text";
+      input.inputMode = "text";
+      input.autocomplete = "off";
+      input.maxLength = 14;
+      input.placeholder = "XXXX-XXXX-XXXX";
+      input.setAttribute("aria-label", "同期コード");
+      input.addEventListener("input", () => { input.value = normalizeSyncCode(input.value); });
+      const connect = button("同期コードで接続", "secondary", () => connectSync(input.value));
+      join.addEventListener("submit", event => { event.preventDefault(); connectSync(input.value); });
+      join.append(input, connect);
+      actions.append(join);
+      card.append(actions);
+      card.append(el("p", "sync-note", "最初の端末でコードを作り、もう一方の端末でそのコードを入力します。"));
+    }
+    return card;
+  }
+
+  function startExam() {
+    const data = roundData();
+    if (data.status === "submitted") {
+      const ok = confirm(`${state.round}回目は完了済みです。保存済みの解答を消して通し試験をやり直しますか？`);
+      if (!ok) return;
+      store.rounds[state.round] = blankRound();
+    } else if (data.status !== "in_progress" && (Object.keys(data.records || {}).length || Object.keys(data.examAnswers || {}).length)) {
+      const ok = confirm(`${state.round}回目の復習記録を消して、通し試験を開始しますか？`);
+      if (!ok) return;
+      store.rounds[state.round] = blankRound();
+    }
+    const fresh = roundData();
+    if (fresh.status !== "in_progress") {
+      fresh.status = "in_progress";
+      fresh.startedAt = Date.now();
+      fresh.examAnswers = {};
+      fresh.records = {};
+      fresh.writtenScores = {};
+      saveStore();
+    }
+    state.mode = "exam";
+    state.index = firstUnansweredIndex();
+    state.revealed = false;
+    state.view = "solve";
+    render();
+  }
+
+  function firstUnansweredIndex() {
+    const answers = roundData().examAnswers || {};
+    const idx = EXAM.questions.findIndex(question => !answerExists(question, answers[question.id]?.value));
+    return idx < 0 ? 0 : idx;
+  }
+
+  function startReview() {
+    state.mode = "review";
+    state.index = 0;
+    state.revealed = false;
+    state.reviewDraft = { value: emptyAnswer(EXAM.questions[0]), confidence: "" };
+    state.view = "solve";
+    render();
+  }
+
+  function resetCurrentRound() {
+    const ok = confirm(`${state.round}回目の解答・正誤・自信度をすべて消します。よろしいですか？`);
+    if (!ok) return;
+    store.rounds[state.round] = blankRound();
+    saveStore();
+    render();
+  }
+
+  function currentDraft() {
+    if (state.mode === "review") {
+      if (!state.reviewDraft) state.reviewDraft = { value: emptyAnswer(q()), confidence: "" };
+      return state.reviewDraft;
+    }
+    const data = roundData();
+    data.examAnswers[q().id] ||= { value: emptyAnswer(q()), confidence: "" };
+    return data.examAnswers[q().id];
+  }
+
+  function renderSolve(shell) {
+    const question = q();
+    const draft = currentDraft();
+    const header = el("header", "solve-header");
+    header.append(button("終了", "ghost", exitSolve));
+    const title = el("div", "solve-title");
+    title.append(el("strong", "", state.mode === "exam" ? "通し試験" : "1問ずつ復習"));
+    title.append(el("small", "", `${state.round}回目　問題${question.id}/60`));
+    header.append(title);
+    const right = el("div", "timer", state.mode === "exam" ? timerText() : `${state.index + 1}/60`);
+    header.append(right);
+    shell.append(header);
+    const progress = el("div", "progress-line");
+    const bar = el("span");
+    bar.style.width = `${((state.index + 1) / 60) * 100}%`;
+    progress.append(bar);
+    shell.append(progress);
+
+    if (state.mode === "exam") {
+      state.tick = setInterval(() => { right.textContent = timerText(); }, 1000);
+    }
+
+    const wrap = el("div", "question-wrap");
+    const card = el("article", "question-card");
+    card.id = "current-question";
+    const meta = el("div", "question-meta");
+    meta.append(el("div", "question-number", `問題 ${question.id}`));
+    meta.append(el("div", "question-subject", question.title || typeLabel(question)));
+    card.append(meta);
+    const prompt = el("div", "prompt");
+    question.prompt.split(/\n\n+/).forEach(text => prompt.append(el("p", "", text)));
+    card.append(prompt);
+    card.append(renderAnswerInput(question, draft));
+    card.append(renderConfidence(draft));
+    if (state.revealed && state.mode === "review") card.append(renderExplanation(question, draft));
+
+    if (state.mode === "exam") card.append(renderQuestionPicker());
+    wrap.append(card);
+    shell.append(wrap);
+    shell.append(renderBottomNav());
+  }
+
+  function typeLabel(question) {
+    return question.type === "single" ? "5肢択一" : question.type === "multi" ? "多肢選択" : "記述式";
+  }
+
+  function renderAnswerInput(question, draft) {
+    if (question.type === "single") {
+      const box = el("div", "choices");
+      question.choices.forEach(choice => {
+        const label = el("label", "choice");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "answer";
+        input.value = choice.value;
+        input.checked = Number(draft.value) === Number(choice.value);
+        input.disabled = state.revealed;
+        if (input.checked) label.classList.add("selected");
+        if (state.revealed) {
+          if (Number(choice.value) === Number(question.answer)) label.classList.add("correct");
+          else if (input.checked) label.classList.add("wrong");
+        }
+        input.addEventListener("change", () => {
+          draft.value = choice.value;
+          persistDraft();
+          box.querySelectorAll(".choice").forEach(item => {
+            item.classList.toggle("selected", item.querySelector("input")?.checked === true);
+          });
+        });
+        label.append(input, el("span", "choice-text", `${choice.value}. ${choice.label}`));
+        box.append(label);
+      });
+      return box;
+    }
+    if (question.type === "multi") {
+      const grid = el("div", "multi-grid");
+      question.blanks.forEach(key => {
+        const field = el("div", "multi-field");
+        const label = el("label", "", key);
+        label.htmlFor = `blank-${key}`;
+        const select = document.createElement("select");
+        select.id = `blank-${key}`;
+        select.disabled = state.revealed;
+        select.append(new Option("番号を選ぶ", ""));
+        question.choices.forEach(choice => select.append(new Option(`${choice.value}. ${choice.label}`, choice.value)));
+        select.value = draft.value?.[key] || "";
+        select.addEventListener("change", () => {
+          draft.value ||= {};
+          draft.value[key] = select.value;
+          persistDraft();
+        });
+        field.append(label, select);
+        grid.append(field);
+      });
+      return grid;
+    }
+    const box = el("div", "written-answer");
+    const area = document.createElement("textarea");
+    area.placeholder = "40字程度で解答を入力";
+    area.value = draft.value || "";
+    area.disabled = state.revealed;
+    const count = el("div", "char-count", `${area.value.length}字`);
+    area.addEventListener("input", () => { draft.value = area.value; count.textContent = `${area.value.length}字`; persistDraft(); });
+    box.append(area, count);
+    return box;
+  }
+
+  function renderConfidence(draft) {
+    const box = el("section", "confidence");
+    box.append(el("div", "confidence-title", "この解答の感触（任意）"));
+    const buttons = el("div", "confidence-buttons");
+    for (const [value, label, css] of [["confident", "自信あり", "confident"], ["unsure", "迷いあり", "unsure"]]) {
+      const b = button(label, `confidence-button ${css}${draft.confidence === value ? " active" : ""}`, () => {
+        draft.confidence = draft.confidence === value ? "" : value;
+        persistDraft();
+        buttons.querySelectorAll(".confidence-button").forEach(item => item.classList.remove("active"));
+        if (draft.confidence === value) b.classList.add("active");
+      });
+      b.disabled = state.revealed;
+      buttons.append(b);
+    }
+    box.append(buttons);
+    return box;
+  }
+
+  function persistDraft() {
+    if (state.mode === "exam") saveStore();
+  }
+
+  function renderQuestionPicker() {
+    const details = el("details", "question-picker");
+    details.append(el("summary", "", "問題一覧を開く"));
+    const grid = el("div", "number-grid");
+    EXAM.questions.forEach((question, idx) => {
+      const answered = answerExists(question, roundData().examAnswers?.[question.id]?.value);
+      const b = button(String(question.id), `${answered ? "answered " : ""}${idx === state.index ? "current" : ""}`, () => goTo(idx));
+      grid.append(b);
+    });
+    details.append(grid);
+    return details;
+  }
+
+  function renderBottomNav() {
+    const nav = el("nav", "bottom-nav");
+    const inner = el("div", "bottom-nav-inner");
+    const prev = button("前へ", "nav-button", () => goTo(state.index - 1));
+    prev.disabled = state.index === 0;
+    let main;
+    if (state.mode === "review") {
+      main = state.revealed
+        ? button(state.index === 59 ? "復習を終える" : "次の問題", "nav-button main", () => state.index === 59 ? exitSolve() : goTo(state.index + 1))
+        : button("解答・解説", "nav-button main", revealCurrent);
+    } else if (state.index === 59) {
+      main = button("終了・一括採点", "nav-button main", submitExam);
+    } else {
+      main = button("次へ", "nav-button main", () => goTo(state.index + 1));
+    }
+    inner.append(prev, main);
+    nav.append(inner);
+    return nav;
+  }
+
+  function goTo(index) {
+    if (index < 0 || index >= EXAM.questions.length) return;
+    state.index = index;
+    state.revealed = false;
+    if (state.mode === "review") state.reviewDraft = { value: emptyAnswer(q()), confidence: "" };
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function revealCurrent() {
+    const question = q();
+    const draft = currentDraft();
+    const outcome = evaluate(question, draft.value);
+    roundData().records[question.id] = {
+      answer: draft.value,
+      confidence: draft.confidence,
+      status: outcome.status,
+      earned: outcome.earned,
+      max: outcome.max,
+      source: "review",
+      answeredAt: Date.now(),
+    };
+    saveStore();
+    state.revealed = true;
+    render();
+    requestAnimationFrame(() => document.querySelector(".explanation")?.scrollIntoView({ block: "nearest", behavior: "smooth" }));
+  }
+
+  function renderExplanation(question, draft) {
+    const box = el("section", "explanation");
+    const outcome = evaluate(question, draft.value);
+    const banner = el("div", `result-banner ${outcome.status}`);
+    const iconText = outcome.status === "ok" ? "○" : outcome.status === "ng" ? "×" : "記";
+    banner.append(el("span", "result-icon", iconText));
+    banner.append(el("span", "", outcome.status === "ok" ? "正解" : outcome.status === "ng" ? "不正解" : "記述式は自己採点"));
+    box.append(banner);
+    box.append(el("p", "answer-line", `あなたの解答：${answerText(question, draft.value)}`));
+    box.append(el("p", "answer-line", `${question.type === "written" ? "模範解答" : "正解"}：${correctText(question)}`));
+    if (question.type === "multi") box.append(el("p", "", `4空欄中 ${outcome.correctCount}空欄正解`));
+    if (question.type === "written" && question.keywords?.length) {
+      box.append(el("p", "", `必須キーワード：${question.keywords.join("／")}`));
+      box.append(renderSelfGrade(question.id));
+    }
+    const core = el("div", "core-box");
+    core.append(el("strong", "", "この問題の核心"));
+    core.append(el("p", "", question.core || "解説を確認してください。"));
+    box.append(core);
+    box.append(renderDetailedExplanation(question));
+    box.append(renderMiniHistory(question.id));
+    return box;
+  }
+
+  function renderSelfGrade(questionId) {
+    const box = el("div", "self-grade");
+    box.append(el("p", "", "模範解答と比べて自己採点"));
+    const buttons = el("div", "self-grade-buttons");
+    [["ok", "○ 正解相当", 20], ["partial", "△ 部分点", 10], ["ng", "× 不正解", 0]].forEach(([status, label, score]) => {
+      buttons.append(button(label, "", () => {
+        const record = roundData().records[questionId];
+        if (record) { record.status = status; record.earned = score; }
+        saveStore();
+        render();
+      }));
+    });
+    box.append(buttons);
+    return box;
+  }
+
+  const DETAIL_ORDER = [
+    "肢1　×", "肢1　○", "肢2　×", "肢2　○", "肢3　×", "肢3　○", "肢4　×", "肢4　○", "肢5　×", "肢5　○",
+    "アの理由", "イの理由", "ウの理由", "エの理由", "必須キーワード", "採点要素", "根拠条文", "関連条文", "関連判例",
+    "なぜこの表現になるのか", "一緒に覚える周辺知識", "紛らわしい選択肢との違い", "典型的誤答", "部分点を失いやすいポイント",
+    "出題者の罠", "解答テクニック", "別角度で出るなら"
+  ];
+
+  function renderDetailedExplanation(question) {
+    const details = el("details", "detail-toggle");
+    details.append(el("summary", "", "詳しい解説を開く"));
+    const seen = new Set();
+    DETAIL_ORDER.forEach(name => {
+      const text = question.sections?.[name];
+      if (!text || seen.has(name)) return;
+      seen.add(name);
+      const section = el("section", "detail-section");
+      section.append(el("h3", "", name));
+      section.append(el("p", "", text));
+      details.append(section);
+    });
+    return details;
+  }
+
+  function renderMiniHistory(questionId) {
+    const box = el("div", "history-mini");
+    box.append(document.createTextNode("5回の履歴（解答後のみ表示）"));
+    const dots = el("span", "history-dots");
+    for (let n = 1; n <= 5; n++) {
+      const record = store.rounds[n].records?.[questionId];
+      const status = record?.status;
+      const label = status === "ok" ? "○" : status === "ng" ? "×" : status === "partial" ? "△" : "－";
+      dots.append(el("span", `history-dot ${status || ""}`, label));
+    }
+    box.append(dots);
+    return box;
+  }
+
+  function timerText() {
+    const start = roundData().startedAt || Date.now();
+    const remaining = Math.max(0, EXAM.timeMinutes * 60 - Math.floor((Date.now() - start) / 1000));
+    const h = String(Math.floor(remaining / 3600)).padStart(2, "0");
+    const m = String(Math.floor((remaining % 3600) / 60)).padStart(2, "0");
+    const s = String(remaining % 60).padStart(2, "0");
+    return `${h}:${m}:${s}`;
+  }
+
+  function exitSolve() {
+    state.view = "home";
+    state.mode = null;
+    state.revealed = false;
+    render();
+    window.scrollTo({ top: 0 });
+  }
+
+  function submitExam() {
+    const answers = roundData().examAnswers || {};
+    const unanswered = EXAM.questions.filter(question => !answerExists(question, answers[question.id]?.value)).length;
+    const message = unanswered
+      ? `未解答が${unanswered}問あります。終了して一括採点しますか？`
+      : "試験を終了して一括採点しますか？終了後は正答・解説が表示されます。";
+    if (!confirm(message)) return;
+    const data = roundData();
+    data.records = {};
+    EXAM.questions.forEach(question => {
+      const draft = answers[question.id] || { value: emptyAnswer(question), confidence: "" };
+      const outcome = evaluate(question, draft.value);
+      data.records[question.id] = {
+        answer: draft.value,
+        confidence: draft.confidence,
+        status: outcome.status,
+        earned: outcome.earned,
+        max: outcome.max,
+        source: "exam",
+        answeredAt: Date.now(),
+      };
+    });
+    data.status = "submitted";
+    data.submittedAt = Date.now();
+    saveStore();
+    state.view = "results";
+    state.mode = null;
+    render();
+    window.scrollTo({ top: 0 });
+  }
+
+  function scoreSummary() {
+    const records = roundData().records || {};
+    let auto = 0, written = 0, pending = 0, correct = 0, wrong = 0, unsure = 0;
+    EXAM.questions.forEach(question => {
+      const record = records[question.id];
+      if (!record) return;
+      if (question.type === "written") {
+        const value = roundData().writtenScores?.[question.id];
+        if (value === undefined || value === "") pending++;
+        else written += Number(value) || 0;
+      } else auto += Number(record.earned) || 0;
+      if (record.status === "ok") correct++;
+      else if (record.status === "ng") wrong++;
+      if (record.confidence === "unsure") unsure++;
+    });
+    return { auto, written, pending, total: auto + written, correct, wrong, unsure };
+  }
+
+  function renderResults(shell) {
+    const page = el("section", "results");
+    const head = el("div", "results-header");
+    const title = el("div");
+    title.append(el("p", "eyebrow", `${state.round}回目`), el("h1", "", "一括採点結果"));
+    head.append(title, button("ホーム", "ghost", () => { state.view = "home"; render(); }));
+    page.append(head);
+    page.append(renderScoreCard());
+    page.append(renderWrittenScores());
+
+    const list = el("section", "result-list");
+    list.append(el("h2", "", "問題別結果"));
+    EXAM.questions.forEach((question, idx) => {
+      const record = roundData().records?.[question.id];
+      const row = el("div", "result-row");
+      row.append(el("strong", "", `問${question.id}`));
+      const status = record?.status || "pending";
+      const label = status === "ok" ? "○ 正解" : status === "ng" ? "× 不正解" : status === "partial" ? "△ 部分点" : "記述・未採点";
+      const text = el("span", `result-status ${status}`, label + (record?.confidence === "unsure" ? "／迷いあり" : ""));
+      row.append(text);
+      row.append(button("確認", "small-button", () => {
+        state.mode = "review";
+        state.index = idx;
+        state.reviewDraft = { value: record?.answer ?? emptyAnswer(question), confidence: record?.confidence || "" };
+        state.revealed = true;
+        state.view = "solve";
+        render();
+        window.scrollTo({ top: 0 });
+      }));
+      list.append(row);
+    });
+    page.append(list);
+    shell.append(page);
+  }
+
+  function renderScoreCard() {
+    const s = scoreSummary();
+    const card = el("section", "score-card");
+    card.append(el("div", "score-main", `${s.total} / 300点`));
+    card.append(el("div", "score-sub", s.pending ? `自動採点 ${s.auto}/240点　記述式${s.pending}問は自己採点してください` : `自動採点 ${s.auto}/240点＋記述 ${s.written}/60点`));
+    const stats = el("div", "result-stats");
+    [[s.correct, "正解"], [s.wrong, "不正解"], [s.unsure, "迷いあり"]].forEach(([value, label]) => {
+      const stat = el("div", "stat");
+      stat.append(el("strong", "", String(value)), document.createTextNode(label));
+      stats.append(stat);
+    });
+    card.append(stats);
+    return card;
+  }
+
+  function renderWrittenScores() {
+    const card = el("section", "written-score-card");
+    card.append(el("h2", "", "記述式の自己採点"));
+    card.append(el("p", "subtitle", "模範解答を確認し、各問0～20点で入力してください。"));
+    [44, 45, 46].forEach(id => {
+      const row = el("div", "written-score-row");
+      row.append(el("strong", "", `問題${id}`));
+      row.append(button("解答を確認", "small-button", () => {
+        const idx = EXAM.questions.findIndex(question => question.id === id);
+        const record = roundData().records[id];
+        state.mode = "review";
+        state.index = idx;
+        state.reviewDraft = { value: record?.answer || "", confidence: record?.confidence || "" };
+        state.revealed = true;
+        state.view = "solve";
+        render();
+      }));
+      const input = document.createElement("input");
+      input.type = "number";
+      input.min = "0";
+      input.max = "20";
+      input.step = "1";
+      input.placeholder = "0～20";
+      input.value = roundData().writtenScores?.[id] ?? "";
+      input.setAttribute("aria-label", `問題${id}の得点`);
+      input.addEventListener("change", () => {
+        const value = Math.max(0, Math.min(20, Number(input.value)));
+        roundData().writtenScores[id] = value;
+        const record = roundData().records[id];
+        if (record) { record.earned = value; record.status = value === 20 ? "ok" : value === 0 ? "ng" : "partial"; }
+        saveStore();
+        render();
+      });
+      row.append(input);
+      card.append(row);
+    });
+    return card;
+  }
+
+  function renderHistory(shell) {
+    const page = el("section", "history-view");
+    const head = el("div", "history-header");
+    const title = el("div");
+    title.append(el("p", "eyebrow", "全5回"), el("h1", "", "問題別の正誤履歴"));
+    head.append(title, button("ホーム", "ghost", () => { state.view = "home"; render(); }));
+    page.append(head);
+    page.append(el("p", "legend", "○ 正解　△ 部分点　× 不正解　－ 未実施　※この画面は解答中には表示されません。"));
+    const wrap = el("div", "history-table-wrap");
+    const table = el("table", "history-table");
+    const thead = document.createElement("thead");
+    const hr = document.createElement("tr");
+    ["問題", "1回目", "2回目", "3回目", "4回目", "5回目"].forEach(text => hr.append(el("th", "", text)));
+    thead.append(hr);
+    table.append(thead);
+    const tbody = document.createElement("tbody");
+    EXAM.questions.forEach(question => {
+      const tr = document.createElement("tr");
+      tr.append(el("td", "", String(question.id)));
+      for (let n = 1; n <= 5; n++) {
+        const record = store.rounds[n].records?.[question.id];
+        const mark = record?.status === "ok" ? "○" : record?.status === "ng" ? "×" : record?.status === "partial" ? "△" : "－";
+        const td = el("td", record?.status || "", mark + (record?.confidence === "unsure" ? "※" : ""));
+        td.title = record?.confidence === "unsure" ? "迷いあり" : record?.confidence === "confident" ? "自信あり" : "";
+        tr.append(td);
+      }
+      tbody.append(tr);
+    });
+    table.append(tbody);
+    wrap.append(table);
+    page.append(wrap);
+    shell.append(page);
+  }
+
+  render();
+  if (state.sync.code) syncNow();
+})();
