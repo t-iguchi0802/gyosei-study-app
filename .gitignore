@@ -1,2 +1,5 @@
 storage/profiles.json
 storage/profiles.json.tmp
+.firebase/
+firebase-debug.log
+tools/*.png

@@ -95,6 +95,7 @@ h3 { font-size: 1.05rem; }
   font-weight: 700;
 }
 .primary { border: 1px solid var(--brand); color: #fff; background: var(--brand); }
+.primary:disabled { cursor: wait; opacity: .55; }
 .secondary { border: 1px solid var(--brand); color: var(--brand); background: var(--brand-soft); }
 .ghost { border: 1px solid var(--line); color: var(--ink); background: #fff; }
 .danger { border: 1px solid #d4a29d; color: var(--ng); background: #fff; }
@@ -151,6 +152,19 @@ h3 { font-size: 1.05rem; }
 }
 .sync-code-label { color: var(--muted); font-size: .8rem; }
 .sync-code { color: var(--brand); font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; letter-spacing: .08em; }
+.sync-account {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 2px 10px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid #bed0ca;
+  border-radius: 12px;
+  background: var(--brand-soft);
+}
+.sync-account-label { grid-row: 1 / 3; color: var(--muted); font-size: .8rem; }
+.sync-account small { color: var(--muted); overflow-wrap: anywhere; }
 .sync-note { margin: 12px 0 0; color: var(--muted); font-size: .82rem; }
 
 .solve-header {

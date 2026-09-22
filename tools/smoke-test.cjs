@@ -16,6 +16,8 @@ function check(condition, message) {
   await page.evaluate(() => localStorage.clear());
   await page.reload({ waitUntil: "networkidle" });
 
+  check(await page.getByRole("button", { name: "Googleでログインして同期" }).isVisible(), "Google同期ボタンが見つからない");
+  check(await page.getByText("同期コード", { exact: false }).count() === 0, "旧同期コードUIが残っている");
   check(await page.getByRole("button", { name: /1問ずつ復習する/ }).isVisible(), "復習開始ボタンが見つからない");
   await page.getByRole("button", { name: /1問ずつ復習する/ }).click();
   check(await page.locator(".question-card").count() === 1, "復習画面に複数問題が表示されている");

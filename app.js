@@ -3,8 +3,9 @@
 
   const EXAM = window.EXAM_DATA;
   const STORAGE_KEY = "gyosei2026_mock1_learning_v1";
-  const SYNC_KEY = "gyosei2026_mock1_sync_v1";
   const app = document.getElementById("app");
+  let auth = null;
+  let db = null;
   const state = {
     view: "home",
     round: 1,
@@ -14,13 +15,13 @@
     reviewDraft: null,
     tick: null,
     sync: {
-      code: normalizeSyncCode(localStorage.getItem(SYNC_KEY) || ""),
-      status: "local",
-      message: "この端末内に保存中",
+      user: null,
+      status: "loading",
+      message: "クラウド同期を確認中…",
       busy: false,
       pending: false,
-      revision: 0,
       timer: null,
+      unsubscribe: null,
     },
   };
 
@@ -81,11 +82,6 @@
     return node;
   }
 
-  function normalizeSyncCode(value) {
-    const raw = String(value || "").toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 12);
-    return raw.replace(/(.{4})(?=.)/g, "$1-");
-  }
-
   function syncStatus(status, message) {
     state.sync.status = status;
     state.sync.message = message;
@@ -96,9 +92,13 @@
     }
   }
 
+  function cloneStore(value) {
+    return JSON.parse(JSON.stringify(value || blankStore()));
+  }
+
   function mergeStores(localValue, remoteValue) {
-    const local = normalizeStore(structuredClone(localValue || blankStore()));
-    const remote = normalizeStore(structuredClone(remoteValue || blankStore()));
+    const local = normalizeStore(cloneStore(localValue));
+    const remote = normalizeStore(cloneStore(remoteValue));
     const merged = blankStore();
     for (let n = 1; n <= 5; n++) {
       const localTime = roundUpdatedAt(local.rounds[n]);
@@ -110,14 +110,14 @@
   }
 
   function scheduleSync() {
-    if (!state.sync.code) return;
+    if (!state.sync.user || !db) return;
     clearTimeout(state.sync.timer);
     syncStatus("pending", "保存内容を同期待ち");
     state.sync.timer = setTimeout(() => syncNow(), 500);
   }
 
   async function syncNow() {
-    if (!state.sync.code) return;
+    if (!state.sync.user || !db) return;
     if (state.sync.busy) {
       state.sync.pending = true;
       return;
@@ -125,34 +125,13 @@
     state.sync.busy = true;
     syncStatus("syncing", "同期中…");
     try {
-      for (let attempt = 0; attempt < 2; attempt++) {
-        const response = await fetch(`/api/sync/${encodeURIComponent(state.sync.code)}`, { cache: "no-store" });
-        if (response.status === 404) throw new Error("同期コードが見つかりません");
-        if (!response.ok) throw new Error("同期データを取得できません");
-        const remote = await response.json();
-        state.sync.revision = Number(remote.revision) || 0;
-        const merged = mergeStores(store, remote.data);
-        const remoteText = JSON.stringify(normalizeStore(remote.data || blankStore()));
-        const mergedText = JSON.stringify(merged);
-        store = merged;
-        localStorage.setItem(STORAGE_KEY, mergedText);
-
-        if (remoteText !== mergedText) {
-          const put = await fetch(`/api/sync/${encodeURIComponent(state.sync.code)}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ data: store, baseRevision: state.sync.revision }),
-          });
-          if (put.status === 409) continue;
-          if (!put.ok) throw new Error("同期データを保存できません");
-          const saved = await put.json();
-          state.sync.revision = Number(saved.revision) || state.sync.revision;
-        }
-        syncStatus("ok", `同期済み ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`);
-        if (state.view !== "solve") render();
-        return;
-      }
-      throw new Error("別端末の更新と競合しました。もう一度同期してください");
+      const reference = db.collection("users").doc(state.sync.user.uid).collection("mockExams").doc("mock1");
+      await reference.set({
+        data: store,
+        clientUpdatedAt: Number(store.updatedAt) || Date.now(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+      syncStatus("ok", `同期済み ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`);
     } catch (error) {
       syncStatus("error", `${error.message}（端末内には保存済み）`);
     } finally {
@@ -164,59 +143,74 @@
     }
   }
 
-  async function createSyncCode() {
-    syncStatus("syncing", "同期コードを作成中…");
+  function startCloudListener(user) {
+    if (state.sync.unsubscribe) state.sync.unsubscribe();
+    const reference = db.collection("users").doc(user.uid).collection("mockExams").doc("mock1");
+    state.sync.unsubscribe = reference.onSnapshot(snapshot => {
+      if (!snapshot.exists) {
+        scheduleSync();
+        return;
+      }
+      const remoteStore = snapshot.data()?.data;
+      if (!remoteStore) return;
+      const remoteText = JSON.stringify(normalizeStore(cloneStore(remoteStore)));
+      const merged = mergeStores(store, remoteStore);
+      const mergedText = JSON.stringify(merged);
+      const localChanged = JSON.stringify(store) !== mergedText;
+      store = merged;
+      localStorage.setItem(STORAGE_KEY, mergedText);
+      syncStatus("ok", "クラウドと同期済み");
+      if (localChanged && state.view !== "solve") render();
+      if (remoteText !== mergedText) scheduleSync();
+    }, error => syncStatus("error", `${error.message}（端末内には保存済み）`));
+  }
+
+  async function signInGoogle() {
+    if (!auth) return;
+    syncStatus("syncing", "Googleログインを開いています…");
     try {
-      const response = await fetch("/api/sync/create", { method: "POST" });
-      if (!response.ok) throw new Error("同期コードを作成できません");
-      const result = await response.json();
-      state.sync.code = normalizeSyncCode(result.code);
-      state.sync.revision = Number(result.revision) || 0;
-      localStorage.setItem(SYNC_KEY, state.sync.code);
-      render();
-      await syncNow();
+      const provider = new firebase.auth.GoogleAuthProvider();
+      const mobile = window.matchMedia("(max-width: 700px)").matches;
+      if (mobile) await auth.signInWithRedirect(provider);
+      else await auth.signInWithPopup(provider);
     } catch (error) {
-      syncStatus("error", `${error.message}。同期対応サーバーから開いてください`);
+      if (["auth/popup-blocked", "auth/cancelled-popup-request"].includes(error.code)) {
+        await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+      } else {
+        syncStatus("error", error.message);
+      }
     }
   }
 
-  async function connectSync(code) {
-    const normalized = normalizeSyncCode(code);
-    if (normalized.replace(/-/g, "").length !== 12) {
-      syncStatus("error", "12文字の同期コードを入力してください");
+  async function signOutGoogle() {
+    if (auth) await auth.signOut();
+  }
+
+  function initializeFirebaseSync() {
+    if (!window.firebase || !window.FIREBASE_CONFIG) {
+      syncStatus("error", "Firebaseを読み込めません。端末内には保存できます");
       return;
     }
-    syncStatus("syncing", "同期コードを確認中…");
     try {
-      const response = await fetch(`/api/sync/${encodeURIComponent(normalized)}`, { cache: "no-store" });
-      if (response.status === 404) throw new Error("同期コードが見つかりません");
-      if (!response.ok) throw new Error("同期サーバーへ接続できません");
-      state.sync.code = normalized;
-      localStorage.setItem(SYNC_KEY, normalized);
-      render();
-      await syncNow();
+      if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
+      auth = firebase.auth();
+      db = firebase.firestore();
+      auth.useDeviceLanguage();
+      auth.getRedirectResult().catch(error => syncStatus("error", error.message));
+      auth.onAuthStateChanged(user => {
+        state.sync.user = user || null;
+        if (user) {
+          syncStatus("syncing", "クラウド履歴を確認中…");
+          startCloudListener(user);
+        } else {
+          if (state.sync.unsubscribe) state.sync.unsubscribe();
+          state.sync.unsubscribe = null;
+          syncStatus("local", "この端末内に保存中");
+        }
+        if (state.view !== "solve") render();
+      });
     } catch (error) {
-      syncStatus("error", error.message);
-    }
-  }
-
-  function disconnectSync() {
-    if (!confirm("この端末の同期を解除しますか？端末内の学習履歴は残ります。")) return;
-    clearTimeout(state.sync.timer);
-    localStorage.removeItem(SYNC_KEY);
-    state.sync.code = "";
-    state.sync.revision = 0;
-    state.sync.status = "local";
-    state.sync.message = "この端末内に保存中";
-    render();
-  }
-
-  async function copySyncCode() {
-    try {
-      await navigator.clipboard.writeText(state.sync.code);
-      syncStatus("ok", "同期コードをコピーしました");
-    } catch (_) {
-      prompt("同期コードをコピーしてください", state.sync.code);
+      syncStatus("error", `${error.message}（端末内には保存できます）`);
     }
   }
 
@@ -316,42 +310,31 @@
     const heading = el("div", "sync-heading");
     const title = el("div");
     title.append(el("h2", "", "PC・スマホの学習履歴を共有"));
-    title.append(el("p", "subtitle", "同じ同期コードを使うと、5回分の解答・正誤・自信度を共有できます。"));
+    title.append(el("p", "subtitle", "両方の端末で同じGoogleアカウントにログインすると、5回分の履歴が自動で同期されます。"));
     heading.append(title);
     card.append(heading);
 
     const status = el("p", `sync-status ${state.sync.status}`, state.sync.message);
     card.append(status);
 
-    if (state.sync.code) {
-      const codeBox = el("div", "sync-code-box");
-      codeBox.append(el("span", "sync-code-label", "同期コード"));
-      codeBox.append(el("strong", "sync-code", state.sync.code));
-      codeBox.append(button("コピー", "small-button", copySyncCode));
-      card.append(codeBox);
+    if (state.sync.user) {
+      const account = el("div", "sync-account");
+      account.append(el("span", "sync-account-label", "ログイン中"));
+      account.append(el("strong", "", state.sync.user.displayName || state.sync.user.email || "Googleアカウント"));
+      if (state.sync.user.displayName && state.sync.user.email) account.append(el("small", "", state.sync.user.email));
+      card.append(account);
       const actions = el("div", "sync-actions");
       actions.append(button("今すぐ同期", "secondary", syncNow));
-      actions.append(button("この端末の同期を解除", "ghost", disconnectSync));
+      actions.append(button("ログアウト", "ghost", signOutGoogle));
       card.append(actions);
-      card.append(el("p", "sync-note", "別の端末でこのページを開き、「同期コードで接続」に同じコードを入力してください。"));
+      card.append(el("p", "sync-note", "別の端末でも同じGoogleアカウントでログインしてください。ログアウトしても端末内の履歴は残ります。"));
     } else {
       const actions = el("div", "sync-actions");
-      actions.append(button("同期コードを作る", "primary", createSyncCode));
-      const join = el("form", "sync-join");
-      const input = document.createElement("input");
-      input.type = "text";
-      input.inputMode = "text";
-      input.autocomplete = "off";
-      input.maxLength = 14;
-      input.placeholder = "XXXX-XXXX-XXXX";
-      input.setAttribute("aria-label", "同期コード");
-      input.addEventListener("input", () => { input.value = normalizeSyncCode(input.value); });
-      const connect = button("同期コードで接続", "secondary", () => connectSync(input.value));
-      join.addEventListener("submit", event => { event.preventDefault(); connectSync(input.value); });
-      join.append(input, connect);
-      actions.append(join);
+      const login = button("Googleでログインして同期", "primary", signInGoogle);
+      login.disabled = !auth;
+      actions.append(login);
       card.append(actions);
-      card.append(el("p", "sync-note", "最初の端末でコードを作り、もう一方の端末でそのコードを入力します。"));
+      card.append(el("p", "sync-note", "ログイン前もこの端末内には保存されます。Googleログイン後、既存履歴とクラウド履歴を回ごとに統合します。"));
     }
     return card;
   }
@@ -873,5 +856,5 @@
   }
 
   render();
-  if (state.sync.code) syncNow();
+  initializeFirebaseSync();
 })();
