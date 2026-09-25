@@ -279,6 +279,22 @@ h3 { font-size: 1.05rem; }
 .answer-line { margin: 8px 0; font-weight: 700; }
 .core-box { margin-top: 10px; padding: 11px 12px; border-left: 4px solid var(--accent); background: #fff; }
 .core-box p { margin: 4px 0 0; white-space: pre-wrap; }
+.choice-explanations,
+.precedent-explanation { margin-top: 16px; }
+.choice-explanations h2,
+.precedent-explanation h2 { margin: 0 0 9px; font-size: 1.03rem; color: var(--ink); }
+.choice-explanation { margin-top: 9px; padding: 11px 12px; border: 1px solid var(--line); border-left: 4px solid #aab4b0; border-radius: 10px; background: #fff; }
+.choice-explanation.is-correct { border-left-color: var(--ok); background: var(--ok-bg); }
+.choice-explanation.is-wrong { border-left-color: var(--ng); }
+.choice-explanation.is-selected { box-shadow: 0 0 0 2px rgba(29, 94, 78, .16); }
+.choice-explanation h3 { margin: 0 0 6px; font-size: .98rem; color: var(--brand); }
+.choice-explanation-text { margin: 0 0 7px; color: var(--muted); font-size: .9rem; }
+.choice-explanation-reason { margin: 0; white-space: pre-wrap; }
+.trap-note { margin-top: 9px; padding: 9px 10px; border-radius: 8px; background: #fff4dc; color: #5c4414; }
+.trap-label { display: inline-block; margin-bottom: 4px; padding: 2px 7px; border-radius: 999px; background: #9a6415; color: #fff; font-size: .78rem; }
+.trap-note p { margin: 0; font-size: .9rem; line-height: 1.65; }
+.precedent-explanation { padding: 12px; border: 1px solid #cabd8d; border-radius: 10px; background: #fffdf5; }
+.precedent-explanation p { margin: 0; white-space: pre-wrap; }
 .detail-toggle { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
 .detail-toggle summary { cursor: pointer; color: var(--brand); font-weight: 800; }
 .detail-section { padding-top: 12px; }

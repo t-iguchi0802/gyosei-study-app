@@ -608,6 +608,10 @@
     core.append(el("strong", "", "この問題の核心"));
     core.append(el("p", "", question.core || "解説を確認してください。"));
     box.append(core);
+    const choiceExplanations = renderChoiceExplanations(question, draft);
+    if (choiceExplanations) box.append(choiceExplanations);
+    const precedent = renderPrecedentExplanation(question);
+    if (precedent) box.append(precedent);
     box.append(renderDetailedExplanation(question));
     box.append(renderMiniHistory(question.id));
     return box;
@@ -630,22 +634,101 @@
   }
 
   const DETAIL_ORDER = [
-    "肢1　×", "肢1　○", "肢2　×", "肢2　○", "肢3　×", "肢3　○", "肢4　×", "肢4　○", "肢5　×", "肢5　○",
     "アの理由", "イの理由", "ウの理由", "エの理由", "必須キーワード", "採点要素", "根拠条文", "関連条文", "関連判例",
     "なぜこの表現になるのか", "一緒に覚える周辺知識", "紛らわしい選択肢との違い", "典型的誤答", "部分点を失いやすいポイント",
     "出題者の罠", "解答テクニック", "別角度で出るなら"
   ];
 
+  function normalizedSectionName(name) {
+    return String(name || "").replace(/[\s　]+/g, "");
+  }
+
+  function choiceExplanationEntries(question) {
+    return Object.entries(question.sections || {}).map(([name, text]) => {
+      const match = normalizedSectionName(name).match(/^肢(\d+)([×○])$/);
+      return match ? { name, text, number: Number(match[1]), mark: match[2] } : null;
+    }).filter(Boolean).sort((a, b) => a.number - b.number);
+  }
+
+  function renderChoiceExplanations(question, draft) {
+    if (question.type !== "single") return null;
+    const entries = choiceExplanationEntries(question);
+    if (!entries.length) return null;
+    const section = el("section", "choice-explanations");
+    section.append(el("h2", "", "全肢の解説"));
+    entries.forEach(entry => {
+      const selected = Number(draft.value) === entry.number;
+      const item = el("article", `choice-explanation ${entry.mark === "○" ? "is-correct" : "is-wrong"}${selected ? " is-selected" : ""}`);
+      const suffix = selected ? "（あなたの解答）" : "";
+      item.append(el("h3", "", `肢${entry.number} ${entry.mark}${suffix}`));
+      const choice = question.choices?.find(candidate => Number(candidate.value) === entry.number);
+      if (choice?.label) item.append(el("p", "choice-explanation-text", choice.label));
+      item.append(el("p", "choice-explanation-reason", entry.text));
+      if (entry.mark === "×") item.append(renderTrapNote(choice?.label || "", entry.text));
+      section.append(item);
+    });
+    return section;
+  }
+
+  const TRAP_WORDS = [
+    "絶対に", "絶対", "必ず", "常に", "一切", "例外なく", "無条件に", "無条件",
+    "当然に", "直ちに", "自動的に", "全て", "すべて", "一律に", "いかなる場合も",
+    "のみで", "だけで", "問わず", "余地はない"
+  ];
+
+  function renderTrapNote(choiceText, explanation) {
+    const foundWords = [...new Set(TRAP_WORDS.filter(word => choiceText.includes(word)))];
+    const note = el("div", "trap-note");
+    note.append(el("strong", "trap-label", "ひっかけポイント"));
+    if (foundWords.length) {
+      note.append(el("p", "", `注意語「${foundWords.join("・")}」による強い断定です。例外や追加要件を消している可能性があります。ただし、注意語だけで誤りとは決めず、上の正しい要件と照合します。`));
+      return note;
+    }
+    const text = String(explanation || "");
+    let message = "正しい知識の一部分を使いながら、対象・要件・効果のどこかをずらした肢です。上の説明で、どこが変えられたかを確認します。";
+    if (/結論と逆|逆である|反対の結論|逆転/.test(text)) {
+      message = "判例・条文の結論を逆にした肢です。結論だけでなく、理由と適用条件もセットで覚えます。";
+    } else if (/混同|別問題|区別|異なる制度|同一ではない/.test(text)) {
+      message = "似た制度・主体・法的効果を入れ替えるひっかけです。何と何を区別する問題かを確認します。";
+    } else if (/要件|加えて|に加え|足りない|一つだけ|一部.*落/.test(text)) {
+      message = "必要な要件の一部を省く、または別の要件に置き換えるひっかけです。要件を一つずつ照合します。";
+    } else if (/範囲|一律|一般化|広げ|拡張|当然|直ち|機械的|全て|すべて/.test(text)) {
+      message = "適用範囲を広げすぎる、または例外を消すひっかけです。誰に・どの場面で適用されるかを確認します。";
+    } else if (/時点|施行|期限|日付|経過措置/.test(text)) {
+      message = "基準時・施行日・期限を入れ替えるひっかけです。日付を時間軸に置いて確認します。";
+    }
+    note.append(el("p", "", message));
+    return note;
+  }
+
+  function hasConcretePrecedent(text) {
+    if (!text || /^(なし|判例なし)[。．]?$/.test(text.trim())) return false;
+    if (/^(条文中心|特定判例|一般理論|制度・|制定法律|法務省|統計定義)/.test(text.trim())) return false;
+    return /最高裁|大法廷|小法廷|判決|事件/.test(text);
+  }
+
+  function renderPrecedentExplanation(question) {
+    const text = question.sections?.["関連判例"];
+    if (!hasConcretePrecedent(text)) return null;
+    const section = el("section", "precedent-explanation");
+    section.append(el("h2", "", "関連する最高裁判例・裁判例"));
+    section.append(el("p", "", text));
+    return section;
+  }
+
   function renderDetailedExplanation(question) {
     const details = el("details", "detail-toggle");
-    details.append(el("summary", "", "詳しい解説を開く"));
+    details.append(el("summary", "", "ひっかけ・解答テクニック・周辺知識を見る"));
     const seen = new Set();
     DETAIL_ORDER.forEach(name => {
-      const text = question.sections?.[name];
-      if (!text || seen.has(name)) return;
-      seen.add(name);
+      const entry = Object.entries(question.sections || {}).find(([sectionName]) => normalizedSectionName(sectionName) === normalizedSectionName(name));
+      if (!entry) return;
+      const [actualName, text] = entry;
+      if (!text || seen.has(actualName)) return;
+      if (actualName === "関連判例" && hasConcretePrecedent(text)) return;
+      seen.add(actualName);
       const section = el("section", "detail-section");
-      section.append(el("h3", "", name));
+      section.append(el("h3", "", actualName));
       section.append(el("p", "", text));
       details.append(section);
     });
