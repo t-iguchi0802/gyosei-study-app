@@ -35,9 +35,9 @@ PWA用manifestはあるが、Service Workerによるアプリ本体のオフラ�
 
 ## 3. 最後に完了した作業
 
-### v2学習再開フェーズ（開発ブランチ・未デプロイ）
+### v2学習再開フェーズ（本番反映済み）
 
-開発ブランチ `feature/v2-learning-resume` で、次を実装した。
+コミット `073aa78` で次を実装し、2026-09-27にGitHub `main` とFirebase Hostingへ反映した。
 
 - 旧v1とは別のlocalStorageキー `gyosei2026_mock1_learning_v2`
 - 学習モードの周回数、回答済み問題ID、次に再開する問題の保存
@@ -59,7 +59,16 @@ PWA用manifestはあるが、Service Workerによるアプリ本体のオフラ�
 - 自信度未選択時に回答確定できないことを確認
 - スマホ390px、PC1280pxで横方向のはみ出しなし
 
-重要: このブランチはFirebase Hostingへデプロイしていない。Firestore本番データも変更していない。Googleログインを使用した実際の2端末間同期は、デプロイ前の確認フェーズで実施する。
+本番確認結果:
+
+- 公開URL: `https://gyosei-study-2026-tiguchi.web.app/`
+- Firebase Hostingデプロイ成功
+- `index.html`、`app.js`、`learning-v2.js`、`styles.css`、`data.js` がGitHub `main` とSHA-256で一致
+- 本番URL上で「5問回答→終了→再読込→問6から再開」を確認
+- 本番URL上で自信度未選択時に回答確定できないことを確認
+- 本番URL上でスマホ390px、PC1280pxの横方向のはみ出しなし
+
+重要: 旧v1データの削除・初期化・一括移行は行っていない。Googleログインを使用した実際の2端末間同期は、別途実機確認が必要。
 
 ### 公開版保全
 
@@ -335,7 +344,7 @@ Firebase本番データに対する移行は、移行処理とテストを完成
 
 ## 9. 現在作業中・未完了
 
-公開版の保全、GitHub一致確認、v2学習再開の開発ブランチ実装までは完了。
+公開版の保全、GitHub一致確認、v2学習再開の本番反映までは完了。
 
 以下はまだ未実装。
 

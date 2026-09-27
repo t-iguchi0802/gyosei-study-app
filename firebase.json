@@ -22,6 +22,8 @@
       "server.js",
       "start-app.ps1",
       "README.md",
+      "PROJECT_STATUS.md",
+      ".gitattributes",
       "storage/**",
       "tools/**",
       ".git/**",
