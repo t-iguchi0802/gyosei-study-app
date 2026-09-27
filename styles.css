@@ -67,6 +67,14 @@ h3 { font-size: 1.05rem; }
   box-shadow: var(--shadow);
 }
 
+.resume-card {
+  border-color: #9bb8ae;
+  background: linear-gradient(145deg, #f7fffc 0%, var(--brand-soft) 100%);
+}
+.resume-card h2 { margin-bottom: 4px; color: var(--brand); font-size: clamp(1.35rem, 5vw, 1.8rem); }
+.resume-kicker { margin-bottom: 4px; color: var(--brand); font-size: .85rem; font-weight: 800; letter-spacing: .06em; }
+.resume-action { width: 100%; margin-top: 6px; text-align: left; }
+
 .round-selector {
   display: grid;
   grid-template-columns: repeat(5, 1fr);

@@ -2,7 +2,9 @@
   "use strict";
 
   const EXAM = window.EXAM_DATA;
+  const LEARNING_V2 = window.GYOSEI_LEARNING_V2;
   const STORAGE_KEY = "gyosei2026_mock1_learning_v1";
+  const QUESTION_IDS = EXAM.questions.map(question => Number(question.id));
   const app = document.getElementById("app");
   let auth = null;
   let db = null;
@@ -13,6 +15,7 @@
     index: 0,
     revealed: false,
     reviewDraft: null,
+    learningActive: false,
     tick: null,
     sync: {
       user: null,
@@ -57,6 +60,27 @@
   }
 
   let store = loadStore();
+
+  function loadLearningStore() {
+    let parsed = null;
+    try {
+      parsed = JSON.parse(localStorage.getItem(LEARNING_V2.STORAGE_KEY) || "null");
+    } catch (_) {}
+    const loaded = LEARNING_V2.loadOrMigrate(parsed, store, QUESTION_IDS);
+    localStorage.setItem(LEARNING_V2.STORAGE_KEY, JSON.stringify(loaded));
+    return loaded;
+  }
+
+  let learningStore = loadLearningStore();
+
+  function saveLearningStore() {
+    localStorage.setItem(LEARNING_V2.STORAGE_KEY, JSON.stringify(learningStore));
+    scheduleSync();
+  }
+
+  function learningResumeIndex() {
+    return LEARNING_V2.nextQuestionIndex(learningStore, QUESTION_IDS);
+  }
 
   function saveStore() {
     const now = Date.now();
@@ -125,12 +149,22 @@
     state.sync.busy = true;
     syncStatus("syncing", "同期中…");
     try {
-      const reference = db.collection("users").doc(state.sync.user.uid).collection("mockExams").doc("mock1");
-      await reference.set({
-        data: store,
-        clientUpdatedAt: Number(store.updatedAt) || Date.now(),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      }, { merge: true });
+      const userReference = db.collection("users").doc(state.sync.user.uid);
+      const legacyReference = userReference.collection("mockExams").doc("mock1");
+      const learningReference = userReference.collection("apps").doc("gyosei2026Mock1");
+      await Promise.all([
+        legacyReference.set({
+          data: store,
+          clientUpdatedAt: Number(store.updatedAt) || Date.now(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        }, { merge: true }),
+        learningReference.set({
+          schemaVersion: LEARNING_V2.SCHEMA_VERSION,
+          data: learningStore,
+          clientUpdatedAt: Number(learningStore.updatedAt) || Date.now(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        }, { merge: true }),
+      ]);
       syncStatus("ok", `同期済み ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`);
     } catch (error) {
       syncStatus("error", `${error.message}（端末内には保存済み）`);
@@ -145,8 +179,10 @@
 
   function startCloudListener(user) {
     if (state.sync.unsubscribe) state.sync.unsubscribe();
-    const reference = db.collection("users").doc(user.uid).collection("mockExams").doc("mock1");
-    state.sync.unsubscribe = reference.onSnapshot(snapshot => {
+    const userReference = db.collection("users").doc(user.uid);
+    const legacyReference = userReference.collection("mockExams").doc("mock1");
+    const learningReference = userReference.collection("apps").doc("gyosei2026Mock1");
+    const unsubscribeLegacy = legacyReference.onSnapshot(snapshot => {
       if (!snapshot.exists) {
         scheduleSync();
         return;
@@ -163,6 +199,27 @@
       if (localChanged && state.view !== "solve") render();
       if (remoteText !== mergedText) scheduleSync();
     }, error => syncStatus("error", `${error.message}（端末内には保存済み）`));
+    const unsubscribeLearning = learningReference.onSnapshot(snapshot => {
+      if (!snapshot.exists) {
+        scheduleSync();
+        return;
+      }
+      const remoteStore = snapshot.data()?.data;
+      if (!remoteStore) return;
+      const merged = LEARNING_V2.mergeStores(learningStore, remoteStore, QUESTION_IDS);
+      const mergedText = JSON.stringify(merged);
+      const localChanged = JSON.stringify(learningStore) !== mergedText;
+      const remoteChanged = JSON.stringify(LEARNING_V2.normalizeStore(remoteStore, QUESTION_IDS)) !== mergedText;
+      learningStore = merged;
+      localStorage.setItem(LEARNING_V2.STORAGE_KEY, mergedText);
+      syncStatus("ok", "クラウドと同期済み");
+      if (localChanged && state.view !== "solve") render();
+      if (remoteChanged) scheduleSync();
+    }, error => syncStatus("error", `${error.message}（端末内には保存済み）`));
+    state.sync.unsubscribe = () => {
+      unsubscribeLegacy();
+      unsubscribeLearning();
+    };
   }
 
   async function signInGoogle() {
@@ -271,9 +328,23 @@
     page.append(el("h1", "", EXAM.title));
     page.append(el("p", "subtitle", `${EXAM.subtitle}｜全60問｜試験時間3時間`));
 
+    const resumeIndex = learningResumeIndex();
+    const learning = learningStore.learning;
+    const resumeCard = el("section", "home-card resume-card");
+    resumeCard.append(el("p", "resume-kicker", "続きから学習"));
+    resumeCard.append(el("h2", "", `${learning.cycle}周目・問${EXAM.questions[resumeIndex].id}/60`));
+    resumeCard.append(el("p", "subtitle", `${learning.answeredQuestionIds.length}問完了／残り${EXAM.questions.length - learning.answeredQuestionIds.length}問`));
+    const resumeButton = button("続きから学習する", "primary resume-action", () => startReview());
+    resumeButton.append(el("span", "button-note", `問${EXAM.questions[resumeIndex].id}から再開`));
+    resumeCard.append(resumeButton);
+    const resumeActions = el("div", "home-actions");
+    resumeActions.append(button("第1問から見直す", "ghost", () => startReview(0)));
+    resumeCard.append(resumeActions);
+    page.append(resumeCard);
+
     const card = el("section", "home-card");
-    card.append(el("h2", "", "学習回を選ぶ"));
-    card.append(el("p", "subtitle", "問題を解いている間は、過去の正誤を表示しません。"));
+    card.append(el("h2", "", "通し試験（現行5回方式）"));
+    card.append(el("p", "subtitle", "通し試験中は正解・解説・過去の正誤を表示しません。"));
     const rounds = el("div", "round-selector");
     for (let n = 1; n <= 5; n++) {
       const b = el("button", `round-button${state.round === n ? " active" : ""}`);
@@ -288,17 +359,15 @@
     const modes = el("div", "mode-grid");
     const examBtn = button(roundData().status === "in_progress" ? "通し試験を再開" : "通し試験を始める", "primary", startExam);
     examBtn.append(el("span", "button-note", "終了するまで正解・解説・過去成績は表示しません"));
-    const reviewBtn = button("1問ずつ復習する", "secondary", startReview);
-    reviewBtn.append(el("span", "button-note", "1問だけ解き、ボタンを押した時だけ解答・解説を表示"));
-    modes.append(examBtn, reviewBtn);
+    modes.append(examBtn);
     card.append(modes);
 
     const actions = el("div", "home-actions");
-    actions.append(button("5回の履歴を見る", "ghost", () => { state.view = "history"; render(); }));
+    actions.append(button("旧5回履歴を見る", "ghost", () => { state.view = "history"; render(); }));
     if (roundData().status === "submitted") {
       actions.append(button(`${state.round}回目の結果を見る`, "ghost", () => { state.view = "results"; render(); }));
     }
-    actions.append(button("この回をリセット", "danger", resetCurrentRound));
+    actions.append(button("選択中の通し試験回をリセット", "danger", resetCurrentRound));
     card.append(actions);
     page.append(card);
     page.append(renderSyncCard());
@@ -310,7 +379,7 @@
     const heading = el("div", "sync-heading");
     const title = el("div");
     title.append(el("h2", "", "PC・スマホの学習履歴を共有"));
-    title.append(el("p", "subtitle", "両方の端末で同じGoogleアカウントにログインすると、5回分の履歴が自動で同期されます。"));
+    title.append(el("p", "subtitle", "同じGoogleアカウントで、学習の再開位置と既存5回分の履歴を端末間同期します。"));
     heading.append(title);
     card.append(heading);
 
@@ -334,12 +403,13 @@
       login.disabled = !auth;
       actions.append(login);
       card.append(actions);
-      card.append(el("p", "sync-note", "ログイン前もこの端末内には保存されます。Googleログイン後、既存履歴とクラウド履歴を回ごとに統合します。"));
+      card.append(el("p", "sync-note", "ログイン前もこの端末内に保存します。ログイン後は学習の回答済み位置を端末間で統合します。旧v1履歴は削除しません。"));
     }
     return card;
   }
 
   function startExam() {
+    state.learningActive = false;
     const data = roundData();
     if (data.status === "submitted") {
       const ok = confirm(`${state.round}回目は完了済みです。保存済みの解答を消して通し試験をやり直しますか？`);
@@ -372,11 +442,12 @@
     return idx < 0 ? 0 : idx;
   }
 
-  function startReview() {
+  function startReview(startIndex = null) {
     state.mode = "review";
-    state.index = 0;
+    state.learningActive = true;
+    state.index = Number.isInteger(startIndex) ? startIndex : learningResumeIndex();
     state.revealed = false;
-    state.reviewDraft = { value: emptyAnswer(EXAM.questions[0]), confidence: "" };
+    state.reviewDraft = { value: emptyAnswer(EXAM.questions[state.index]), confidence: "" };
     state.view = "solve";
     render();
   }
@@ -406,7 +477,9 @@
     header.append(button("終了", "ghost", exitSolve));
     const title = el("div", "solve-title");
     title.append(el("strong", "", state.mode === "exam" ? "通し試験" : "1問ずつ復習"));
-    title.append(el("small", "", `${state.round}回目　問題${question.id}/60`));
+    title.append(el("small", "", state.mode === "exam"
+      ? `${state.round}回目　問題${question.id}/60`
+      : `${learningStore.learning.cycle}周目　問題${question.id}/60`));
     header.append(title);
     const right = el("div", "timer", state.mode === "exam" ? timerText() : `${state.index + 1}/60`);
     header.append(right);
@@ -508,7 +581,9 @@
 
   function renderConfidence(draft) {
     const box = el("section", "confidence");
-    box.append(el("div", "confidence-title", "この解答の感触（任意）"));
+    box.append(el("div", "confidence-title", state.mode === "review"
+      ? "回答を確定する前に自信度を選んでください（必須）"
+      : "この解答の感触（任意）"));
     const buttons = el("div", "confidence-buttons");
     for (const [value, label, css] of [["confident", "自信あり", "confident"], ["unsure", "迷いあり", "unsure"]]) {
       const b = button(label, `confidence-button ${css}${draft.confidence === value ? " active" : ""}`, () => {
@@ -526,6 +601,18 @@
 
   function persistDraft() {
     if (state.mode === "exam") saveStore();
+    updateRevealButtonState();
+  }
+
+  function canRevealCurrent() {
+    if (state.mode !== "review") return true;
+    const draft = currentDraft();
+    return answerExists(q(), draft.value) && Boolean(draft.confidence);
+  }
+
+  function updateRevealButtonState() {
+    const reveal = document.querySelector(".reveal-button");
+    if (reveal) reveal.disabled = !canRevealCurrent();
   }
 
   function renderQuestionPicker() {
@@ -550,7 +637,8 @@
     if (state.mode === "review") {
       main = state.revealed
         ? button(state.index === 59 ? "復習を終える" : "次の問題", "nav-button main", () => state.index === 59 ? exitSolve() : goTo(state.index + 1))
-        : button("解答・解説", "nav-button main", revealCurrent);
+        : button("回答を確定して解説を見る", "nav-button main reveal-button", revealCurrent);
+      if (!state.revealed) main.disabled = !canRevealCurrent();
     } else if (state.index === 59) {
       main = button("終了・一括採点", "nav-button main", submitExam);
     } else {
@@ -573,6 +661,7 @@
   function revealCurrent() {
     const question = q();
     const draft = currentDraft();
+    if (!answerExists(question, draft.value) || !draft.confidence) return;
     const outcome = evaluate(question, draft.value);
     roundData().records[question.id] = {
       answer: draft.value,
@@ -584,6 +673,10 @@
       answeredAt: Date.now(),
     };
     saveStore();
+    if (state.learningActive) {
+      learningStore = LEARNING_V2.completeQuestion(learningStore, question.id, QUESTION_IDS);
+      saveLearningStore();
+    }
     state.revealed = true;
     render();
     requestAnimationFrame(() => document.querySelector(".explanation")?.scrollIntoView({ block: "nearest", behavior: "smooth" }));
@@ -737,7 +830,7 @@
 
   function renderMiniHistory(questionId) {
     const box = el("div", "history-mini");
-    box.append(document.createTextNode("5回の履歴（解答後のみ表示）"));
+    box.append(document.createTextNode("旧5回履歴（v1・解答後のみ表示）"));
     const dots = el("span", "history-dots");
     for (let n = 1; n <= 5; n++) {
       const record = store.rounds[n].records?.[questionId];
@@ -761,6 +854,7 @@
   function exitSolve() {
     state.view = "home";
     state.mode = null;
+    state.learningActive = false;
     state.revealed = false;
     render();
     window.scrollTo({ top: 0 });
@@ -837,6 +931,7 @@
       row.append(text);
       row.append(button("確認", "small-button", () => {
         state.mode = "review";
+        state.learningActive = false;
         state.index = idx;
         state.reviewDraft = { value: record?.answer ?? emptyAnswer(question), confidence: record?.confidence || "" };
         state.revealed = true;
@@ -876,6 +971,7 @@
         const idx = EXAM.questions.findIndex(question => question.id === id);
         const record = roundData().records[id];
         state.mode = "review";
+        state.learningActive = false;
         state.index = idx;
         state.reviewDraft = { value: record?.answer || "", confidence: record?.confidence || "" };
         state.revealed = true;
@@ -908,7 +1004,7 @@
     const page = el("section", "history-view");
     const head = el("div", "history-header");
     const title = el("div");
-    title.append(el("p", "eyebrow", "全5回"), el("h1", "", "問題別の正誤履歴"));
+    title.append(el("p", "eyebrow", "旧v1・全5回"), el("h1", "", "問題別の正誤履歴"));
     head.append(title, button("ホーム", "ghost", () => { state.view = "home"; render(); }));
     page.append(head);
     page.append(el("p", "legend", "○ 正解　△ 部分点　× 不正解　－ 未実施　※この画面は解答中には表示されません。"));

@@ -19,12 +19,44 @@ PCとスマホで同じGoogleアカウントにログインすると、学習履
 
 記述式は、模範解答と必須キーワードを確認して自己採点します。
 
+## v2学習再開機能（開発中）
+
+`feature/v2-learning-resume` ブランチでは、旧v1データを削除せず、学習モードの再開位置だけを別のv2領域に保存します。
+
+- ホーム最上部に「続きから学習」を表示
+- 5問完了後に終了・再読込しても、問6から再開
+- 60問完了時に次の周回へ移行
+- 回答と自信度を選ぶまで解説を表示しない
+- 同じ周回を複数端末で進めた場合、回答済み問題IDを統合
+- 既存v1 localStorage・Firestoreデータは削除しない
+
+端末内のv2保存キー：
+
+```text
+gyosei2026_mock1_learning_v2
+```
+
+ログイン時のv2同期先：
+
+```text
+users/{uid}/apps/gyosei2026Mock1
+```
+
+このブランチはまだFirebase Hostingへデプロイしていません。本番データ移行も実施していません。
+
 ## ローカル確認
 
 `start-app.ps1` を実行し、表示されたPC用URLを開きます。
 
 ```powershell
 .\start-app.ps1
+```
+
+v2ロジックと画面テスト：
+
+```powershell
+node tools/learning-v2-test.cjs
+node tools/smoke-test.cjs
 ```
 
 ## Firebase
