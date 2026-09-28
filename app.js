@@ -2,6 +2,9 @@
   "use strict";
 
   const EXAM = window.EXAM_DATA;
+  const CONTENT = window.GYOSEI_CONTENT;
+  const BASE_EXAM = window.EXAM_ORIGINAL_DATA || EXAM;
+  const SCORING = window.GYOSEI_SCORING;
   const LEARNING_V2 = window.GYOSEI_LEARNING_V2;
   const STORAGE_KEY = "gyosei2026_mock1_learning_v1";
   const QUESTION_IDS = EXAM.questions.map(question => Number(question.id));
@@ -17,6 +20,7 @@
     reviewDraft: null,
     learningActive: false,
     tick: null,
+    reference: { tab: "lessons", lessonId: null, returnToQuestion: false, scrollY: 0 },
     sync: {
       user: null,
       status: "loading",
@@ -43,6 +47,7 @@
 
   function normalizeStore(value) {
     const normalized = value && value.version === 1 && value.rounds ? value : blankStore();
+    normalized.contentArchives ||= {};
     normalized.updatedAt = Number(normalized.updatedAt) || 0;
     for (let n = 1; n <= 5; n++) {
       normalized.rounds[n] ||= blankRound();
@@ -90,7 +95,15 @@
     scheduleSync();
   }
   function roundData() { return store.rounds[state.round]; }
-  function q() { return EXAM.questions[state.index]; }
+  function examForRevision(revision) {
+    return CONTENT?.getExam ? CONTENT.getExam(revision) : CONTENT && revision !== CONTENT.edition ? BASE_EXAM : EXAM;
+  }
+  function q() {
+    const recordRevision = roundData().records?.[EXAM.questions[state.index].id]?.contentRevision;
+    if (state.mode === "exam") return examForRevision(roundData().contentRevision).questions[state.index];
+    if (state.mode === "review" && !state.learningActive) return examForRevision(recordRevision).questions[state.index];
+    return EXAM.questions[state.index];
+  }
 
   function el(tag, className, text) {
     const node = document.createElement(tag);
@@ -130,7 +143,23 @@
       merged.rounds[n] = remoteTime > localTime ? remote.rounds[n] : local.rounds[n];
     }
     merged.updatedAt = Math.max(Number(local.updatedAt) || 0, Number(remote.updatedAt) || 0);
+    // Archives are append-only, independent of the current five mutable round slots.
+    merged.contentArchives = { ...local.contentArchives, ...remote.contentArchives };
     return normalizeStore(merged);
+  }
+
+  function archiveRevisedRecord(questionId, nextRevision) {
+    if (!CONTENT) return;
+    const record = roundData().records?.[questionId];
+    if (!record || (record.contentRevision || CONTENT.baseline) === nextRevision) return;
+    store.contentArchives ||= {};
+    const archiveId = window.crypto.randomUUID();
+    store.contentArchives[archiveId] = {
+      round: state.round, questionId, archivedAt: Date.now(),
+      record: JSON.parse(JSON.stringify(record)),
+      writtenScore: roundData().writtenScores?.[questionId] ?? null,
+      contentRevision: record.contentRevision || CONTENT.baseline,
+    };
   }
 
   function scheduleSync() {
@@ -244,6 +273,10 @@
   }
 
   function initializeFirebaseSync() {
+    if (window.GYOSEI_LOCAL_PREVIEW === true) {
+      syncStatus("local", "ローカル検証版：ログイン・クラウド同期は停止中（端末内保存のみ）");
+      return;
+    }
     if (!window.firebase || !window.FIREBASE_CONFIG) {
       syncStatus("error", "Firebaseを読み込めません。端末内には保存できます");
       return;
@@ -256,6 +289,7 @@
       auth.getRedirectResult().catch(error => syncStatus("error", error.message));
       auth.onAuthStateChanged(user => {
         state.sync.user = user || null;
+        window.GYOSEI_TRANSFER?.setUser(user, db);
         if (user) {
           syncStatus("syncing", "クラウド履歴を確認中…");
           startCloudListener(user);
@@ -320,6 +354,49 @@
     else if (state.view === "solve") renderSolve(shell);
     else if (state.view === "results") renderResults(shell);
     else if (state.view === "history") renderHistory(shell);
+    else if (state.view === "reference") renderReference(shell);
+    else if (state.view === "transfer") window.GYOSEI_TRANSFER.render(shell, { onHome: () => { state.view = "home"; render(); } });
+  }
+
+  function openTransfer() { state.view = "transfer"; render(); window.scrollTo({ top: 0 }); }
+
+  function openReference(lessonId = null, fromQuestion = false, tab = "lessons") {
+    if (lessonId) window.GYOSEI_TRANSFER.noteLesson(lessonId);
+    state.reference = { tab, lessonId, returnToQuestion: fromQuestion, scrollY: window.scrollY };
+    state.view = "reference";
+    render();
+    window.scrollTo({ top: 0 });
+  }
+
+  function renderReference(shell) {
+    window.GYOSEI_REFERENCE.render(shell, {
+      tab: state.reference.tab,
+      lessonId: state.reference.lessonId,
+      fromQuestion: state.reference.returnToQuestion,
+      onTransfer: state.reference.returnToQuestion ? null : id => window.GYOSEI_TRANSFER.openLessonQuestions(id, openTransfer),
+      onTab: tab => { state.reference.tab = tab; state.reference.lessonId = null; render(); window.scrollTo({ top: 0 }); },
+      onLesson: id => { window.GYOSEI_TRANSFER.noteLesson(id); state.reference.tab = "lessons"; state.reference.lessonId = id; render(); window.scrollTo({ top: 0 }); },
+      onBack: () => {
+        state.view = state.reference.returnToQuestion ? "solve" : "home";
+        render();
+        window.scrollTo({ top: state.reference.scrollY });
+      },
+      onQuestion: id => {
+        const index = EXAM.questions.findIndex(question => question.id === id);
+        if (index >= 0) startReview(index);
+        window.scrollTo({ top: 0 });
+      },
+    });
+  }
+
+  function renderReferenceLinks(question) {
+    const related = window.GYOSEI_REFERENCE.related(question.id);
+    if (!related.length) return null;
+    const section = el("details", "reference-question-links");
+    section.append(el("summary", "", "用語・基本から確認する"));
+    related.forEach(lesson => section.append(button(lesson.title, "ghost", () => openReference(lesson.id, true))));
+    section.append(button("期間・時効の一覧", "ghost", () => openReference(null, true, "periods")));
+    return section;
   }
 
   function renderHome(shell) {
@@ -341,6 +418,18 @@
     resumeActions.append(button("第1問から見直す", "ghost", () => startReview(0)));
     resumeCard.append(resumeActions);
     page.append(resumeCard);
+    page.append(window.GYOSEI_TRANSFER.homeCard(openTransfer));
+
+    const guide = el("section", "home-card reference-home-card");
+    guide.append(el("h2", "", "用語・基本を調べる"));
+    guide.append(el("p", "subtitle", "処分・裁決の違い、時効の年数などを科目別に確認。"));
+    const guideActions = el("div", "reference-home-actions");
+    guideActions.append(button("科目別ミニ参考書", "secondary", () => openReference()));
+    guideActions.append(button("重要論点", "ghost", () => openReference(null, false, "points")));
+    guideActions.append(button("用語集", "ghost", () => openReference(null, false, "glossary")));
+    guideActions.append(button("期間・時効の一覧", "ghost", () => openReference(null, false, "periods")));
+    guide.append(guideActions);
+    page.append(guide);
 
     const card = el("section", "home-card");
     card.append(el("h2", "", "通し試験（現行5回方式）"));
@@ -422,6 +511,7 @@
     }
     const fresh = roundData();
     if (fresh.status !== "in_progress") {
+      fresh.contentRevision = CONTENT?.edition;
       fresh.status = "in_progress";
       fresh.startedAt = Date.now();
       fresh.examAnswers = {};
@@ -506,6 +596,10 @@
     card.append(prompt);
     card.append(renderAnswerInput(question, draft));
     card.append(renderConfidence(draft));
+    if (state.mode === "review") {
+      const referenceLinks = renderReferenceLinks(question);
+      if (referenceLinks) card.append(referenceLinks);
+    }
     if (state.revealed && state.mode === "review") card.append(renderExplanation(question, draft));
 
     if (state.mode === "exam") card.append(renderQuestionPicker());
@@ -521,7 +615,19 @@
   function renderAnswerInput(question, draft) {
     if (question.type === "single") {
       const box = el("div", "choices");
-      question.choices.forEach(choice => {
+      let choices = question.choices;
+      if (state.mode === "review" && state.learningActive) {
+        if (!draft.choiceOrder) {
+          draft.choiceOrder = question.choices.map(choice => choice.value);
+          for (let i = draft.choiceOrder.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [draft.choiceOrder[i], draft.choiceOrder[j]] = [draft.choiceOrder[j], draft.choiceOrder[i]];
+          }
+        }
+        choices = draft.choiceOrder.map(value => question.choices.find(choice => choice.value === value));
+        box.append(el("p", "", "学習では表示順を入れ替えています。肢番号は解説・履歴との照合用です。"));
+      }
+      choices.forEach(choice => {
         const label = el("label", "choice");
         const input = document.createElement("input");
         input.type = "radio";
@@ -607,6 +713,11 @@
   function canRevealCurrent() {
     if (state.mode !== "review") return true;
     const draft = currentDraft();
+    const question = q();
+    if (question.type === "multi") {
+      const values = question.blanks.map(blank => Number(draft.value?.[blank]));
+      if (values.some(value => !question.choices.some(choice => Number(choice.value) === value)) || new Set(values).size !== values.length) return false;
+    }
     return answerExists(q(), draft.value) && Boolean(draft.confidence);
   }
 
@@ -663,6 +774,7 @@
     const draft = currentDraft();
     if (!answerExists(question, draft.value) || !draft.confidence) return;
     const outcome = evaluate(question, draft.value);
+    archiveRevisedRecord(question.id, question.contentRevision || CONTENT?.baseline);
     roundData().records[question.id] = {
       answer: draft.value,
       confidence: draft.confidence,
@@ -670,6 +782,7 @@
       earned: outcome.earned,
       max: outcome.max,
       source: "review",
+      contentRevision: question.contentRevision || CONTENT?.baseline,
       answeredAt: Date.now(),
     };
     saveStore();
@@ -690,11 +803,22 @@
     banner.append(el("span", "result-icon", iconText));
     banner.append(el("span", "", outcome.status === "ok" ? "正解" : outcome.status === "ng" ? "不正解" : "記述式は自己採点"));
     box.append(banner);
+    const latestQuestion = EXAM.questions.find(item => item.id === question.id);
+    const correction = latestQuestion?.sections?.["訂正履歴"];
+    if (correction) {
+      const notice = el("section", "core-box content-correction");
+      notice.append(el("strong", "", "法令確認による訂正"));
+      if (question.contentRevision !== latestQuestion.contentRevision) notice.append(el("p", "", "以下の問題と採点は保存された旧版を再現しています。訂正前の記述を暗記しないでください。"));
+      notice.append(el("p", "", correction));
+      box.append(notice);
+    }
     box.append(el("p", "answer-line", `あなたの解答：${answerText(question, draft.value)}`));
     box.append(el("p", "answer-line", `${question.type === "written" ? "模範解答" : "正解"}：${correctText(question)}`));
     if (question.type === "multi") box.append(el("p", "", `4空欄中 ${outcome.correctCount}空欄正解`));
     if (question.type === "written" && question.keywords?.length) {
       box.append(el("p", "", `必須キーワード：${question.keywords.join("／")}`));
+      const rubric = renderWrittenRubric(question);
+      if (rubric) box.append(rubric);
       box.append(renderSelfGrade(question.id));
     }
     const core = el("div", "core-box");
@@ -703,6 +827,8 @@
     box.append(core);
     const choiceExplanations = renderChoiceExplanations(question, draft);
     if (choiceExplanations) box.append(choiceExplanations);
+    const multiExplanations = renderMultiExplanations(question, draft);
+    if (multiExplanations) box.append(multiExplanations);
     const precedent = renderPrecedentExplanation(question);
     if (precedent) box.append(precedent);
     box.append(renderDetailedExplanation(question));
@@ -718,18 +844,83 @@
       buttons.append(button(label, "", () => {
         const record = roundData().records[questionId];
         if (record) { record.status = status; record.earned = score; }
+        roundData().writtenScores[questionId] = score;
         saveStore();
         render();
       }));
     });
     box.append(buttons);
+    if (q().rubric?.length) {
+      box.append(el("p", "", "上の要素別配点を合計してください。△は10点の簡易入力です。厳密な部分点は0～20点で入力できます。"));
+      const label = el("label", "", "学習用の自己採点（0～20点）");
+      const input = el("input", "written-score");
+      input.type = "number"; input.min = "0"; input.max = "20"; input.step = "1";
+      input.setAttribute("aria-label", `問題${questionId}の学習用得点`);
+      input.value = roundData().writtenScores[questionId] ?? "";
+      input.addEventListener("change", () => {
+        const raw = input.value.trim();
+        if (raw !== "" && (!Number.isInteger(Number(raw)) || Number(raw) < 0 || Number(raw) > 20)) { input.reportValidity(); return; }
+        const score = raw === "" ? "" : Number(raw);
+        roundData().writtenScores[questionId] = score;
+        const record = roundData().records[questionId];
+        if (record) { record.earned = score === "" ? 0 : score; record.status = score === "" ? "pending" : score === 20 ? "ok" : score === 0 ? "ng" : "partial"; }
+        saveStore(); render();
+      });
+      label.append(input); box.append(label);
+    }
     return box;
+  }
+
+  function renderWrittenRubric(question) {
+    if (!question.rubric?.length) return null;
+    const section = el("section", "written-rubric choice-explanations");
+    section.append(el("h2", "", "要素別の採点目安（20点）"));
+    section.append(el("p", "", "学習用の自己採点基準です。公式の配点・採点結果を保証するものではありません。文字の一致ではなく意味と主体・要件で判断します。"));
+    question.rubric.forEach(element => {
+      const item = el("article", "rubric-element choice-explanation");
+      item.append(el("h3", "", `${element.label}：${element.points}点`));
+      item.append(el("p", "", element.description)); section.append(item);
+    });
+    section.append(el("h3", "", `許容表現・字数（模範解答${Array.from(question.answer).length}字）`));
+    question.acceptedAnswers.forEach(text => section.append(el("p", "accepted-answer", text)));
+    section.append(el("h3", "", "典型的な誤答と減点理由"));
+    question.commonMistakes.forEach(mistake => {
+      const item = el("article", "written-mistake choice-explanation is-wrong");
+      item.append(el("h3", "", mistake.answer)); item.append(el("p", "", mistake.reason)); section.append(item);
+    });
+    return section;
+  }
+
+  function renderMultiExplanations(question, draft) {
+    if (question.type !== "multi" || !question.choiceExplanations?.length) return null;
+    const section = el("section", "multi-explanations choice-explanations");
+    section.append(el("h2", "", "各空欄の理由"));
+    question.blanks.forEach(blank => {
+      const correct = question.choices.find(choice => Number(choice.value) === Number(question.answer[blank]));
+      const selected = question.choices.find(choice => Number(choice.value) === Number(draft.value?.[blank]));
+      const item = el("article", "blank-explanation choice-explanation");
+      item.append(el("h3", "", `${blank}：${correct.value} ${correct.label}`));
+      item.append(el("p", "", `あなたの解答：${selected ? `${selected.value} ${selected.label}` : "未回答"}`));
+      item.append(el("p", "", question.sections[`${blank}の理由`]));
+      if (selected && selected.value !== correct.value) item.append(el("p", "", question.choiceExplanations.find(entry => entry.value === selected.value).reason));
+      section.append(item);
+    });
+    const details = el("details", "multi-option-explanations detail-toggle");
+    details.append(el("summary", "", "20候補すべての適合・不適合の理由を見る"));
+    details.append(el("p", "", "未使用の語が法的に誤っているとは限りません。この文章の四空欄に合うかを説明します。"));
+    question.choiceExplanations.forEach(entry => {
+      const choice = question.choices.find(choice => choice.value === entry.value);
+      const item = el("article", "multi-option-explanation choice-explanation");
+      item.append(el("h3", "", `${choice.value} ${choice.label}：${entry.blanks.length ? `${entry.blanks.join("・")}に適合` : "今回の空欄には不適合"}`));
+      item.append(el("p", "choice-explanation-reason", entry.reason)); details.append(item);
+    });
+    section.append(details); return section;
   }
 
   const DETAIL_ORDER = [
     "アの理由", "イの理由", "ウの理由", "エの理由", "必須キーワード", "採点要素", "根拠条文", "関連条文", "関連判例",
     "なぜこの表現になるのか", "一緒に覚える周辺知識", "紛らわしい選択肢との違い", "典型的誤答", "部分点を失いやすいポイント",
-    "出題者の罠", "解答テクニック", "別角度で出るなら"
+    "出題者の罠", "解答テクニック", "別角度で出るなら", "一次資料", "法的正確性確認"
   ];
 
   function normalizedSectionName(name) {
@@ -757,7 +948,7 @@
       const choice = question.choices?.find(candidate => Number(candidate.value) === entry.number);
       if (choice?.label) item.append(el("p", "choice-explanation-text", choice.label));
       item.append(el("p", "choice-explanation-reason", entry.text));
-      if (entry.mark === "×") item.append(renderTrapNote(choice?.label || "", entry.text));
+      if (entry.mark === "×") item.append(renderTrapNote(choice?.label || "", entry.text, choice?.trap));
       section.append(item);
     });
     return section;
@@ -769,10 +960,14 @@
     "のみで", "だけで", "問わず", "余地はない"
   ];
 
-  function renderTrapNote(choiceText, explanation) {
+  function renderTrapNote(choiceText, explanation, explicitTrap) {
     const foundWords = [...new Set(TRAP_WORDS.filter(word => choiceText.includes(word)))];
     const note = el("div", "trap-note");
     note.append(el("strong", "trap-label", "ひっかけポイント"));
+    if (explicitTrap) {
+      note.append(el("p", "", explicitTrap));
+      return note;
+    }
     if (foundWords.length) {
       note.append(el("p", "", `注意語「${foundWords.join("・")}」による強い断定です。例外や追加要件を消している可能性があります。ただし、注意語だけで誤りとは決めず、上の正しい要件と照合します。`));
       return note;
@@ -839,6 +1034,27 @@
       dots.append(el("span", `history-dot ${status || ""}`, label));
     }
     box.append(dots);
+    const archives = Object.values(store.contentArchives || {}).filter(item => item.questionId === questionId);
+    const currentRevision = EXAM.questions.find(question => question.id === questionId)?.contentRevision || CONTENT?.baseline;
+    if (CONTENT?.revisedIds.includes(questionId) && (archives.length || Object.values(store.rounds).some(round => {
+      const record = round.records?.[questionId];
+      return record && (record.contentRevision || CONTENT.baseline) !== currentRevision;
+    }))) box.append(el("small", "content-note", "改修前の問題の結果を含みます。旧結果は新問題の習得判定には使わないでください。"));
+    if (archives.length) {
+      const details = el("details", "legacy-record-archive");
+      details.append(el("summary", "", `改修前の保存記録 ${archives.length}件を見る`));
+      archives.forEach(item => {
+        const record = item.record;
+        const previousQuestion = examForRevision(item.contentRevision || record.contentRevision).questions.find(question => question.id === questionId);
+        const mark = record.status === "ok" ? "○" : record.status === "ng" ? "×" : "△";
+        const date = record.answeredAt ? new Date(record.answeredAt).toLocaleDateString("ja-JP") : "回答日不明";
+        details.append(el("p", "", `${item.round}回目 · ${date} · ${mark} · ${record.confidence === "confident" ? "自信あり" : record.confidence === "unsure" ? "迷いあり" : "自信度未記録"}`));
+        details.append(el("p", "", `旧問題への回答：${answerText(previousQuestion, record.answer)}`));
+        const choice = previousQuestion?.choices.find(candidate => candidate.value === Number(record.answer));
+        if (choice) details.append(el("p", "", choice.label));
+      });
+      box.append(details);
+    }
     return box;
   }
 
@@ -869,7 +1085,8 @@
     if (!confirm(message)) return;
     const data = roundData();
     data.records = {};
-    EXAM.questions.forEach(question => {
+    const examQuestions = examForRevision(data.contentRevision).questions;
+    examQuestions.forEach(question => {
       const draft = answers[question.id] || { value: emptyAnswer(question), confidence: "" };
       const outcome = evaluate(question, draft.value);
       data.records[question.id] = {
@@ -879,6 +1096,7 @@
         earned: outcome.earned,
         max: outcome.max,
         source: "exam",
+        contentRevision: question.contentRevision || CONTENT?.baseline,
         answeredAt: Date.now(),
       };
     });
@@ -892,6 +1110,7 @@
   }
 
   function scoreSummary() {
+    if (SCORING) return SCORING.summarize(EXAM.questions, roundData().records, roundData().writtenScores);
     const records = roundData().records || {};
     let auto = 0, written = 0, pending = 0, correct = 0, wrong = 0, unsure = 0;
     EXAM.questions.forEach(question => {
@@ -950,6 +1169,22 @@
     const card = el("section", "score-card");
     card.append(el("div", "score-main", `${s.total} / 300点`));
     card.append(el("div", "score-sub", s.pending ? `自動採点 ${s.auto}/240点　記述式${s.pending}問は自己採点してください` : `自動採点 ${s.auto}/240点＋記述 ${s.written}/60点`));
+    if (SCORING) {
+      const criteria = el("div", "score-criteria");
+      const rules = SCORING.RULES;
+      for (const [key, label, max, floor] of [["legal", "法令等", rules.legalMax, rules.legalFloor], ["basic", "基礎知識", rules.basicMax, rules.basicFloor], ["total", "総合", rules.totalMax, rules.totalFloor]]) {
+        criteria.append(el("p", "", `${label} ${s[key]}/${max}点 · 目安${floor}点 ${s.meets[key] ? "達成" : "未達"}${key !== "basic" && s.pending ? "（記述未採点）" : ""}`));
+      }
+      criteria.append(el("strong", "score-benchmark", s.mixed ? "学習結果を含むため通し試験の判定対象外" : s.pending ? "記述式の自己採点後に全条件を確認してください" : s.benchmarkMet ? "練習上の3条件を達成（本試験合格の保証ではありません）" : "練習上の3条件を満たしていません"));
+      criteria.append(el("p", "content-note", "2025年度の配点・基準点による練習目安です。2026年度の確定配点・基準点ではありません。記述点は自己採点です。"));
+      const source = el("a", "", "公式の2026年度試験案内");
+      source.href = "https://www.gyosei-shiken.or.jp/doc/guide/guide.html";
+      source.target = "_blank";
+      source.rel = "noopener noreferrer";
+      criteria.append(source);
+      if (CONTENT && roundData().contentRevision !== CONTENT.edition) criteria.append(el("p", "content-note", "改修前の問題による結果です。新問題の成績とは区別してください。"));
+      card.append(criteria);
+    }
     const stats = el("div", "result-stats");
     [[s.correct, "正解"], [s.wrong, "不正解"], [s.unsure, "迷いあり"]].forEach(([value, label]) => {
       const stat = el("div", "stat");
@@ -963,7 +1198,7 @@
   function renderWrittenScores() {
     const card = el("section", "written-score-card");
     card.append(el("h2", "", "記述式の自己採点"));
-    card.append(el("p", "subtitle", "模範解答を確認し、各問0～20点で入力してください。"));
+    card.append(el("p", "subtitle", "模範解答と採点要素を確認し、各問0～20点で自己採点してください。公式採点ではありません。空欄は未採点のまま保持します。"));
     [44, 45, 46].forEach(id => {
       const row = el("div", "written-score-row");
       row.append(el("strong", "", `問題${id}`));
@@ -987,10 +1222,10 @@
       input.value = roundData().writtenScores?.[id] ?? "";
       input.setAttribute("aria-label", `問題${id}の得点`);
       input.addEventListener("change", () => {
-        const value = Math.max(0, Math.min(20, Number(input.value)));
+        const value = input.value.trim() === "" ? "" : Math.max(0, Math.min(20, Number(input.value)));
         roundData().writtenScores[id] = value;
         const record = roundData().records[id];
-        if (record) { record.earned = value; record.status = value === 20 ? "ok" : value === 0 ? "ng" : "partial"; }
+        if (record) { record.earned = value === "" ? 0 : value; record.status = value === "" ? "pending" : value === 20 ? "ok" : value === 0 ? "ng" : "partial"; }
         saveStore();
         render();
       });
@@ -1034,6 +1269,7 @@
     shell.append(page);
   }
 
+  window.GYOSEI_TRANSFER.setNotify(() => { if (state.view === "home" || state.view === "transfer") render(); });
   render();
   initializeFirebaseSync();
 })();

@@ -1,0 +1,24 @@
+.transfer-view { padding:24px 18px 48px; overflow-wrap:anywhere; }
+.transfer-header { display:flex; align-items:center; gap:16px; margin-bottom:12px; }
+.transfer-header h1 { font-size:1.5rem; }
+.transfer-prompt { white-space:pre-wrap; font-size:1.04rem; line-height:1.95; }
+.transfer-inputs,.transfer-confidence { border:1px solid var(--line); border-radius:12px; padding:12px; margin:18px 0; min-width:0; }
+.transfer-choice { display:flex; gap:12px; padding:16px 8px; border-bottom:1px solid var(--line); align-items:flex-start; }
+.transfer-choice:last-child { border-bottom:0; }
+.transfer-choice input { flex-shrink:0; margin-top:8px; width:20px; height:20px; }
+.transfer-confidence label { display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:8px 16px 8px 0; }
+.transfer-known { display:flex; gap:10px; padding:12px 0; align-items:flex-start; }
+.transfer-known input { margin-top:8px; flex-shrink:0; }
+.transfer-multi { display:block; margin-bottom:14px; }
+.transfer-view select,.transfer-view textarea { width:100%; max-width:100%; padding:12px; border:1px solid var(--line); border-radius:8px; background:white; color:var(--ink); }
+.transfer-actions { display:grid; gap:10px; margin:20px 0; }
+.transfer-view button,.transfer-home-card button { white-space:normal; max-width:100%; margin:4px 4px 4px 0; }
+.transfer-view button:disabled { opacity:.5; cursor:not-allowed; }
+.transfer-view input[type=number] { width:100%; padding:10px; margin:8px 0; }
+.transfer-explanation { padding:18px; border:1px solid var(--line); border-radius:12px; background:var(--brand-soft); }
+.transfer-reason { padding:12px 0; border-bottom:1px solid var(--line); }
+.transfer-reason h3 { font-size:1rem; font-weight:600; }
+.transfer-status { font-size:.84rem; color:var(--muted); margin:10px 0; }
+.transfer-view .reference-view { padding-left:0; padding-right:0; }
+.transfer-view :focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+@media (max-width:480px) { .transfer-explanation { padding:12px; } .transfer-header { gap:10px; } }

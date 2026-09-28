@@ -15,6 +15,8 @@
   "hosting": {
     "public": ".",
     "ignore": [
+      "**/.*",
+      "**/node_modules/**",
       "firebase.json",
       ".firebaserc",
       ".gitignore",

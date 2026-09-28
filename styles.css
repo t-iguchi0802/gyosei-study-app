@@ -211,7 +211,7 @@ h3 { font-size: 1.05rem; }
 .question-meta { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .question-number { color: var(--brand); font-size: 1.3rem; font-weight: 800; }
 .question-subject { color: var(--muted); font-size: .82rem; }
-.prompt p { margin: 0 0 10px; }
+.prompt p { margin: 0 0 10px; white-space: pre-wrap; }
 
 .choices { display: grid; gap: 10px; margin-top: 16px; }
 .choice {
@@ -381,3 +381,65 @@ h3 { font-size: 1.05rem; }
   .question-wrap { padding: 0; }
   .question-card { box-shadow: none; }
 }
+
+.reference-view { min-height: 100svh; padding: 18px 18px 48px; }
+.reference-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.reference-header h1 { font-size: 1.5rem; margin: 0; }
+.reference-tabs, .reference-home-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 14px 0 20px; }
+.reference-tabs button, .reference-home-actions button { padding-inline: 8px; }
+.reference-intro { padding: 15px; border-radius: 12px; background: var(--brand-soft); margin-bottom: 18px; }
+.reference-intro p { margin-bottom: 10px; }
+.reference-intro button { width: 100%; }
+.reference-search-label { display: block; font-weight: 700; }
+.reference-search, .reference-filters select { width: 100%; min-height: 48px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #fff; }
+.reference-search { display: block; margin: 6px 0 10px; font-weight: 400; }
+.reference-count { color: var(--muted); font-size: .85rem; margin: 10px 0; }
+.reference-list { display: grid; gap: 12px; }
+.reference-card, .reference-lesson { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: #fff; overflow-wrap: anywhere; }
+.reference-card h3 { font-size: 1.12rem; margin-bottom: 10px; }
+.reference-card p { margin-bottom: 10px; }
+.reference-card ul { padding-left: 1.2em; }
+.reference-card button { width: 100%; text-align: left; }
+.reference-period { font-size: 1.4rem; color: var(--brand); font-weight: 800; }
+.reference-caution { background: var(--warn-bg); border-radius: 8px; padding: 10px; }
+.reference-lesson { margin-top: 16px; }
+.reference-lesson h2 { font-size: 1.45rem; }
+.reference-toc { display: grid; gap: 10px; background: var(--brand-soft); padding: 14px; border-radius: 10px; margin: 20px 0; }
+.reference-toc a, .reference-sources a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+.reference-toc a { min-height: 32px; }
+.reference-section { margin: 24px 0; scroll-margin-top: 20px; }
+.reference-section h3 { font-size: 1.12rem; color: var(--brand); }
+.reference-flow { padding: 0; list-style: none; counter-reset: reference-step; }
+.reference-flow li { counter-increment: reference-step; border-left: 3px solid var(--brand); padding: 12px; background: var(--brand-soft); margin: 8px 0; }
+.reference-flow li::before { content: counter(reference-step) ". "; font-weight: 800; }
+.reference-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: .94rem; }
+.reference-table th, .reference-table td { text-align: left; vertical-align: top; padding: 10px 8px; border: 1px solid var(--line); overflow-wrap: anywhere; }
+.reference-table th:first-child { width: 38%; }
+.reference-table thead { background: var(--brand-soft); }
+.reference-table tbody th { font-weight: 700; }
+.reference-keypoints { border-left: 4px solid var(--accent); background: #fff7e6; padding: 14px; }
+.reference-keypoints ul { padding-left: 1.2em; margin-bottom: 0; }
+.reference-sources { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 18px; }
+.reference-sources summary { cursor: pointer; min-height: 40px; color: var(--brand); font-weight: 700; }
+.reference-sources a, .reference-sources small { display: block; margin: 8px 0; }
+.reference-sources small { color: var(--muted); }
+.reference-related { border-top: 1px solid var(--line); margin-top: 20px; padding-top: 16px; }
+.reference-related .home-actions { margin-top: 8px; }
+.reference-next { display: grid; gap: 10px; margin-top: 24px; }
+.reference-question-links { border-top: 1px solid var(--line); margin-top: 16px; padding-top: 12px; }
+.reference-question-links summary { min-height: 40px; cursor: pointer; color: var(--brand); font-weight: 700; }
+.reference-question-links button { display: block; width: 100%; text-align: left; margin: 8px 0; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 560px) {
+  .reference-view { padding-inline: 14px; }
+  .reference-card, .reference-lesson { padding: 14px; }
+  .reference-table th, .reference-table td { padding: 8px 6px; }
+}
+@media print {
+  .reference-header button, .reference-tabs, .reference-next, .reference-related { display: none !important; }
+}
+.score-criteria { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid currentColor; }
+.score-criteria p { margin: .4rem 0; }
+.score-criteria a { color: inherit; text-underline-offset: .2em; }
+.score-benchmark { display: block; margin-top: .7rem; }
+.content-note { display: block; font-size: .85rem; line-height: 1.7; margin-top: .6rem; }
