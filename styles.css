@@ -443,3 +443,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .score-criteria a { color: inherit; text-underline-offset: .2em; }
 .score-benchmark { display: block; margin-top: .7rem; }
 .content-note { display: block; font-size: .85rem; line-height: 1.7; margin-top: .6rem; }
+.legal-basis { margin: 20px 0; padding: 16px; border: 1px solid #b9cfc7; border-radius: 14px; background: #f5faf7; overflow-wrap: anywhere; }
+.legal-basis h2 { font-size: 1.15rem; margin-top: 0; }
+.basis-article { margin: 14px 0; padding: 12px; border-radius: 10px; background: #fff; border: 1px solid #dbe6df; }
+.basis-article h3 { font-size: 1rem; margin: 0 0 8px; }
+.basis-text { white-space: pre-line; line-height: 1.8; }
+.basis-reading { line-height: 1.8; }
+.basis-date { font-size: .85rem; color: #506860; }
+.basis-source { display: block; margin: 8px 0; }
+.basis-precedent { border-top: 1px solid #b9cfc7; margin-top: 16px; padding-top: 16px; }
+.basis-more summary { cursor: pointer; padding: 8px 0; }

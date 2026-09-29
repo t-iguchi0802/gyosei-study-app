@@ -113,7 +113,6 @@
     if(!q){s.done=true;return;}
     s.question=S.clone(q);s.attemptKey=uuid();s.attemptId=null;s.value=q.type==="multi"?{}:"";s.confidence="";s.known=false;s.activeMs=0;
     s.order=q.choices.map((_,i)=>i+1);
-    if(q.type==="single") for(let i=s.order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s.order[i],s.order[j]]=[s.order[j],s.order[i]];}
   }
   function start(mode="new",ids=null) {
     pause();const queue=ids||S.queue(store,D.questions,mode,category);
@@ -159,6 +158,7 @@
       const q=window.EXAM_DATA.questions.find(q=>q.id===basicId);
       page.append(node("h2","",`基本に戻る：第1回 問${q.id}`),node("p","subtitle","読むだけの復習です。第1回の回答・進捗・成績は変更しません。"),node("p","transfer-prompt",q.prompt));
       q.choices.forEach(c=>page.append(node("p","",`${c.value}　${c.label}`)));
+      if(window.GYOSEI_LEGAL_BASIS)page.append(window.GYOSEI_LEGAL_BASIS.render(q));
       Object.entries(q.sections).filter(([k])=>!['一次資料','予想重要度','法的正確性確認'].includes(k)).forEach(([k,v])=>page.append(node("h3","",k),node("p","transfer-prompt",v)));
       page.append(button("確認問題の解説へ戻る","secondary",()=>{view=returnView;redraw();}));return;
     }
@@ -182,7 +182,8 @@
     const inputs=node("fieldset","transfer-inputs");inputs.append(node("legend","",q.type==="written"?"答案（40字程度）":"回答を選択"));
     let submit;
     const refresh=()=>{submit.disabled=!S.valid(q,store.session.value,store.session.confidence);};
-    if(q.type==="single")s.order.forEach((id,index)=>{
+    if(q.type==="single")q.choices.forEach((choice,index)=>{
+      const id=index+1;
       const label=node("label","transfer-choice"),input=node("input");input.type="radio";input.name="transfer-answer";input.value=id;input.checked=Number(s.value)===id;
       input.addEventListener("change",()=>{change(n=>{n.session.value=id;});refresh();});label.append(input,node("span","",`${index+1}　${q.choices[id-1]}`));inputs.append(label);
     });
@@ -209,6 +210,7 @@
     const answerText=q.type==="single"?q.choices[Number(attempt.value)-1]:q.type==="written"?attempt.value:q.blanks.map(k=>`${k}：${q.choices[Number(attempt.value[k])-1]}`).join("／");
     panel.append(node("p","",`あなたの回答：${answerText}`),node("p","",`回答時：${attempt.confidence==="confident"?"自信あり":"迷った"}｜${Math.round(attempt.activeMs/1000)}秒（表示中の概算）`));
     if(result.ok===false&&attempt.confidence==="confident")panel.append(node("p","reference-caution","自信があった誤答です。思い込みの可能性があるため、弱点復習で優先します。"));
+    if(window.GYOSEI_LEGAL_BASIS)panel.append(window.GYOSEI_LEGAL_BASIS.render(q,"transfer"));
     panel.append(button("この論点を参考書で復習","secondary",()=>readLesson(q.lesson)));
     q.basic.forEach(id=>panel.append(button(`基本の問${id}と解説を読む（履歴は変更しない）`,"ghost",()=>{returnView=view;basicId=id;view="basic";redraw();})));
     if(!history)panel.append(button("解説を確認したので次へ","ghost",nextQuestion));
@@ -224,7 +226,7 @@
       panel.append(node("h3","","全肢の理由・ひっかけポイント"));
       panel.append(node("p","",`得点 ${result.score}/${result.max}（この問題の練習点）`));
       if(q.type==="multi")panel.append(node("p","",`正解：${q.blanks.map(k=>`${k}＝${q.choices[q.answer[k]-1]}`).join("／")}`));
-      const order=q.type==="single"?attempt.order:q.choices.map((_,i)=>i+1);
+      const order=q.choices.map((_,i)=>i+1);
       order.forEach((id,index)=>{const block=node("div","transfer-reason");block.append(node("h3","",`${index+1}　${q.choices[id-1]}${q.type==="single"&&id===q.answer?"【選ぶ肢】":""}`),node("p","",q.reasons[id-1]));panel.append(block);});
       q.statements?.forEach(s=>panel.append(node("p","",`${s.label} ${s.correct?"○":"×"}　${s.text}\n理由・ひっかけ：${s.reason}`)));
     }

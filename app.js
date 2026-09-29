@@ -615,18 +615,7 @@
   function renderAnswerInput(question, draft) {
     if (question.type === "single") {
       const box = el("div", "choices");
-      let choices = question.choices;
-      if (state.mode === "review" && state.learningActive) {
-        if (!draft.choiceOrder) {
-          draft.choiceOrder = question.choices.map(choice => choice.value);
-          for (let i = draft.choiceOrder.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [draft.choiceOrder[i], draft.choiceOrder[j]] = [draft.choiceOrder[j], draft.choiceOrder[i]];
-          }
-        }
-        choices = draft.choiceOrder.map(value => question.choices.find(choice => choice.value === value));
-        box.append(el("p", "", "学習では表示順を入れ替えています。肢番号は解説・履歴との照合用です。"));
-      }
+      const choices = [...question.choices].sort((a, b) => Number(a.value) - Number(b.value));
       choices.forEach(choice => {
         const label = el("label", "choice");
         const input = document.createElement("input");
@@ -825,12 +814,15 @@
     core.append(el("strong", "", "この問題の核心"));
     core.append(el("p", "", question.core || "解説を確認してください。"));
     box.append(core);
+    if (window.GYOSEI_LEGAL_BASIS) box.append(window.GYOSEI_LEGAL_BASIS.render(question));
     const choiceExplanations = renderChoiceExplanations(question, draft);
     if (choiceExplanations) box.append(choiceExplanations);
     const multiExplanations = renderMultiExplanations(question, draft);
     if (multiExplanations) box.append(multiExplanations);
-    const precedent = renderPrecedentExplanation(question);
-    if (precedent) box.append(precedent);
+    if (!window.GYOSEI_LEGAL_BASIS) {
+      const precedent = renderPrecedentExplanation(question);
+      if (precedent) box.append(precedent);
+    }
     box.append(renderDetailedExplanation(question));
     box.append(renderMiniHistory(question.id));
     return box;
@@ -1013,6 +1005,7 @@
       if (!entry) return;
       const [actualName, text] = entry;
       if (!text || seen.has(actualName)) return;
+      if (window.GYOSEI_LEGAL_BASIS && ["根拠条文", "関連条文", "一次資料"].includes(actualName)) return;
       if (actualName === "関連判例" && hasConcretePrecedent(text)) return;
       seen.add(actualName);
       const section = el("section", "detail-section");

@@ -56,7 +56,7 @@ async function seed(page, { start = 1, legacyExam = false, submitted = false, ed
       assert.equal(await page.locator(".prompt").innerText(), expected.revised);
       assert.equal(await page.locator(".choices input").count(), 5);
       const renderedValues = await page.locator('.choices input').evaluateAll(inputs => inputs.map(input => Number(input.value)));
-      assert.deepEqual([...renderedValues].sort(), [1, 2, 3, 4, 5]);
+      assert.deepEqual(renderedValues, [1, 2, 3, 4, 5]);
       assert.equal(await page.locator(".explanation").count(), 0);
       await page.locator('input[name="answer"]').first().check();
       const reveal = page.getByRole("button", { name: "回答を確定して解説を見る" });
@@ -66,7 +66,7 @@ async function seed(page, { start = 1, legacyExam = false, submitted = false, ed
       const record = await page.evaluate(({ key, id }) => JSON.parse(localStorage.getItem(key)).rounds[1].records[id], { key: KEY, id });
       assert.equal(record.contentRevision, expected.revision);
       assert.equal(record.confidence, "confident");
-      assert.equal(record.answer, renderedValues[0], "Shuffled UI must preserve original answer mapping");
+      assert.equal(record.answer, renderedValues[0], "Fixed UI must preserve original answer mapping");
       assert.deepEqual(await page.locator('.choices input').evaluateAll(inputs => inputs.map(input => Number(input.value))), renderedValues, "Reveal must not reshuffle the choices");
       const archive = await page.evaluate(({ key, id }) => Object.values(JSON.parse(localStorage.getItem(key)).contentArchives || {}).find(item => item.questionId === id), { key: KEY, id });
       assert.equal(archive.record.answer, 2, "Answer to old wording must be archived before replacing its record");
@@ -222,6 +222,6 @@ async function seed(page, { start = 1, legacyExam = false, submitted = false, ed
     await page.locator(".legacy-record-archive summary").click();
     assert.ok((await page.locator(".legacy-record-archive").innerText()).includes(archivedChoice), "Archived phase-A answer must show phase-A wording");
     assert.deepEqual(errors, []);
-    console.log(JSON.stringify({ ok: true, revisedScreens: 54, shuffledAnswerMapping: true, confidenceBeforeReveal: true, oldRecordsPreserved: true, legacyExamResumePreserved: true, phaseAResumePreserved: true, phaseBResumePreserved: true, newExamRevisionPersisted: true, writtenClearStaysPending: true, mobileWidth: 390, desktopWidth: 1280 }, null, 2));
+    console.log(JSON.stringify({ ok: true, revisedScreens: 54, fixedAnswerOrder: true, confidenceBeforeReveal: true, oldRecordsPreserved: true, legacyExamResumePreserved: true, phaseAResumePreserved: true, phaseBResumePreserved: true, newExamRevisionPersisted: true, writtenClearStaysPending: true, mobileWidth: 390, desktopWidth: 1280 }, null, 2));
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exit(1); });
