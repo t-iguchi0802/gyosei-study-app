@@ -41,7 +41,9 @@ PWA用manifestはあるが、Service Workerによるアプリ本体のオフラ�
 - 新規 `legal-basis-data.js`・`legal-basis.js`。20法令156条をe-Gov公式APIの2026-04-01施行版から抜粋。各問の該当項を通常表示し、他の項も読める。判例を段落に分け、公式出典も解説に表示。国連憲章27条は公式本文を確認した要約。一般理論・文章理解等は実際の根拠を示し、架空の条文・判例を付けない。
 - 変更はapp.js・transfer-ui.js・index.html・styles.cssと対応テスト／文書。問題本文・正答・版・保存構造・Firebase設定／規則は維持。追加確認の基本問題閲覧でも根拠本文を表示。
 - ローカルの全84問の根拠描画、選択肢固定順・旧途中答案保全、回答前に根拠を出さないこと、390/1280px、既存60問／追加24問のブラウザ回帰を確認。追加純粋テストも合格。スマホの条文表示を目視確認。
-- 次：GitHubへ保存しHosting公開、公開URLで同じ表示とファイル一致を確認し、この節に公開結果を追記。履歴の移行・初期化は実施しない。
+- GitHub main `ef7f395` に修正を保存済み。最初のHosting公開はFirebase CLI認証の失効により開始できず、現在は `firebase login --reauth` でユーザーのGoogle再認証待ち。現時点の本番は前節の2026-09-28版。公開済みと誤認しないこと。
+- 公開前18ファイルを別作業ルート `.work_evaluation20260928/explanation-backup-20260929` に保存。公開検証は同ルート `explanation-release-check.ps1 -Mode verify` と `APP_URL=https://gyosei-study-2026-tiguchi.web.app/ node tools/legal-basis-browser-test.cjs`。
+- 次：再認証成功後にHostingのみ公開、公開URLで20ファイル一致と同じ表示を確認し、この節に公開結果を追記。履歴の移行・初期化は実施しない。
 
 ### 本番公開完了（2026-09-28 21:33 JST）
 
