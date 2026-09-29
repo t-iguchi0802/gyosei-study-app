@@ -10,7 +10,8 @@ for(const refs of [...Object.values(basis.exam),...Object.values(basis.transfer)
   assert(article,ref);assert(article.title&&article.paragraphs.length,ref);
   for(const p of article.paragraphs)assert(p.text.length>0,ref);
   if(partList)for(const num of partList.split(','))assert(article.paragraphs.some(p=>p.num===num),`Missing paragraph ${ref}: ${num}`);
-  assert(law.url.endsWith(law.revision),ref);
+  assert.equal(new URL(law.url).searchParams.get('occasion_date'),'20260401',ref);
+  assert(article.anchor.startsWith('Mp-')&&article.anchor.endsWith(`At_${num}`),ref);
 }
 const paragraph=(law,article,num)=>corpus.laws[law].articles[article].paragraphs.find(p=>p.num===num).text;
 assert.match(paragraph('procedure','5','1'),/審査基準を定めるものとする/);

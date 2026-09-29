@@ -6,11 +6,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "321CONSTITUTION",
       "title": "日本国憲法",
       "revision": "321CONSTITUTION_19470503_000000000000000",
-      "url": "https://laws.e-gov.go.jp/law/321CONSTITUTION_19470503_000000000000000",
+      "url": "https://laws.e-gov.go.jp/law/321CONSTITUTION?occasion_date=20260401",
       "articles": {
         "31": {
           "title": "第三十一条",
           "caption": "",
+          "anchor": "Mp-Ch_3-At_31",
           "paragraphs": [
             {
               "num": "1",
@@ -21,6 +22,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "14": {
           "title": "第十四条",
           "caption": "",
+          "anchor": "Mp-Ch_3-At_14",
           "paragraphs": [
             {
               "num": "1",
@@ -39,6 +41,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "22": {
           "title": "第二十二条",
           "caption": "",
+          "anchor": "Mp-Ch_3-At_22",
           "paragraphs": [
             {
               "num": "1",
@@ -53,6 +56,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "20": {
           "title": "第二十条",
           "caption": "",
+          "anchor": "Mp-Ch_3-At_20",
           "paragraphs": [
             {
               "num": "1",
@@ -71,6 +75,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "89": {
           "title": "第八十九条",
           "caption": "",
+          "anchor": "Mp-Ch_7-At_89",
           "paragraphs": [
             {
               "num": "1",
@@ -81,6 +86,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "21": {
           "title": "第二十一条",
           "caption": "",
+          "anchor": "Mp-Ch_3-At_21",
           "paragraphs": [
             {
               "num": "1",
@@ -95,6 +101,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "51": {
           "title": "第五十一条",
           "caption": "",
+          "anchor": "Mp-Ch_4-At_51",
           "paragraphs": [
             {
               "num": "1",
@@ -105,6 +112,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "76": {
           "title": "第七十六条",
           "caption": "",
+          "anchor": "Mp-Ch_6-At_76",
           "paragraphs": [
             {
               "num": "1",
@@ -123,6 +131,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "81": {
           "title": "第八十一条",
           "caption": "",
+          "anchor": "Mp-Ch_6-At_81",
           "paragraphs": [
             {
               "num": "1",
@@ -133,6 +142,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "39": {
           "title": "第三十九条",
           "caption": "",
+          "anchor": "Mp-Ch_3-At_39",
           "paragraphs": [
             {
               "num": "1",
@@ -143,6 +153,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "94": {
           "title": "第九十四条",
           "caption": "",
+          "anchor": "Mp-Ch_8-At_94",
           "paragraphs": [
             {
               "num": "1",
@@ -153,6 +164,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "23": {
           "title": "第二十三条",
           "caption": "",
+          "anchor": "Mp-Ch_3-At_23",
           "paragraphs": [
             {
               "num": "1",
@@ -163,6 +175,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "26": {
           "title": "第二十六条",
           "caption": "",
+          "anchor": "Mp-Ch_3-At_26",
           "paragraphs": [
             {
               "num": "1",
@@ -177,6 +190,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "15": {
           "title": "第十五条",
           "caption": "",
+          "anchor": "Mp-Ch_3-At_15",
           "paragraphs": [
             {
               "num": "1",
@@ -199,6 +213,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "79": {
           "title": "第七十九条",
           "caption": "",
+          "anchor": "Mp-Ch_6-At_79",
           "paragraphs": [
             {
               "num": "1",
@@ -232,11 +247,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "405AC0000000088",
       "title": "行政手続法",
       "revision": "405AC0000000088_20240926_506AC0000000065",
-      "url": "https://laws.e-gov.go.jp/law/405AC0000000088_20240926_506AC0000000065",
+      "url": "https://laws.e-gov.go.jp/law/405AC0000000088/20240926_506AC0000000065?occasion_date=20260401",
       "articles": {
         "5": {
           "title": "第五条",
           "caption": "（審査基準）",
+          "anchor": "Mp-Ch_2-At_5",
           "paragraphs": [
             {
               "num": "1",
@@ -255,6 +271,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "6": {
           "title": "第六条",
           "caption": "（標準処理期間）",
+          "anchor": "Mp-Ch_2-At_6",
           "paragraphs": [
             {
               "num": "1",
@@ -265,6 +282,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "12": {
           "title": "第十二条",
           "caption": "（処分の基準）",
+          "anchor": "Mp-Ch_3-Se_1-At_12",
           "paragraphs": [
             {
               "num": "1",
@@ -279,6 +297,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "2": {
           "title": "第二条",
           "caption": "（定義）",
+          "anchor": "Mp-Ch_1-At_2",
           "paragraphs": [
             {
               "num": "1",
@@ -289,6 +308,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "13": {
           "title": "第十三条",
           "caption": "（不利益処分をしようとする場合の手続）",
+          "anchor": "Mp-Ch_3-Se_1-At_13",
           "paragraphs": [
             {
               "num": "1",
@@ -303,6 +323,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "38": {
           "title": "第三十八条",
           "caption": "（命令等を定める場合の一般原則）",
+          "anchor": "Mp-Ch_6-At_38",
           "paragraphs": [
             {
               "num": "1",
@@ -317,6 +338,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "39": {
           "title": "第三十九条",
           "caption": "（意見公募手続）",
+          "anchor": "Mp-Ch_6-At_39",
           "paragraphs": [
             {
               "num": "1",
@@ -339,6 +361,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "40": {
           "title": "第四十条",
           "caption": "（意見公募手続の特例）",
+          "anchor": "Mp-Ch_6-At_40",
           "paragraphs": [
             {
               "num": "1",
@@ -353,6 +376,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "42": {
           "title": "第四十二条",
           "caption": "（提出意見の考慮）",
+          "anchor": "Mp-Ch_6-At_42",
           "paragraphs": [
             {
               "num": "1",
@@ -363,6 +387,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "43": {
           "title": "第四十三条",
           "caption": "（結果の公示等）",
+          "anchor": "Mp-Ch_6-At_43",
           "paragraphs": [
             {
               "num": "1",
@@ -389,6 +414,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "8": {
           "title": "第八条",
           "caption": "（理由の提示）",
+          "anchor": "Mp-Ch_2-At_8",
           "paragraphs": [
             {
               "num": "1",
@@ -403,6 +429,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "7": {
           "title": "第七条",
           "caption": "（申請に対する審査、応答）",
+          "anchor": "Mp-Ch_2-At_7",
           "paragraphs": [
             {
               "num": "1",
@@ -413,6 +440,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "14": {
           "title": "第十四条",
           "caption": "（不利益処分の理由の提示）",
+          "anchor": "Mp-Ch_3-Se_1-At_14",
           "paragraphs": [
             {
               "num": "1",
@@ -431,6 +459,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "32": {
           "title": "第三十二条",
           "caption": "（行政指導の一般原則）",
+          "anchor": "Mp-Ch_4-At_32",
           "paragraphs": [
             {
               "num": "1",
@@ -445,6 +474,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "33": {
           "title": "第三十三条",
           "caption": "（申請に関連する行政指導）",
+          "anchor": "Mp-Ch_4-At_33",
           "paragraphs": [
             {
               "num": "1",
@@ -455,6 +485,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "35": {
           "title": "第三十五条",
           "caption": "（行政指導の方式）",
+          "anchor": "Mp-Ch_4-At_35",
           "paragraphs": [
             {
               "num": "1",
@@ -480,11 +511,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "426AC0000000068",
       "title": "行政不服審査法",
       "revision": "426AC0000000068_20250601_504AC0000000068",
-      "url": "https://laws.e-gov.go.jp/law/426AC0000000068_20250601_504AC0000000068",
+      "url": "https://laws.e-gov.go.jp/law/426AC0000000068/20250601_504AC0000000068?occasion_date=20260401",
       "articles": {
         "25": {
           "title": "第二十五条",
           "caption": "（執行停止）",
+          "anchor": "Mp-Ch_2-Se_2-At_25",
           "paragraphs": [
             {
               "num": "1",
@@ -519,6 +551,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "18": {
           "title": "第十八条",
           "caption": "（審査請求期間）",
+          "anchor": "Mp-Ch_2-Se_2-At_18",
           "paragraphs": [
             {
               "num": "1",
@@ -537,6 +570,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "22": {
           "title": "第二十二条",
           "caption": "（誤った教示をした場合の救済）",
+          "anchor": "Mp-Ch_2-Se_2-At_22",
           "paragraphs": [
             {
               "num": "1",
@@ -563,6 +597,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "82": {
           "title": "第八十二条",
           "caption": "（不服申立てをすべき行政庁等の教示）",
+          "anchor": "Mp-Ch_6-At_82",
           "paragraphs": [
             {
               "num": "1",
@@ -581,6 +616,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "83": {
           "title": "第八十三条",
           "caption": "（教示をしなかった場合の不服申立て）",
+          "anchor": "Mp-Ch_6-At_83",
           "paragraphs": [
             {
               "num": "1",
@@ -607,6 +643,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "9": {
           "title": "第九条",
           "caption": "（審理員）",
+          "anchor": "Mp-Ch_2-Se_1-At_9",
           "paragraphs": [
             {
               "num": "1",
@@ -629,6 +666,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "17": {
           "title": "第十七条",
           "caption": "（審理員となるべき者の名簿）",
+          "anchor": "Mp-Ch_2-Se_1-At_17",
           "paragraphs": [
             {
               "num": "1",
@@ -639,6 +677,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "42": {
           "title": "第四十二条",
           "caption": "（審理員意見書）",
+          "anchor": "Mp-Ch_2-Se_3-At_42",
           "paragraphs": [
             {
               "num": "1",
@@ -653,6 +692,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "50": {
           "title": "第五十条",
           "caption": "（裁決の方式）",
+          "anchor": "Mp-Ch_2-Se_5-At_50",
           "paragraphs": [
             {
               "num": "1",
@@ -671,6 +711,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "45": {
           "title": "第四十五条",
           "caption": "（処分についての審査請求の却下又は棄却）",
+          "anchor": "Mp-Ch_2-Se_5-At_45",
           "paragraphs": [
             {
               "num": "1",
@@ -689,6 +730,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "46": {
           "title": "第四十六条",
           "caption": "（処分についての審査請求の認容）",
+          "anchor": "Mp-Ch_2-Se_5-At_46",
           "paragraphs": [
             {
               "num": "1",
@@ -711,6 +753,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "48": {
           "title": "第四十八条",
           "caption": "（不利益変更の禁止）",
+          "anchor": "Mp-Ch_2-Se_5-At_48",
           "paragraphs": [
             {
               "num": "1",
@@ -724,11 +767,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "337AC0000000139",
       "title": "行政事件訴訟法",
       "revision": "337AC0000000139_20250401_505AC0000000047",
-      "url": "https://laws.e-gov.go.jp/law/337AC0000000139_20250401_505AC0000000047",
+      "url": "https://laws.e-gov.go.jp/law/337AC0000000139/20250401_505AC0000000047?occasion_date=20260401",
       "articles": {
         "3": {
           "title": "第三条",
           "caption": "（抗告訴訟）",
+          "anchor": "Mp-Ch_1-At_3",
           "paragraphs": [
             {
               "num": "1",
@@ -763,6 +807,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "9": {
           "title": "第九条",
           "caption": "（原告適格）",
+          "anchor": "Mp-Ch_2-Se_1-At_9",
           "paragraphs": [
             {
               "num": "1",
@@ -777,6 +822,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "10": {
           "title": "第十条",
           "caption": "（取消しの理由の制限）",
+          "anchor": "Mp-Ch_2-Se_1-At_10",
           "paragraphs": [
             {
               "num": "1",
@@ -791,6 +837,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "19": {
           "title": "第十九条",
           "caption": "（原告による請求の追加的併合）",
+          "anchor": "Mp-Ch_2-Se_1-At_19",
           "paragraphs": [
             {
               "num": "1",
@@ -805,6 +852,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "30": {
           "title": "第三十条",
           "caption": "（裁量処分の取消し）",
+          "anchor": "Mp-Ch_2-Se_1-At_30",
           "paragraphs": [
             {
               "num": "1",
@@ -815,6 +863,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "4": {
           "title": "第四条",
           "caption": "（当事者訴訟）",
+          "anchor": "Mp-Ch_1-At_4",
           "paragraphs": [
             {
               "num": "1",
@@ -825,6 +874,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "37_2": {
           "title": "第三十七条の二",
           "caption": "（義務付けの訴えの要件等）",
+          "anchor": "Mp-Ch_2-Se_2-At_37_2",
           "paragraphs": [
             {
               "num": "1",
@@ -851,6 +901,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "37_4": {
           "title": "第三十七条の四",
           "caption": "（差止めの訴えの要件）",
+          "anchor": "Mp-Ch_2-Se_2-At_37_4",
           "paragraphs": [
             {
               "num": "1",
@@ -877,6 +928,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "37_5": {
           "title": "第三十七条の五",
           "caption": "（仮の義務付け及び仮の差止め）",
+          "anchor": "Mp-Ch_2-Se_2-At_37_5",
           "paragraphs": [
             {
               "num": "1",
@@ -903,6 +955,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "14": {
           "title": "第十四条",
           "caption": "（出訴期間）",
+          "anchor": "Mp-Ch_2-Se_1-At_14",
           "paragraphs": [
             {
               "num": "1",
@@ -921,6 +974,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "25": {
           "title": "第二十五条",
           "caption": "（執行停止）",
+          "anchor": "Mp-Ch_2-Se_1-At_25",
           "paragraphs": [
             {
               "num": "1",
@@ -959,6 +1013,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "37_3": {
           "title": "第三十七条の三",
           "caption": "",
+          "anchor": "Mp-Ch_2-Se_2-At_37_3",
           "paragraphs": [
             {
               "num": "1",
@@ -993,6 +1048,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "31": {
           "title": "第三十一条",
           "caption": "（特別の事情による請求の棄却）",
+          "anchor": "Mp-Ch_2-Se_1-At_31",
           "paragraphs": [
             {
               "num": "1",
@@ -1014,11 +1070,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "129AC0000000089",
       "title": "民法",
       "revision": "129AC0000000089_20260401_506AC0000000033",
-      "url": "https://laws.e-gov.go.jp/law/129AC0000000089_20260401_506AC0000000033",
+      "url": "https://laws.e-gov.go.jp/law/129AC0000000089/20260401_506AC0000000033?occasion_date=20260401",
       "articles": {
         "145": {
           "title": "第百四十五条",
           "caption": "（時効の援用）",
+          "anchor": "Mp-Pa_1-Ch_7-Se_1-At_145",
           "paragraphs": [
             {
               "num": "1",
@@ -1029,6 +1086,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "147": {
           "title": "第百四十七条",
           "caption": "（裁判上の請求等による時効の完成猶予及び更新）",
+          "anchor": "Mp-Pa_1-Ch_7-Se_1-At_147",
           "paragraphs": [
             {
               "num": "1",
@@ -1043,6 +1101,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "150": {
           "title": "第百五十条",
           "caption": "（催告による時効の完成猶予）",
+          "anchor": "Mp-Pa_1-Ch_7-Se_1-At_150",
           "paragraphs": [
             {
               "num": "1",
@@ -1057,6 +1116,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "166": {
           "title": "第百六十六条",
           "caption": "（債権等の消滅時効）",
+          "anchor": "Mp-Pa_1-Ch_7-Se_3-At_166",
           "paragraphs": [
             {
               "num": "1",
@@ -1075,6 +1135,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "113": {
           "title": "第百十三条",
           "caption": "（無権代理）",
+          "anchor": "Mp-Pa_1-Ch_5-Se_3-At_113",
           "paragraphs": [
             {
               "num": "1",
@@ -1089,6 +1150,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "117": {
           "title": "第百十七条",
           "caption": "（無権代理人の責任）",
+          "anchor": "Mp-Pa_1-Ch_5-Se_3-At_117",
           "paragraphs": [
             {
               "num": "1",
@@ -1103,6 +1165,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "896": {
           "title": "第八百九十六条",
           "caption": "（相続の一般的効力）",
+          "anchor": "Mp-Pa_5-Ch_3-Se_1-At_896",
           "paragraphs": [
             {
               "num": "1",
@@ -1113,6 +1176,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "251": {
           "title": "第二百五十一条",
           "caption": "（共有物の変更）",
+          "anchor": "Mp-Pa_2-Ch_3-Se_3-At_251",
           "paragraphs": [
             {
               "num": "1",
@@ -1127,6 +1191,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "252": {
           "title": "第二百五十二条",
           "caption": "（共有物の管理）",
+          "anchor": "Mp-Pa_2-Ch_3-Se_3-At_252",
           "paragraphs": [
             {
               "num": "1",
@@ -1153,6 +1218,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "20": {
           "title": "第二十条",
           "caption": "（制限行為能力者の相手方の催告権）",
+          "anchor": "Mp-Pa_1-Ch_2-Se_3-At_20",
           "paragraphs": [
             {
               "num": "1",
@@ -1175,6 +1241,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "96": {
           "title": "第九十六条",
           "caption": "（詐欺又は強迫）",
+          "anchor": "Mp-Pa_1-Ch_5-Se_2-At_96",
           "paragraphs": [
             {
               "num": "1",
@@ -1193,6 +1260,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "446": {
           "title": "第四百四十六条",
           "caption": "（保証人の責任等）",
+          "anchor": "Mp-Pa_3-Ch_1-Se_3-Ss_5-Di_1-At_446",
           "paragraphs": [
             {
               "num": "1",
@@ -1211,6 +1279,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "465_2": {
           "title": "第四百六十五条の二",
           "caption": "（個人根保証契約の保証人の責任等）",
+          "anchor": "Mp-Pa_3-Ch_1-Se_3-Ss_5-Di_2-At_465_2",
           "paragraphs": [
             {
               "num": "1",
@@ -1229,6 +1298,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "605_2": {
           "title": "第六百五条の二",
           "caption": "（不動産の賃貸人たる地位の移転）",
+          "anchor": "Mp-Pa_3-Ch_2-Se_7-Ss_2-At_605_2",
           "paragraphs": [
             {
               "num": "1",
@@ -1251,6 +1321,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "622_2": {
           "title": "第六百二十二条の二",
           "caption": "",
+          "anchor": "Mp-Pa_3-Ch_2-Se_7-Ss_4-At_622_2",
           "paragraphs": [
             {
               "num": "1",
@@ -1265,6 +1336,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "715": {
           "title": "第七百十五条",
           "caption": "（使用者等の責任）",
+          "anchor": "Mp-Pa_3-Ch_5-At_715",
           "paragraphs": [
             {
               "num": "1",
@@ -1283,6 +1355,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "1046": {
           "title": "第千四十六条",
           "caption": "（遺留分侵害額の請求）",
+          "anchor": "Mp-Pa_5-Ch_9-At_1046",
           "paragraphs": [
             {
               "num": "1",
@@ -1297,6 +1370,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "1047": {
           "title": "第千四十七条",
           "caption": "（受遺者又は受贈者の負担額）",
+          "anchor": "Mp-Pa_5-Ch_9-At_1047",
           "paragraphs": [
             {
               "num": "1",
@@ -1323,6 +1397,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "1048": {
           "title": "第千四十八条",
           "caption": "（遺留分侵害額請求権の期間の制限）",
+          "anchor": "Mp-Pa_5-Ch_9-At_1048",
           "paragraphs": [
             {
               "num": "1",
@@ -1333,6 +1408,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "304": {
           "title": "第三百四条",
           "caption": "（物上代位）",
+          "anchor": "Mp-Pa_2-Ch_8-Se_1-At_304",
           "paragraphs": [
             {
               "num": "1",
@@ -1347,6 +1423,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "372": {
           "title": "第三百七十二条",
           "caption": "（留置権等の規定の準用）",
+          "anchor": "Mp-Pa_2-Ch_10-Se_1-At_372",
           "paragraphs": [
             {
               "num": "1",
@@ -1357,6 +1434,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "466": {
           "title": "第四百六十六条",
           "caption": "（債権の譲渡性）",
+          "anchor": "Mp-Pa_3-Ch_1-Se_4-At_466",
           "paragraphs": [
             {
               "num": "1",
@@ -1379,6 +1457,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "466_2": {
           "title": "第四百六十六条の二",
           "caption": "（譲渡制限の意思表示がされた債権に係る債務者の供託）",
+          "anchor": "Mp-Pa_3-Ch_1-Se_4-At_466_2",
           "paragraphs": [
             {
               "num": "1",
@@ -1397,6 +1476,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "466_5": {
           "title": "第四百六十六条の五",
           "caption": "（預金債権又は貯金債権に係る譲渡制限の意思表示の効力）",
+          "anchor": "Mp-Pa_3-Ch_1-Se_4-At_466_5",
           "paragraphs": [
             {
               "num": "1",
@@ -1411,6 +1491,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "467": {
           "title": "第四百六十七条",
           "caption": "（債権の譲渡の対抗要件）",
+          "anchor": "Mp-Pa_3-Ch_1-Se_4-At_467",
           "paragraphs": [
             {
               "num": "1",
@@ -1425,6 +1506,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "703": {
           "title": "第七百三条",
           "caption": "（不当利得の返還義務）",
+          "anchor": "Mp-Pa_3-Ch_4-At_703",
           "paragraphs": [
             {
               "num": "1",
@@ -1435,6 +1517,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "704": {
           "title": "第七百四条",
           "caption": "（悪意の受益者の返還義務等）",
+          "anchor": "Mp-Pa_3-Ch_4-At_704",
           "paragraphs": [
             {
               "num": "1",
@@ -1445,6 +1528,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "705": {
           "title": "第七百五条",
           "caption": "（債務の不存在を知ってした弁済）",
+          "anchor": "Mp-Pa_3-Ch_4-At_705",
           "paragraphs": [
             {
               "num": "1",
@@ -1455,6 +1539,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "706": {
           "title": "第七百六条",
           "caption": "（期限前の弁済）",
+          "anchor": "Mp-Pa_3-Ch_4-At_706",
           "paragraphs": [
             {
               "num": "1",
@@ -1465,6 +1550,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "708": {
           "title": "第七百八条",
           "caption": "（不法原因給付）",
+          "anchor": "Mp-Pa_3-Ch_4-At_708",
           "paragraphs": [
             {
               "num": "1",
@@ -1475,6 +1561,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "697": {
           "title": "第六百九十七条",
           "caption": "（事務管理）",
+          "anchor": "Mp-Pa_3-Ch_3-At_697",
           "paragraphs": [
             {
               "num": "1",
@@ -1489,6 +1576,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "700": {
           "title": "第七百条",
           "caption": "（管理者による事務管理の継続）",
+          "anchor": "Mp-Pa_3-Ch_3-At_700",
           "paragraphs": [
             {
               "num": "1",
@@ -1499,6 +1587,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "702": {
           "title": "第七百二条",
           "caption": "（管理者による費用の償還請求等）",
+          "anchor": "Mp-Pa_3-Ch_3-At_702",
           "paragraphs": [
             {
               "num": "1",
@@ -1517,6 +1606,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "698": {
           "title": "第六百九十八条",
           "caption": "（緊急事務管理）",
+          "anchor": "Mp-Pa_3-Ch_3-At_698",
           "paragraphs": [
             {
               "num": "1",
@@ -1527,6 +1617,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "782": {
           "title": "第七百八十二条",
           "caption": "（成年の子の認知）",
+          "anchor": "Mp-Pa_4-Ch_3-Se_1-At_782",
           "paragraphs": [
             {
               "num": "1",
@@ -1537,6 +1628,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "783": {
           "title": "第七百八十三条",
           "caption": "（胎児又は死亡した子の認知）",
+          "anchor": "Mp-Pa_4-Ch_3-Se_1-At_783",
           "paragraphs": [
             {
               "num": "1",
@@ -1555,6 +1647,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "784": {
           "title": "第七百八十四条",
           "caption": "（認知の効力）",
+          "anchor": "Mp-Pa_4-Ch_3-Se_1-At_784",
           "paragraphs": [
             {
               "num": "1",
@@ -1565,6 +1658,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "785": {
           "title": "第七百八十五条",
           "caption": "（認知の取消しの禁止）",
+          "anchor": "Mp-Pa_4-Ch_3-Se_1-At_785",
           "paragraphs": [
             {
               "num": "1",
@@ -1575,6 +1669,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "786": {
           "title": "第七百八十六条",
           "caption": "（認知の無効の訴え）",
+          "anchor": "Mp-Pa_4-Ch_3-Se_1-At_786",
           "paragraphs": [
             {
               "num": "1",
@@ -1597,6 +1692,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "114": {
           "title": "第百十四条",
           "caption": "（無権代理の相手方の催告権）",
+          "anchor": "Mp-Pa_1-Ch_5-Se_3-At_114",
           "paragraphs": [
             {
               "num": "1",
@@ -1607,6 +1703,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "115": {
           "title": "第百十五条",
           "caption": "（無権代理の相手方の取消権）",
+          "anchor": "Mp-Pa_1-Ch_5-Se_3-At_115",
           "paragraphs": [
             {
               "num": "1",
@@ -1617,6 +1714,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "116": {
           "title": "第百十六条",
           "caption": "（無権代理行為の追認）",
+          "anchor": "Mp-Pa_1-Ch_5-Se_3-At_116",
           "paragraphs": [
             {
               "num": "1",
@@ -1627,6 +1725,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "192": {
           "title": "第百九十二条",
           "caption": "（即時取得）",
+          "anchor": "Mp-Pa_2-Ch_2-Se_2-At_192",
           "paragraphs": [
             {
               "num": "1",
@@ -1637,6 +1736,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "193": {
           "title": "第百九十三条",
           "caption": "（盗品又は遺失物の回復）",
+          "anchor": "Mp-Pa_2-Ch_2-Se_2-At_193",
           "paragraphs": [
             {
               "num": "1",
@@ -1647,6 +1747,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "194": {
           "title": "第百九十四条",
           "caption": "",
+          "anchor": "Mp-Pa_2-Ch_2-Se_2-At_194",
           "paragraphs": [
             {
               "num": "1",
@@ -1660,11 +1761,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "417AC0000000086",
       "title": "会社法",
       "revision": "417AC0000000086_20251001_505AC0000000053",
-      "url": "https://laws.e-gov.go.jp/law/417AC0000000086_20251001_505AC0000000053",
+      "url": "https://laws.e-gov.go.jp/law/417AC0000000086/20251001_505AC0000000053?occasion_date=20260401",
       "articles": {
         "830": {
           "title": "第八百三十条",
           "caption": "（株主総会等の決議の不存在又は無効の確認の訴え）",
+          "anchor": "Mp-Pa_7-Ch_2-Se_1-At_830",
           "paragraphs": [
             {
               "num": "1",
@@ -1679,6 +1781,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "831": {
           "title": "第八百三十一条",
           "caption": "（株主総会等の決議の取消しの訴え）",
+          "anchor": "Mp-Pa_7-Ch_2-Se_1-At_831",
           "paragraphs": [
             {
               "num": "1",
@@ -1693,6 +1796,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "838": {
           "title": "第八百三十八条",
           "caption": "（認容判決の効力が及ぶ者の範囲）",
+          "anchor": "Mp-Pa_7-Ch_2-Se_1-At_838",
           "paragraphs": [
             {
               "num": "1",
@@ -1703,6 +1807,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "356": {
           "title": "第三百五十六条",
           "caption": "（競業及び利益相反取引の制限）",
+          "anchor": "Mp-Pa_2-Ch_4-Se_4-At_356",
           "paragraphs": [
             {
               "num": "1",
@@ -1717,6 +1822,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "365": {
           "title": "第三百六十五条",
           "caption": "（競業及び取締役会設置会社との取引等の制限）",
+          "anchor": "Mp-Pa_2-Ch_4-Se_5-Ss_1-At_365",
           "paragraphs": [
             {
               "num": "1",
@@ -1731,6 +1837,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "369": {
           "title": "第三百六十九条",
           "caption": "（取締役会の決議）",
+          "anchor": "Mp-Pa_2-Ch_4-Se_5-Ss_2-At_369",
           "paragraphs": [
             {
               "num": "1",
@@ -1757,6 +1864,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "423": {
           "title": "第四百二十三条",
           "caption": "（役員等の株式会社に対する損害賠償責任）",
+          "anchor": "Mp-Pa_2-Ch_4-Se_11-At_423",
           "paragraphs": [
             {
               "num": "1",
@@ -1779,6 +1887,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "428": {
           "title": "第四百二十八条",
           "caption": "（取締役が自己のためにした取引に関する特則）",
+          "anchor": "Mp-Pa_2-Ch_4-Se_11-At_428",
           "paragraphs": [
             {
               "num": "1",
@@ -1793,6 +1902,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "52": {
           "title": "第五十二条",
           "caption": "（出資された財産等の価額が不足する場合の責任）",
+          "anchor": "Mp-Pa_2-Ch_1-Se_8-At_52",
           "paragraphs": [
             {
               "num": "1",
@@ -1811,6 +1921,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "136": {
           "title": "第百三十六条",
           "caption": "（株主からの承認の請求）",
+          "anchor": "Mp-Pa_2-Ch_2-Se_3-Ss_2-At_136",
           "paragraphs": [
             {
               "num": "1",
@@ -1821,6 +1932,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "137": {
           "title": "第百三十七条",
           "caption": "（株式取得者からの承認の請求）",
+          "anchor": "Mp-Pa_2-Ch_2-Se_3-Ss_2-At_137",
           "paragraphs": [
             {
               "num": "1",
@@ -1835,6 +1947,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "138": {
           "title": "第百三十八条",
           "caption": "（譲渡等承認請求の方法）",
+          "anchor": "Mp-Pa_2-Ch_2-Se_3-Ss_2-At_138",
           "paragraphs": [
             {
               "num": "1",
@@ -1845,6 +1958,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "139": {
           "title": "第百三十九条",
           "caption": "（譲渡等の承認の決定等）",
+          "anchor": "Mp-Pa_2-Ch_2-Se_3-Ss_2-At_139",
           "paragraphs": [
             {
               "num": "1",
@@ -1859,6 +1973,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "145": {
           "title": "第百四十五条",
           "caption": "（株式会社が承認をしたとみなされる場合）",
+          "anchor": "Mp-Pa_2-Ch_2-Se_3-Ss_2-At_145",
           "paragraphs": [
             {
               "num": "1",
@@ -1869,6 +1984,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "327": {
           "title": "第三百二十七条",
           "caption": "（取締役会等の設置義務等）",
+          "anchor": "Mp-Pa_2-Ch_4-Se_2-At_327",
           "paragraphs": [
             {
               "num": "1",
@@ -1899,6 +2015,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "335": {
           "title": "第三百三十五条",
           "caption": "（監査役の資格等）",
+          "anchor": "Mp-Pa_2-Ch_4-Se_3-Ss_1-At_335",
           "paragraphs": [
             {
               "num": "1",
@@ -1917,6 +2034,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "336": {
           "title": "第三百三十六条",
           "caption": "（監査役の任期）",
+          "anchor": "Mp-Pa_2-Ch_4-Se_3-Ss_1-At_336",
           "paragraphs": [
             {
               "num": "1",
@@ -1939,6 +2057,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "389": {
           "title": "第三百八十九条",
           "caption": "（定款の定めによる監査範囲の限定）",
+          "anchor": "Mp-Pa_2-Ch_4-Se_7-At_389",
           "paragraphs": [
             {
               "num": "1",
@@ -1973,6 +2092,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "390": {
           "title": "第三百九十条",
           "caption": "",
+          "anchor": "Mp-Pa_2-Ch_4-Se_8-Ss_1-At_390",
           "paragraphs": [
             {
               "num": "1",
@@ -1998,11 +2118,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "408AC0000000109",
       "title": "民事訴訟法",
       "revision": "408AC0000000109_20250722_507AC0000000026",
-      "url": "https://laws.e-gov.go.jp/law/408AC0000000109_20250722_507AC0000000026",
+      "url": "https://laws.e-gov.go.jp/law/408AC0000000109/20250722_507AC0000000026?occasion_date=20260401",
       "articles": {
         "246": {
           "title": "第二百四十六条",
           "caption": "（判決事項）",
+          "anchor": "Mp-Pa_2-Ch_5-At_246",
           "paragraphs": [
             {
               "num": "1",
@@ -2013,6 +2134,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "261": {
           "title": "第二百六十一条",
           "caption": "（訴えの取下げ）",
+          "anchor": "Mp-Pa_2-Ch_6-At_261",
           "paragraphs": [
             {
               "num": "1",
@@ -2039,6 +2161,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "266": {
           "title": "第二百六十六条",
           "caption": "（請求の放棄又は認諾）",
+          "anchor": "Mp-Pa_2-Ch_6-At_266",
           "paragraphs": [
             {
               "num": "1",
@@ -2056,11 +2179,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "322AC0000000125",
       "title": "国家賠償法",
       "revision": "322AC0000000125_19471027_000000000000000",
-      "url": "https://laws.e-gov.go.jp/law/322AC0000000125_19471027_000000000000000",
+      "url": "https://laws.e-gov.go.jp/law/322AC0000000125?occasion_date=20260401",
       "articles": {
         "1": {
           "title": "第一条",
           "caption": "",
+          "anchor": "Mp-At_1",
           "paragraphs": [
             {
               "num": "1",
@@ -2075,6 +2199,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "2": {
           "title": "第二条",
           "caption": "",
+          "anchor": "Mp-At_2",
           "paragraphs": [
             {
               "num": "1",
@@ -2092,11 +2217,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "322AC0000000059",
       "title": "裁判所法",
       "revision": "322AC0000000059_20251001_505AC0000000053",
-      "url": "https://laws.e-gov.go.jp/law/322AC0000000059_20251001_505AC0000000053",
+      "url": "https://laws.e-gov.go.jp/law/322AC0000000059/20251001_505AC0000000053?occasion_date=20260401",
       "articles": {
         "3": {
           "title": "第三条",
           "caption": "（裁判所の権限）",
+          "anchor": "Mp-Pa_1-At_3",
           "paragraphs": [
             {
               "num": "1",
@@ -2118,11 +2244,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "140AC0000000045",
       "title": "刑法",
       "revision": "140AC0000000045_20250722_507AC0000000026",
-      "url": "https://laws.e-gov.go.jp/law/140AC0000000045_20250722_507AC0000000026",
+      "url": "https://laws.e-gov.go.jp/law/140AC0000000045/20250722_507AC0000000026?occasion_date=20260401",
       "articles": {
         "9": {
           "title": "第九条",
           "caption": "（刑の種類）",
+          "anchor": "Mp-Pa_1-Ch_2-At_9",
           "paragraphs": [
             {
               "num": "1",
@@ -2133,6 +2260,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "17": {
           "title": "第十七条",
           "caption": "（科料）",
+          "anchor": "Mp-Pa_1-Ch_2-At_17",
           "paragraphs": [
             {
               "num": "1",
@@ -2146,11 +2274,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "323AC0000000131",
       "title": "刑事訴訟法",
       "revision": "323AC0000000131_20250722_507AC0000000026",
-      "url": "https://laws.e-gov.go.jp/law/323AC0000000131_20250722_507AC0000000026",
+      "url": "https://laws.e-gov.go.jp/law/323AC0000000131/20250722_507AC0000000026?occasion_date=20260401",
       "articles": {
         "160": {
           "title": "第百六十条",
           "caption": "",
+          "anchor": "Mp-Pa_1-Ch_11-At_160",
           "paragraphs": [
             {
               "num": "1",
@@ -2165,6 +2294,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "161": {
           "title": "第百六十一条",
           "caption": "",
+          "anchor": "Mp-Pa_1-Ch_11-At_161",
           "paragraphs": [
             {
               "num": "1",
@@ -2178,11 +2308,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "322AC0000000067",
       "title": "地方自治法",
       "revision": "322AC0000000067_20260401_508AC0000000008",
-      "url": "https://laws.e-gov.go.jp/law/322AC0000000067_20260401_508AC0000000008",
+      "url": "https://laws.e-gov.go.jp/law/322AC0000000067/20260401_508AC0000000008?occasion_date=20260401",
       "articles": {
         "242": {
           "title": "第二百四十二条",
           "caption": "（住民監査請求）",
+          "anchor": "Mp-Pa_2-Ch_9-Se_10-At_242",
           "paragraphs": [
             {
               "num": "1",
@@ -2233,6 +2364,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "242_2": {
           "title": "第二百四十二条の二",
           "caption": "（住民訴訟）",
+          "anchor": "Mp-Pa_2-Ch_9-Se_10-At_242_2",
           "paragraphs": [
             {
               "num": "1",
@@ -2287,6 +2419,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "14": {
           "title": "第十四条",
           "caption": "",
+          "anchor": "Mp-Pa_2-Ch_3-At_14",
           "paragraphs": [
             {
               "num": "1",
@@ -2305,6 +2438,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "245_2": {
           "title": "第二百四十五条の二",
           "caption": "（関与の法定主義）",
+          "anchor": "Mp-Pa_2-Ch_12-Se_1-Ss_1-At_245_2",
           "paragraphs": [
             {
               "num": "1",
@@ -2315,6 +2449,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "245_3": {
           "title": "第二百四十五条の三",
           "caption": "（関与の基本原則）",
+          "anchor": "Mp-Pa_2-Ch_12-Se_1-Ss_1-At_245_3",
           "paragraphs": [
             {
               "num": "1",
@@ -2345,6 +2480,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "245_4": {
           "title": "第二百四十五条の四",
           "caption": "（技術的な助言及び勧告並びに資料の提出の要求）",
+          "anchor": "Mp-Pa_2-Ch_12-Se_1-Ss_1-At_245_4",
           "paragraphs": [
             {
               "num": "1",
@@ -2363,6 +2499,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "245_5": {
           "title": "第二百四十五条の五",
           "caption": "（是正の要求）",
+          "anchor": "Mp-Pa_2-Ch_12-Se_1-Ss_1-At_245_5",
           "paragraphs": [
             {
               "num": "1",
@@ -2389,6 +2526,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "245_7": {
           "title": "第二百四十五条の七",
           "caption": "（是正の指示）",
+          "anchor": "Mp-Pa_2-Ch_12-Se_1-Ss_1-At_245_7",
           "paragraphs": [
             {
               "num": "1",
@@ -2411,6 +2549,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "74": {
           "title": "第七十四条",
           "caption": "",
+          "anchor": "Mp-Pa_2-Ch_5-Se_1-At_74",
           "paragraphs": [
             {
               "num": "1",
@@ -2456,11 +2595,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "403AC0000000090",
       "title": "借地借家法",
       "revision": "403AC0000000090_20230614_505AC0000000053",
-      "url": "https://laws.e-gov.go.jp/law/403AC0000000090_20230614_505AC0000000053",
+      "url": "https://laws.e-gov.go.jp/law/403AC0000000090/20230614_505AC0000000053?occasion_date=20260401",
       "articles": {
         "31": {
           "title": "第三十一条",
           "caption": "（建物賃貸借の対抗力）",
+          "anchor": "Mp-Ch_3-Se_2-At_31",
           "paragraphs": [
             {
               "num": "1",
@@ -2474,11 +2614,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "132AC0000000048",
       "title": "商法",
       "revision": "132AC0000000048_20230401_503AC0000000061",
-      "url": "https://laws.e-gov.go.jp/law/132AC0000000048_20230401_503AC0000000061",
+      "url": "https://laws.e-gov.go.jp/law/132AC0000000048/20230401_503AC0000000061?occasion_date=20260401",
       "articles": {
         "526": {
           "title": "第五百二十六条",
           "caption": "（買主による目的物の検査及び通知）",
+          "anchor": "Mp-Pa_2-Ch_2-At_526",
           "paragraphs": [
             {
               "num": "1",
@@ -2500,11 +2641,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "418AC0000000120",
       "title": "教育基本法",
       "revision": "418AC0000000120_20061222_000000000000000",
-      "url": "https://laws.e-gov.go.jp/law/418AC0000000120_20061222_000000000000000",
+      "url": "https://laws.e-gov.go.jp/law/418AC0000000120?occasion_date=20260401",
       "articles": {
         "16": {
           "title": "第十六条",
           "caption": "（教育行政）",
+          "anchor": "Mp-Ch_3-At_16",
           "paragraphs": [
             {
               "num": "1",
@@ -2530,11 +2672,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "325AC0000000144",
       "title": "生活保護法",
       "revision": "325AC0000000144_20260401_507AC0000000035",
-      "url": "https://laws.e-gov.go.jp/law/325AC0000000144_20260401_507AC0000000035",
+      "url": "https://laws.e-gov.go.jp/law/325AC0000000144/20260401_507AC0000000035?occasion_date=20260401",
       "articles": {
         "3": {
           "title": "第三条",
           "caption": "（最低生活）",
+          "anchor": "Mp-Ch_1-At_3",
           "paragraphs": [
             {
               "num": "1",
@@ -2545,6 +2688,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "8": {
           "title": "第八条",
           "caption": "（基準及び程度の原則）",
+          "anchor": "Mp-Ch_2-At_8",
           "paragraphs": [
             {
               "num": "1",
@@ -2562,11 +2706,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "419AC0000000053",
       "title": "統計法",
       "revision": "419AC0000000053_20250601_504AC0000000068",
-      "url": "https://laws.e-gov.go.jp/law/419AC0000000053_20250601_504AC0000000068",
+      "url": "https://laws.e-gov.go.jp/law/419AC0000000053/20250601_504AC0000000068?occasion_date=20260401",
       "articles": {
         "5": {
           "title": "第五条",
           "caption": "（国勢統計）",
+          "anchor": "Mp-Ch_2-Se_1-At_5",
           "paragraphs": [
             {
               "num": "1",
@@ -2585,6 +2730,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "13": {
           "title": "第十三条",
           "caption": "（報告義務）",
+          "anchor": "Mp-Ch_2-Se_2-Ss_1-At_13",
           "paragraphs": [
             {
               "num": "1",
@@ -2606,11 +2752,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "409AC0000000089",
       "title": "日本銀行法",
       "revision": "409AC0000000089_20250601_504AC0000000068",
-      "url": "https://laws.e-gov.go.jp/law/409AC0000000089_20250601_504AC0000000068",
+      "url": "https://laws.e-gov.go.jp/law/409AC0000000089/20250601_504AC0000000068?occasion_date=20260401",
       "articles": {
         "2": {
           "title": "第二条",
           "caption": "（通貨及び金融の調節の理念）",
+          "anchor": "Mp-Ch_1-At_2",
           "paragraphs": [
             {
               "num": "1",
@@ -2621,6 +2768,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "3": {
           "title": "第三条",
           "caption": "（日本銀行の自主性の尊重及び透明性の確保）",
+          "anchor": "Mp-Ch_1-At_3",
           "paragraphs": [
             {
               "num": "1",
@@ -2635,6 +2783,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "4": {
           "title": "第四条",
           "caption": "（政府との関係）",
+          "anchor": "Mp-Ch_1-At_4",
           "paragraphs": [
             {
               "num": "1",
@@ -2645,6 +2794,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "15": {
           "title": "第十五条",
           "caption": "（権限）",
+          "anchor": "Mp-Ch_2-At_15",
           "paragraphs": [
             {
               "num": "1",
@@ -2663,6 +2813,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "19": {
           "title": "第十九条",
           "caption": "（政府からの出席等）",
+          "anchor": "Mp-Ch_2-At_19",
           "paragraphs": [
             {
               "num": "1",
@@ -2684,11 +2835,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "326AC1000000004",
       "title": "行政書士法",
       "revision": "326AC1000000004_20260101_507AC1000000065",
-      "url": "https://laws.e-gov.go.jp/law/326AC1000000004_20260101_507AC1000000065",
+      "url": "https://laws.e-gov.go.jp/law/326AC1000000004/20260101_507AC1000000065?occasion_date=20260401",
       "articles": {
         "1_3": {
           "title": "第一条の三",
           "caption": "（業務）",
+          "anchor": "Mp-Ch_1-At_1_3",
           "paragraphs": [
             {
               "num": "1",
@@ -2703,6 +2855,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "1_4": {
           "title": "第一条の四",
           "caption": "",
+          "anchor": "Mp-Ch_1-At_1_4",
           "paragraphs": [
             {
               "num": "1",
@@ -2717,6 +2870,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "19": {
           "title": "第十九条",
           "caption": "（業務の制限）",
+          "anchor": "Mp-Ch_8-At_19",
           "paragraphs": [
             {
               "num": "1",
@@ -2731,6 +2885,7 @@ window.GYOSEI_LEGAL_TEXT = {
         "1_5": {
           "title": "第一条の五",
           "caption": "",
+          "anchor": "Mp-Ch_1-At_1_5",
           "paragraphs": [
             {
               "num": "1",
@@ -2744,11 +2899,12 @@ window.GYOSEI_LEGAL_TEXT = {
       "id": "415AC0000000057",
       "title": "個人情報の保護に関する法律",
       "revision": "415AC0000000057_20250601_504AC0000000068",
-      "url": "https://laws.e-gov.go.jp/law/415AC0000000057_20250601_504AC0000000068",
+      "url": "https://laws.e-gov.go.jp/law/415AC0000000057/20250601_504AC0000000068?occasion_date=20260401",
       "articles": {
         "27": {
           "title": "第二十七条",
           "caption": "（第三者提供の制限）",
+          "anchor": "Mp-Ch_4-Se_2-At_27",
           "paragraphs": [
             {
               "num": "1",

@@ -87,7 +87,7 @@
         article.paragraphs.filter(p=>chosen.includes(p.num)).forEach(p=>appendParagraph(block,p));
         const rest=article.paragraphs.filter(p=>!chosen.includes(p.num));
         if(rest.length){const detail=node("details","basis-more");detail.append(node("summary","","この条の他の項も読む"));rest.forEach(p=>appendParagraph(detail,p));block.append(detail);}
-        block.append(link("e-Govで条文を確認",law.url));section.append(block);
+        block.append(link(`e-Govで${law.title} ${article.title}を開く`,`${law.url}#${article.anchor}`));section.append(block);
       }
     }
     const precedent=question.sections?.["関連判例"];
@@ -98,7 +98,11 @@
     const urls=family==="transfer"?(question.refs||[]).map(r=>({title:`${r.title} ${r.articles}`,url:r.url})):
       [...new Set((question.sections?.["一次資料"]||"").match(/https?:\/\/[^\s]+/g)||[])].map(url=>({title:url.includes("courts.go.jp")?"裁判所の判決・一次資料":url.includes("laws.e-gov.go.jp")?"e-Govの法令本文":"公式資料を確認",url}));
     if(!refs.length&&family==="exam"&&question.id>=58)section.append(node("p","","この問題は文章理解です。根拠は問題文の前後関係・指示語・論理のつながりで、条文や判例は用いません。"));
-    const sources=node("div","basis-links");urls.forEach(r=>sources.append(link(r.title,r.url)));section.append(sources);
+    const coveredLawIds=new Set(refs.map(ref=>laws[ref.split(":")[0]]));
+    const sources=node("div","basis-links");urls.filter(r=>{
+      const match=r.url.match(/laws\.e-gov\.go\.jp\/law\/([^_/?#]+)/);
+      return !match||!coveredLawIds.has(match[1]);
+    }).forEach(r=>sources.append(link(r.title,r.url)));section.append(sources);
     return section;
   }
   window.GYOSEI_LEGAL_BASIS={plan,exam,transfer,render};

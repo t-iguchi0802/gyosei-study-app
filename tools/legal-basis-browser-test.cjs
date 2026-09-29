@@ -16,6 +16,8 @@ const base=process.env.APP_URL||'http://127.0.0.1:8771/';
     await p.getByRole('button',{name:'自信あり',exact:true}).click();
     await p.getByRole('button',{name:'回答を確定して解説を見る',exact:true}).click();
     assert(await p.locator('.legal-basis').getByText(/何人も、法律の定める手続/).count());
+    assert.equal(await p.locator('.basis-article a').first().getAttribute('href'),'https://laws.e-gov.go.jp/law/321CONSTITUTION?occasion_date=20260401#Mp-Ch_3-At_31');
+    assert.equal(await p.locator('.basis-links a[href*="laws.e-gov.go.jp/law"]').count(),0);
     await layout();await p.screenshot({path:path.join(__dirname,'legal-basis-mobile.png'),fullPage:false});
     // T01 ordering, draft and saved answer survive a formerly shuffled order.
     await p.goto(base);await p.getByRole('button',{name:'実力確認を始める',exact:true}).click();
@@ -27,6 +29,7 @@ const base=process.env.APP_URL||'http://127.0.0.1:8771/';
     assert(await p.locator('input[name="transfer-answer"][value="3"]').isChecked());assert.equal(await p.locator('.legal-basis').count(),0);
     await p.getByRole('button',{name:'回答を確定して解説を見る',exact:true}).click();
     const text=await p.locator('.legal-basis').innerText();assert.match(text,/審査基準を定めるものとする/);assert.match(text,/公にしておかなければならない/);
+    assert.equal(await p.locator('.basis-article a').first().getAttribute('href'),'https://laws.e-gov.go.jp/law/405AC0000000088/20240926_506AC0000000065?occasion_date=20260401#Mp-Ch_2-At_5');
     assert.deepEqual(await p.locator('.transfer-reason h3').evaluateAll(xs=>xs.map(x=>Number(x.textContent.trim()[0]))),[1,2,3,4,5]);
     await layout();await p.locator('.legal-basis').scrollIntoViewIfNeeded();await p.screenshot({path:path.join(__dirname,'legal-basis-transfer-mobile.png')});
     // All 84 explanations render without missing text; case paragraphs are visibly separated.
